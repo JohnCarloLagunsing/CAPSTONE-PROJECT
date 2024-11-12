@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeadAdmin MTOP</title>
+    <link rel="icon" href="assets/favicon.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="HeadadminAccount.css"> <!-- Retaining originl CSS -->
+</head>
+<body class="bg-gray-100">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar w-56 h-full bg-blue-700 text-white flex flex-col p-5 fixed z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+            <img src="assets/favicon.png" alt="Profile Picture" class="w-20 h-20 rounded-full mx-auto mb-5">
+            <h2 class="text-lg text-center mb-5">Admin Panel</h2>
+            <ul class="flex-1 space-y-4">
+                <li class="mb-4">
+                    <a href="HeadDashboard.html" class="hover:bg-blue-600 block py-2 px-4 rounded flex items-center">
+                        <i class="bx bxs-dashboard mr-2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="mb-4">
+                    <a href="HeadadminAccount.html" class="hover:bg-blue-600 block py-2 px-4 rounded flex items-center">
+                        <i class="fas fa-user mr-2"></i> Account
+                    </a>
+                </li>
+                <li class="mb-4">
+                    <a href="" class="hover:bg-blue-600 block py-2 px-4 rounded flex items-center">
+                        <i class="bx bxs-file-find mr-2"></i> Verifying Documents
+                    </a>
+                </li>
+            </ul>
+            <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </a>
+        </div>
+        <!-- Mobile Sidebar Toggle Button -->
+        <button id="mobileMenuButton" onclick="toggleSidebar()" class="md:hidden absolute top-4 left-4 z-40 bg-blue-700 text-white p-2 rounded">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Main Content -->
+        <div class="mainContent flex-1 p-10 ml-56 bg-gray-100">
+            <h3 id="tableTitle" class="text-2xl font-semibold mb-5">Admin Staff List</h3>
+            
+            <!-- Filter by Inspector Button -->
+            <button id="filterInspectorButton" class="filter-button" onclick="filterByInspector()">Filter the Inspector List</button>
+            
+            <!-- Back to Admin Staff List Button (Initially hidden) -->
+            <button id="backToAdminListButton" class="filter-button" onclick="showAdminStaffList()" style="display: none;">Back to Admin Staff List</button>
+
+            <table id="staffTable" class="min-w-full bg-white shadow-md rounded-lg overflow-hidden mt-5">
+                <thead class="bg-blue-700 text-white">
+                    <tr>
+                        <th class="py-4 px-6 text-left">Full Name</th>
+                        <th class="py-4 px-6 text-left">Role</th>
+                        <th class="py-4 px-6 text-left">Archive</th>
+                    </tr>
+                </thead>
+                <tbody id="staffNames" class="text-gray-700"></tbody>
+            </table>
+
+            <!-- Add Account Button below the table -->
+            <a href="signup.html" id="addAccountButton" class="add-button">
+                <span class="material-icons">add</span> Add Admin Account
+            </a>
+
+            <a href="Signupforinspector.html" id="addInspectorButton" class="add-button" style="display: none;">
+                <span class="material-icons">add</span> Add Inspector Account
+            </a>
+
+            <button id="toggleArchivedInspectorButton" class="view-archived-button" onclick="toggleArchivedInspectorSection()" style="display: none;">
+                View Archived Inspector Accounts
+            </button>
+            
+            <a href="inpectorchangepass.html" id="changePasswordInspectorButton" class="change-password-button" style="display: none;">
+                <span class="icon">🔒</span> Change Password
+            </a>
+
+            <div id="archivedInspectorSection" class="hidden mt-5">
+                <h3 class="text-xl font-semibold mb-3">Archived Inspector Accounts</h3>
+                <table id="archivedInspectorTable" class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                    <thead class="bg-red-600 text-white">
+                        <tr>
+                            <th class="py-4 px-6 text-left">Full Name</th>
+                            <th class="py-4 px-6 text-left">Unarchive</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archivedInspectorNames"></tbody>
+                </table>
+            </div>
+
+            <!-- Button to view archived accounts -->
+            <button id="viewArchivedButton" class="view-archived-button" onclick="toggleArchivedAccounts()">View Archived Accounts</button>
+
+            <!-- Button to change password -->
+            <a href="forgotpassAdmin.html" id="changePasswordButton" class="change-password-button">
+                <span class="icon">🔒</span> Change Password
+            </a>
+
+            <!-- Archived Accounts Section (Initially Hidden) -->
+            <div id="archivedSection" class="hidden mt-5">
+                <h3 class="text-xl font-semibold mb-3">Archived Accounts</h3>
+                <table id="archivedTable" class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+                    <thead class="bg-red-600 text-white">
+                        <tr>
+                            <th class="py-4 px-6 text-left">Full Name</th>
+                            <th class="py-4 px-6 text-left">Role</th>
+                            <th class="py-4 px-6 text-left">Unarchive</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archivedNames"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="scripts/Adminaccount.js"></script>
+</body>
+
+</html>

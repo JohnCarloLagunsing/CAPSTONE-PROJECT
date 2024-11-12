@@ -7,6 +7,12 @@ const PORT = 8000;
 const router = express.Router();
 const loginProcessRouter = require('./server/loginFunc');
 const Analysis = require('./server/Analysis');
+const Occuprocess = require('./server/Occuprocess');
+const Verifying = require('./server/Verifying');
+const FranchiseProcess = require('./server/FranchiseProcess');
+const HeadAdmin = require('./server/HeadadminLogin');
+const HeadAdminaccount = require('./server/HeadAdminaccount');
+
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const pool = require('./public/scripts/db');
@@ -36,6 +42,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', loginProcessRouter);
 app.use('/data', Analysis); 
+app.use('/',Occuprocess);
+app.use('/',Verifying);
+app.use('/',FranchiseProcess); 
+app.use('/',HeadAdmin); 
+app.use('/',HeadAdminaccount); 
+
+
 
 
 

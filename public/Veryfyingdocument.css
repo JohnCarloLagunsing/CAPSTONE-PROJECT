@@ -1,0 +1,445 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+:root {
+    --primary-color: #0033cc;
+    --primary-hover-color: #0055ff;
+    --background-color: #f9fafc;
+    --text-color: #333;
+    --button-color: #28a745;
+    --button-hover-color: #218838;
+    --box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
+}
+
+body.modal-open {
+    overflow: hidden; /* Prevent scrolling when modal is open */
+}
+
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background-color: #0033cc;
+    color: white;
+    position: fixed;
+    padding: 20px;
+}
+
+.sidebar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    margin-left: 50px;
+}
+
+.sidebar h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0 10px;
+}
+
+.sidebar ul li {
+    margin: 10px 0 10px 7px;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px 0;
+    transition: background 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background: #0055ff;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.main-content {
+    margin-left: 270px;
+    padding: 20px;
+}
+
+.main-content .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main-content .header h1 {
+    font-size: 24px;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-input {
+    padding: 10px 40px 10px 40px; /* Initially space on both sides */
+    border: 2px solid silver;
+    border-radius: 15px;
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    color: gray;
+    transition: left 0.3s ease;
+}
+
+.search-input:focus + .search-icon {
+    left: calc(100% - 40px); /* Move the icon to the right when input is focused */
+}
+
+.bx.bxs-bell {
+    background-color: gray;
+    font-size: 20px;
+    color: whitesmoke;
+    padding: 10px;
+    border-radius: 50%;
+    transition: transform 0.2s ease-in-out;
+}
+
+.bx.bxs-bell:hover {
+    animation: rotate 0.4s ease-in-out;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-20deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    75% {
+        transform: rotate(20deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.main-content .dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.table-container {
+    margin-top: 50px; /* Adds spacing between the header and table */
+    display: flex;
+    justify-content: center; /* Centers the table horizontally */
+}
+
+.custom-table {
+    width: 90%; /* Adjust the table width as needed */
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+.custom-table th {
+    background-color: #d5d7dc;
+    color: #0055ff;
+    padding: 12px 20px;
+}
+
+.custom-table th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.custom-table th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.custom-table th, .custom-table td {
+    border-bottom: 1px solid #dddddd;
+    padding: 12px 11px;
+    font-size: 15px;
+}
+
+.custom-table tr:nth-child(even) {
+    background-color: #f3f3f3;
+}
+
+select {
+    padding: 5px;
+}
+
+select:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.custom-icon,.custom-icon-occPermit {
+    color: rgb(68, 67, 67); /* Change the color */
+    padding-left: 28px;
+    font-size: 20px; /* Adjust the size */
+    cursor: pointer;  
+    transition: font-size 0.3s ease;
+}
+
+:hover.custom-icon,.custom-icon-occPermit  {
+    font-size: 18px;
+}
+
+.filter-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    margin-right: 5%;
+    cursor: pointer;
+}
+
+.filter-dropdown {
+    padding: 10px;
+    color: #0b0b0b;
+    font-size: 13px;
+    border-radius: 5px;
+    margin-right: -570px;
+    border: 2px solid #003bb5;
+    cursor: pointer;
+}
+
+.filter-button {
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.filter-button:hover {
+    background-color: #d5d6d7;
+}
+
+.table-container {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column; /* Makes sure the filter button and table stack vertically */
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-icon {
+    font-size: 18px;
+    color: #0055ff; /* Icon color */
+    margin-right: 10px; /* Space between icon and dropdown */
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+
+.modal-content,.modal-content-occPermit {
+    background-color: #fefefe;
+    margin: 2% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 80%;
+    max-height: 90vh; /* 90% of the viewport height */
+    overflow-y: auto; /* Enable vertical scrolling inside the modal */
+}
+
+.close,.close-occPermit-modal {
+    color: #aaa;
+    float: right;
+    font-size: 24px; /* Adjust font size */
+    font-weight: bold;
+    width: 30px; /* Reduced width */
+    height: 30px; /* Reduced height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.close:hover,
+.close:focus,
+.close-occPermit-modal:hover,
+.close-occPermit-modal:focus 
+{
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: #555;
+    font-size: 20px; /* Reduced padding */
+}
+
+.modal-body img {
+    max-width: 100%;
+    height: auto;
+}
+
+.signaturepart {
+    text-align: right; /* Align to the right */
+    margin-top: -190px; /* Adds some space before the signature */
+}
+
+.signature-container {
+    display: inline-block; /* Keeps the signature area inline */
+    text-align: center; /* Centers content within the block */
+}
+
+.signature-line {
+    width: 280px;
+    border: none;
+    border-bottom: 2px solid black; /* Thicker line for signature */
+    margin-bottom: 5px; /* Space between line and text */
+}
+
+.signature-text {
+    font-size: 14px;
+    color: black;
+    margin-bottom: 10px; /* Adds space between text and signature */
+}
+
+.signature-image {
+    display: block;
+    width: 180px; /* Adjust size as needed */
+    padding-left: 60px;
+}
+
+.print-btn {
+    position: absolute;
+    top: 4%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #464646;
+    color: rgb(236, 235, 235);
+    border: none;
+    padding: 10px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.print-btn i {
+    margin-right: 5px;
+}
+
+:hover.print-btn {
+    background-color: #6d6d6d;
+}
+
+@media print {
+    .print-btn, .close {
+        display: none;
+    }
+}
+
+.filter-button-container2 {
+    position: absolute; /* Position it absolutely */
+    top: 130px; /* Adjust the distance from the top */
+    left: 350px; /* Adjust the distance from the left */
+    z-index: 1; /* Ensure it stays on top */
+}
+
+#occustatus-table {
+    margin-left: 40px;
+}
+
+
+.modal-occPermit {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/*.modal-content-occPermit {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}*/
+
+.document-image {
+    max-width: 100%;  
+    max-height: 600px; /* Increased height limit */
+}
+.logout {
+    margin-top: 250px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    text-align: center;
+    background-color: var(--primary-hover-color);
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 16px;
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.pagination button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.pagination span {
+    font-size: 18px;
+}
+

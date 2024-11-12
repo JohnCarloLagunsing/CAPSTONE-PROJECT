@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  
+  <title>Ecenter San Luis - Head Admin Login</title>
+</head>
+<body class="h-screen w-full bg-cover bg-center" style="background-image: url('assets/Background.jpg');">
+  <div id="alert-container" class="alert fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-lg p-2 rounded-md hidden z-50">
+    <i class="fas fa-exclamation-circle"></i>
+    <span class="alert-message"></span>
+  </div>
+  <div class="overlay absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"></div>
+  <div class="center relative z-20 flex items-center justify-end h-full">
+    <div class="container relative bg-white w-96 p-8 shadow-lg rounded-3xl mr-12">
+      <div class="text text-3xl font-semibold text-center mb-6">HEAD ADMIN LOGIN</div>
+      <form id="loginForm">
+        <div class="data mb-10">
+          <label class="block text-lg">Enter email address</label>
+          <div class="formcontainer relative">
+            <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-800"></i>
+            <input type="email" name="email" required class="h-12 w-full pl-10 text-lg border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-500 focus:shadow-lg" />
+          </div>
+        </div>
+        <div class="data mb-10">
+          <label class="block text-lg">Password</label>
+          <div class="formcontainer relative">
+            <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-800"></i>
+            <input type="password" name="password" id="password" required class="h-12 w-full pl-10 text-lg border-2 border-gray-300 rounded-lg shadow-md focus:border-blue-500 focus:shadow-lg" />
+            <span class="toggle-password absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer hidden z-10" onclick="togglePassword()">
+              <i class="fa fa-eye" id="toggleIcon"></i>
+            </span>
+          </div>
+        </div>
+        <div class="forgot-pass mb-4">
+          <a href="#" class="text-blue-500 hover:underline">Forgot Password?</a>
+        </div>
+        <div class="btn relative overflow-hidden mb-8">
+          <div class="inner absolute h-full w-[300%] -left-full transition-all duration-400"></div>
+          <button type="submit" class="h-12 w-full bg-gray-900 text-white text-lg font-medium uppercase rounded-lg">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const loginData = {
+        email: formData.get('email'),
+        password: formData.get('password')
+      };
+
+      try {
+        const response = await fetch('/headadmin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(loginData)
+        });
+
+        const alertContainer = document.getElementById('alert-container');
+        const alertMessage = document.querySelector('.alert-message');
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.redirect) {
+            window.location.href = result.redirect;
+          } else {
+            alertMessage.innerText = result.message || 'Login failed';
+            alertContainer.classList.remove('hidden');
+            alertContainer.classList.add('block');
+
+            setTimeout(() => {
+              alertContainer.classList.remove('block');
+              alertContainer.classList.add('hidden');
+            }, 2000);
+          }
+        } else {
+          const errorResult = await response.json();
+          alertMessage.innerHTML = errorResult.message || 'Incorrect password, please try again.';
+          alertContainer.classList.remove('hidden');
+          alertContainer.classList.add('block');
+
+          setTimeout(() => {
+            alertContainer.classList.remove('block');
+            alertContainer.classList.add('hidden');
+          }, 2000);
+        }
+      } catch (error) {
+        const alertContainer = document.getElementById('alert-container');
+        const alertMessage = document.querySelector('.alert-message');
+        alertMessage.innerHTML = 'An unexpected error occurred. Please try again.';
+        alertContainer.classList.remove('hidden');
+        alertContainer.classList.add('block');
+
+        setTimeout(() => {
+          alertContainer.classList.remove('block');
+          alertContainer.classList.add('hidden');
+        }, 2000);
+      }
+    });
+
+    const passwordInput = document.getElementById('password');
+    const togglePasswordIcon = document.querySelector('.toggle-password');
+
+    // Show the toggle icon when there is input in the password field
+    passwordInput.addEventListener('input', () => {
+      if (passwordInput.value) {
+        togglePasswordIcon.classList.remove('hidden');
+      } else {
+        togglePasswordIcon.classList.add('hidden');
+      }
+    });
+
+    function togglePassword() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+
+      // Toggle the icon
+      togglePasswordIcon.innerHTML = type === 'password' ? '<i class="fa fa-eye"></i>' : '<i class="fa fa-eye-slash"></i>';
+    }
+  </script>
+</body>
+</html>

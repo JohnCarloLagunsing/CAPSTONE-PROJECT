@@ -1,0 +1,287 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Root variables for theme colors */
+:root {
+    --primary-color: #0033cc; /* Blue for primary tables */
+    --primary-hover-color: #0055ff;
+    --background-color: #f9fafc;
+    --text-color: #333;
+    --button-color: #28a745;
+    --button-hover-color: #218838;
+    --box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
+    --view-archived-button-color: #007bff;
+    --view-archived-button-hover-color: #0056b3;
+    --archive-header-color: #bf3535; /* Red color for archive headers */
+}
+
+/* Body Styling */
+body {
+    background-color: var(--background-color);
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: fixed;
+}
+
+.sidebar img {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    margin-bottom: auto;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+    background-color: var(--primary-hover-color);
+}
+
+.logout {
+    margin-top: auto;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    padding: 10px;
+    text-align: center;
+    background-color: var(--primary-hover-color);
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+/* Main Content Styling */
+.mainContent {
+    padding: 40px;
+    width: calc(100% - 240px);
+    margin-left: 240px;
+    background-color: var(--background-color);
+}
+
+h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* Table Styling */
+#staffTable,
+#archivedTable,
+#archivedInspectorTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: var(--box-shadow);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+/* Header color for Admin Staff and Inspector List (Blue) */
+#staffTable th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    padding: 15px;
+    text-align: center;
+}
+
+/* Header color for Archive Staff and Archive Inspector tables (Red) */
+#archivedTable th,
+#archivedInspectorTable th {
+    background-color: var(--archive-header-color); /* Set to red color */
+    color: white;
+    font-weight: 600;
+    padding: 15px;
+    text-align: center;
+}
+
+/* General Table Cell Styling */
+#staffTable td,
+#archivedTable td,
+#archivedInspectorTable td {
+    padding: 15px;
+    text-align: center;
+    font-size: 16px;
+    color: var(--text-color);
+    border-bottom: 1px solid #ddd;
+}
+
+/* Consistent width for columns */
+#archivedTable th:first-child,
+#archivedTable td:first-child,
+#archivedInspectorTable th:first-child,
+#archivedInspectorTable td:first-child {
+    width: 40%; /* Adjust width as needed for name column */
+}
+
+#archivedTable th:last-child,
+#archivedTable td:last-child,
+#archivedInspectorTable th:last-child,
+#archivedInspectorTable td:last-child {
+    width: 20%; /* Adjust width for icon column */
+}
+
+/* Row Hover Effect */
+#staffTable tr:hover,
+#archivedTable tr:hover,
+#archivedInspectorTable tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* General styling for all archive and unarchive buttons */
+.archive-button,
+.unarchive-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: color 0.3s;
+    padding-left: 10px; /* Adjust left padding for button content */
+    padding-right: 10px; /* Adjust right padding for button content */
+}
+
+/* Styling for Archive button */
+.archive-button {
+    color: #dc3545; /* Red color for Archive button */
+    position: relative;
+    left: 40%;
+}
+
+.archive-button:hover {
+    color: #c82333; /* Darker red on hover */
+}
+
+/* Styling for Unarchive button */
+.unarchive-button {
+    color: #28a745;
+    position: relative;
+    left: 40%;
+}
+
+.unarchive-button:hover {
+    color: #218838; /* Darker green on hover */
+}
+
+/* Add Account Button */
+.add-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--button-color);
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.add-button:hover {
+    background-color: var(--button-hover-color);
+}
+
+.add-button .icon {
+    font-size: 16px;
+    margin-right: 8px;
+}
+
+/* Filter and Back Buttons */
+.filter-button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+    float: right;
+}
+
+.filter-button:hover {
+    background-color: #0056b3;
+}
+
+/* Change Password Button */
+.change-password-button {
+    background-color: #ff9900;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    margin-top: 20px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.change-password-button:hover {
+    background-color: #f6b14a;
+}
+
+/* View Archived Button */
+.view-archived-button {
+    background-color: var(--view-archived-button-color);
+    color: white;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+.view-archived-button:hover {
+    background-color: var(--view-archived-button-hover-color);
+}

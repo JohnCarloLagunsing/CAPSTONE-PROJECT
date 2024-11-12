@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+</head>
+<body class="flex h-screen font-sans text-gray-800 bg-gray-100">
+    <!-- Sidebar -->
+    <div class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 hidden lg:block">
+        <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
+        <h2 class="text-xl text-center mb-6">Menu</h2>
+        <ul class="space-y-4">
+            <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
+            <li><a href="VeryfingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
+            <li><a href="AdminOccuForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Occupational Form</a></li>
+            <li><a href="FranchiseForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Franchise Form</a></li>
+            <li><a href="payment.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-wallet-alt mr-2'></i> Payment</a></li>
+            <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+        </ul>
+    </div>
+
+
+    <!-- Main Content -->
+    <div class="flex flex-col items-center justify-center w-full p-8 ml-0 lg:ml-64 space-y-10">
+        <h1 class="text-4xl font-semibold text-gray-700">Payment</h1>
+        <div class="flex flex-col items-center w-full space-y-5">
+            <a href="PayOcuPermit.html" class="flex items-center justify-center w-full lg:w-2/3 max-w-md p-5 text-xl font-semibold text-gray-800 bg-gray-200 rounded-lg hover:bg-purple-500 hover:text-white transform hover:-translate-y-1 transition-all duration-200">Occupational Permit</a>
+            <a href="PayForMTOP.html" class="flex items-center justify-center w-full lg:w-2/3 max-w-md p-5 text-xl font-semibold text-gray-800 bg-gray-200 rounded-lg hover:bg-purple-500 hover:text-white transform hover:-translate-y-1 transition-all duration-200">Motor Operator Permit</a>
+        </div>
+    </div>
+
+
+    <!-- Mobile Sidebar Toggle -->
+    <div class="fixed bottom-4 right-4 lg:hidden">
+        <button id="menuToggle" class="p-2 bg-blue-900 text-white rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+
+    <!-- Sidebar for Mobile -->
+    <div id="mobileSidebar" class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 transform -translate-x-full transition-transform duration-300 lg:hidden">
+        <img src="Pic/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
+        <h2 class="text-xl text-center mb-6">Menu</h2>
+        <ul class="space-y-4">
+            <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
+            <li><a href="VeryfingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
+            <li><a href="AdminOccuForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Occupational Form</a></li>
+            <li><a href="FranchiseForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Franchise Form</a></li>
+            <li><a href="payment.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-wallet-alt mr-2'></i> Payment</a></li>
+            <a href="#" id="logoutButtonMobile" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+        </ul>
+    </div>
+
+
+    <!-- Mobile Sidebar Script -->
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+
+
+        menuToggle.addEventListener('click', () => {
+            mobileSidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
+    <!-- Logout Script -->
+    <script>
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            var confirmation = confirm("Are you sure you want to log out?");
+            if (confirmation) {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>
