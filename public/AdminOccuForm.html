@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecenter San Luis - Occupational Permit</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="Pic/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+    <style>
+        .alert.success {
+            background-color: #28a745; /* Green background */
+            color: white;
+        }
+        .alert.error {
+            background-color: #dc3545; /* Red background */
+            color: white;
+        }
+    </style>
+</head>
+
+
+<body class="font-sans m-0 p-0 box-border bg-gray-100">
+
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
+        <img src="Pic/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
+        <h2 class="text-xl text-center mb-6">Menu</h2>
+        <ul class="space-y-4">
+            <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
+            <li><a href="VeryfingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
+            <li><a href="AdminOccuForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Occupational Form</a></li>
+            <li><a href="FranchiseForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Franchise Form</a></li>
+            <li><a href="payment.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-wallet-alt mr-2'></i> Payment</a></li>
+            <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+        </ul>
+    </div>
+
+
+    <!-- Mobile Sidebar Toggle Button -->
+    <button id="menuToggle" class="lg:hidden fixed top-4 left-4 z-30 p-2 bg-blue-900 text-white rounded-md focus:outline-none">
+        <i class="fas fa-bars"></i>
+    </button>
+
+
+    <!-- Main Content -->
+    <div class="lg:ml-64 p-5">
+        <h1 class="text-2xl mb-5 text-center uppercase text-gray-800">OCCUPATIONAL APPLICATION FORM</h1>
+
+
+        <div id="alert-container" class="hidden alert items-center p-3 rounded-lg text-white mb-5">
+            <span id="alert-icon" class="mr-3"></span>
+            <span id="alert-message"></span>
+        </div>
+
+
+        <!-- Form -->
+        <form onsubmit="calculateAge(); return confirmSubmission(event)" method="post" action="http://localhost:8000/submitForm" enctype="multipart/form-data" class="bg-white p-4 sm:p-8 rounded-lg shadow-lg max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+                <div class="flex flex-col">
+                    <label for="lastName" class="font-semibold">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="firstName" class="font-semibold">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="middleName" class="font-semibold">Middle Name</label>
+                    <input type="text" id="middleName" name="middleName" class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="suffix" class="font-semibold">Suffix</label>
+                    <input type="text" id="suffix" name="suffix" class="border rounded-lg p-2">
+                </div>
+            </div>
+
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+                <div class="flex flex-col">
+                    <label for="gender" class="font-semibold">Gender</label>
+                    <select id="gender" name="gender" required class="border rounded-lg p-2">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="civilStatus" class="font-semibold">Civil Status</label>
+                    <select id="civilStatus" name="civilStatus" required class="border rounded-lg p-2">
+                        <option value="single">Single</option>
+                        <option value="married">Married</option>
+                        <option value="widowed">Widowed</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="dob" class="font-semibold">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" onchange="calculateAge()" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="age" class="font-semibold">Age</label>
+                    <input type="number" id="age" name="age" disabled class="border rounded-lg p-2">
+                </div>
+            </div>
+
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+                <div class="flex flex-col">
+                    <label for="placeOfBirth" class="font-semibold">Place of Birth</label>
+                    <input type="text" id="placeOfBirth" name="placeOfBirth" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="homeAddress" class="font-semibold">Home Address</label>
+                    <input type="text" id="homeAddress" name="homeAddress" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="cellphoneNumber" class="font-semibold">Cellphone Number</label>
+                    <input type="tel" id="cellphoneNumber" name="cellphoneNumber" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="email" class="font-semibold">E-mail Address</label>
+                    <input type="email" id="email" name="email" required class="border rounded-lg p-2">
+                </div>
+            </div>
+
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+                <div class="flex flex-col">
+                    <label for="companyName" class="font-semibold">Company Name</label>
+                    <input type="text" id="companyName" name="companyName" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="jobPosition" class="font-semibold">Job Position</label>
+                    <input type="text" id="jobPosition" name="jobPosition" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col col-span-1 sm:col-span-2 lg:col-span-1">
+                    <label for="combinedId" class="font-semibold">ID Type and Number</label>
+                    <div class="flex gap-3">
+                        <select id="Typeofid" name="Typeofid" required class="border rounded-lg p-2 w-1/2">
+                            <option value="Drivers License">Drivers License</option>
+                            <option value="Philhealth">Philhealth</option>
+                            <option value="NBI">NBI</option>
+                            <option value="Company Id">Company ID</option>
+                            <option value="Philsys ID">Philsys ID</option>
+                            <option value="National">National</option>
+                        </select>
+                        <input type="text" id="IDnumber" name="IDnumber" placeholder="ID Number" required class="border rounded-lg p-2 w-1/2">
+                    </div>
+                    <input type="hidden" id="combinedId" name="combinedId">
+                </div>
+            </div>
+
+
+            <!-- File Uploads -->
+            <label for="coe" class="font-semibold block mb-2">Certificate of Employment</label>
+            <input type="file" id="coe" name="coe" required class="border rounded-lg p-2 mb-5">
+
+
+            <label for="healthCard" class="font-semibold block mb-2">Health Card (If Job Requires)</label>
+            <input type="file" id="healthCard" name="healthCard" class="border rounded-lg p-2 mb-5">
+
+
+            <label for="birthCertificate" class="font-semibold block mb-2">Birth Certificate Or Affidavit of Consent (if Applicant is MINOR)</label>
+            <input type="file" id="birthCertificate" name="birthCertificate" class="border rounded-lg p-2 mb-5">
+
+
+            <label for="officialReceipt" class="font-semibold block mb-2">Official Receipt</label>
+            <input type="file" id="officialReceipt" name="officialReceipt" required class="border rounded-lg p-2 mb-5">
+
+
+            <!-- OR Details Section -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+                <div class="flex flex-col">
+                    <label for="orNumber" class="font-semibold">OR Number</label>
+                    <input type="text" id="orNumber" name="orNumber" class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="orExtension" class="font-semibold">OR Extension</label>
+                    <input type="text" id="orExtension" name="orExtension" class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="orDate" class="font-semibold">OR Date</label>
+                    <input type="date" id="orDate" name="orDate" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="orAmount" class="font-semibold">OR Amount</label>
+                    <input type="text" id="orAmount" name="orAmount" value="₱ " class="border rounded-lg p-2">
+                </div>
+            </div>
+
+
+            <!-- CTC Details Section -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+                <div class="flex flex-col">
+                    <label for="ctcNumber" class="font-semibold">CTC Number</label>
+                    <input type="text" id="ctcNumber" name="ctcNumber" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="ctcDateIssued" class="font-semibold">CTC Date Issued</label>
+                    <input type="date" id="ctcDateIssued" name="ctcDateIssued" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="ctcPlaceIssued" class="font-semibold">CTC Place Issued</label>
+                    <input type="text" id="ctcPlaceIssued" name="ctcPlaceIssued" required class="border rounded-lg p-2">
+                </div>
+            </div>
+
+
+            <div class="flex items-start mb-5">
+                <input type="checkbox" id="consent" name="consent" required class="mr-3 mt-1">
+                <label for="consent" class="text-sm leading-snug text-gray-700">
+                    I hereby certify that all the information provided are true and correct based on personal knowledge of facts and further consent to the collection, use, and processing of my personal information by the Municipal Government of San Luis for the purpose of processing my Occupational Permit application.
+                </label>
+            </div>
+
+
+            <div class="flex gap-3">
+                <button type="submit" class="bg-blue-700 text-white px-5 py-3 rounded-lg hover:bg-blue-600">Submit</button>
+                <button type="button" class="bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-500" onclick="clearForm()">Clear Form</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- JavaScript for Sidebar Toggle -->
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
+
+
+    <script>
+        function calculateAge() {
+            const dob = document.getElementById('dob').value;
+            const ageField = document.getElementById('age');
+
+
+            if (dob) {
+                const dobDate = new Date(dob);
+                const today = new Date();
+                let age = today.getFullYear() - dobDate.getFullYear();
+                const monthDifference = today.getMonth() - dobDate.getMonth();
+
+
+                if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dobDate.getDate())) {
+                    age--;
+                }
+
+
+                ageField.value = age;
+                ageField.disabled = false;
+            }
+        }
+       
+        async function confirmSubmission(event) {
+            event.preventDefault();
+
+
+            const idType = document.getElementById('Typeofid').value;
+            const idNumber = document.getElementById('IDnumber').value;
+            const combinedIdField = document.getElementById('combinedId');
+           
+            combinedIdField.value = `${idType}: ${idNumber}`;
+
+
+            const confirmed = confirm("Are you sure you want to submit this form?");
+
+
+            if (confirmed) {
+                try {
+                    const form = document.querySelector('form');
+                    const formData = new FormData(form);
+
+
+                    const response = await fetch(form.action, {
+                        method: form.method,
+                        body: formData,
+                    });
+
+
+                    if (response.ok) {
+                        showAlert('Form submitted successfully!', 'success');
+                    } else {
+                        const errorData = await response.json();
+                        showAlert(`Error: ${errorData.message}`, 'error');
+                    }
+                } catch (error) {
+                    showAlert(`Submission failed: ${error.message}`, 'error');
+                }
+            }
+        }
+
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alertMessage = document.getElementById('alert-message');
+            const alertIcon = document.getElementById('alert-icon');
+
+
+            alertMessage.textContent = message;
+
+
+            if (type === 'success') {
+                alertIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                alertContainer.className = 'alert success';
+            } else if (type === 'error') {
+                alertIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                alertContainer.className = 'alert error';
+            }
+
+
+            alertContainer.style.display = 'flex';
+           
+            window.scrollTo(0, 0);
+
+
+            setTimeout(() => {
+                alertContainer.style.display = 'none';
+                if (type === 'success') {
+                    clearForm();
+                }
+            }, 2000);
+        }
+
+
+        function clearForm() {
+            const form = document.querySelector('form');
+            form.reset();
+            document.getElementById('age').value = '';
+            document.getElementById('age').disabled = true;
+        }
+
+
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            var confirmation = confirm("Are you sure you want to log out?");
+            if (confirmation) {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+
+
+</html>
