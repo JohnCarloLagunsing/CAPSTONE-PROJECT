@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inspector Signup</title>
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen w-full bg-center bg-cover bg-no-repeat bg-fixed relative flex items-center justify-center" style="background-image: url('assets/Background.jpg');">
+  <div class="absolute inset-0 bg-black bg-opacity-50 z-1"></div>
+
+  <div class="relative z-10">
+    <div class="bg-white w-[350px] p-5 shadow-lg rounded-xl">
+      <div class="text-2xl font-semibold text-center mb-6">Changing Inspector Password</div>
+
+      <form id="signupForm">
+        <p id="error-message" class="text-red-500 mb-4"></p>
+        
+        <div class="mb-8">
+          <label for="email" class="block text-lg mb-2">Email Address</label>
+          <input type="email" name="email" id="email" required class="w-full h-10 px-3 text-lg border-2 border-gray-300 rounded-lg shadow-sm focus:border-blue-500 transition"/>
+        </div>
+
+        <div class="text-center text-sm text-gray-600 mb-6">
+          Only HeadAdmin can Access this part. Unauthorized Personnel is Strictly Prohibited.
+        </div>
+
+        <div class="relative mb-8">
+          <button type="submit" class="w-full h-10 bg-gray-900 text-white font-medium uppercase tracking-wide rounded-lg hover:bg-gray-700 transition">
+            Change Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+
+      try {
+        const response = await fetch('/checkEmail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        if (response.redirected) {
+          localStorage.setItem('email', email);
+          window.location.href = "inspectorchangepass2.html"; // Redirects to changepass2 if email exists
+        } else if (response.status === 404) {
+          const data = await response.json();
+          document.getElementById('error-message').textContent = data.message;
+        } else {
+          document.getElementById('error-message').textContent = 'An error occurred. Please try again.';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('error-message').textContent = 'Failed to connect to the server.';
+      }
+    });
+  </script>
+</body>
+</html>

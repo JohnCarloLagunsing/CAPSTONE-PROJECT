@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Occupational Status</title>
+    <link rel="icon" href="assets/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <style>
+        /* Custom styles for slideshow */
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .slideshow-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 1s ease-in-out;
+            opacity: 0;
+        }
+
+        .slideshow-image.active {
+            opacity: 1;
+        }
+
+        .content-overlay {
+            position: relative;
+            z-index: 10;
+            margin-top: -150px; /* Adjust based on slideshow height */
+        }
+
+        .loading-message, .error-message {
+            color: #e53e3e; /* Red color for errors */
+            font-weight: bold;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .claim-message {
+            color: #16a34a; /* Tailwind's green-600 color */
+            font-weight: bold;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+    <!-- Sidebar -->
+    <div class="w-56 h-screen bg-blue-800 text-white fixed p-5">
+        <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 rounded-full mx-auto mb-3">
+        <h2 class="text-lg font-semibold text-center mb-5">Menu</h2>
+        <ul class="space-y-3">
+            <li>
+                <a href="occustatus.html" class="flex items-center px-4 py-2 hover:bg-blue-600 rounded">
+                    <i class="bx bxs-dashboard mr-2"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="applicantdashboard.html" id="applicantDashboardLink" class="flex items-center px-4 py-2 hover:bg-blue-600 rounded">
+                    <i class="fas fa-id-card mr-2"></i> Occupational Form
+                </a>
+            </li>
+            <li>
+                <a href="#" id="logoutButton" class="flex items-center px-4 py-2 bg-blue-600 rounded text-center">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Slideshow Background -->
+    <div class="slideshow-container">
+        <img src="assets/TricyclePermit.jpg" class="slideshow-image active" alt="Slide 1">
+        <img src="assets/tech 4 ed.png" class="slideshow-image" alt="Slide 2">
+        <img src="assets/images.jpg" class="slideshow-image" alt="Slide 3">
+    </div>
+
+    <!-- Main Content Overlay -->
+    <div class="ml-64 p-10 flex flex-col items-center content-overlay">
+        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-lg flex flex-col items-center gap-4">
+            <div class="w-full">
+                <p><strong>Name:</strong> <span id="fullname">No Applicants found please submit first</span></p>
+                <p><strong>Status:</strong> <span id="status">No Applicants found please submit first</span></p>
+                <p><strong>Processed By:</strong> <span id="process_by">No Applicants found please submit first</span></p>
+                <!-- Additional message for claiming permit -->
+                <p id="claimMessage" class="claim-message" style="display: none;">
+                    You can claim your permit at the Municipality of San Luis from 8:00 AM to 5:00 PM.
+                </p>
+                <!--Message for Denied Permit-->
+                <p id="resubmitMessage" class="loading-message" style="display: none;">
+                    Your application has been declined. Please resubmit your application.
+                </p>
+            </div>
+            <div class="loading-message" id="loadingMessage">Fetching your application status, please wait...</div>
+            <div class="error-message" id="errorMessage" style="display: none;"></div>
+            <button onclick="goBack()" class="mt-4 px-6 py-3 text-lg text-white bg-blue-800 rounded hover:bg-blue-700 transition duration-300">Back</button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to check submission status before redirecting
+        document.addEventListener("DOMContentLoaded", async function() {
+    try {
+        const response = await fetch('/status/getStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+        document.getElementById("loadingMessage").style.display = "none";
+
+        if (response.ok) {
+            if (!data.fullname || !data.status) {
+                alert("No application found. Please submit your credentials first to view the status.");
+                window.location.href = "applicantdashboard.html";
+                return;
+            }
+
+            document.getElementById('fullname').innerText = data.fullname || 'No Applicants Found, please submit first';
+            document.getElementById('status').innerText = data.status || 'No Applicants Found, please submit first';
+            document.getElementById('process_by').innerText = data.process_by || 'Wait for the Admin to Verify your Credentials';
+
+            const statusElement = document.getElementById('status');
+            statusElement.classList.remove('text-orange-500', 'text-red-600', 'text-green-600');
+            const claimMessage = document.getElementById('claimMessage');
+            const resubmitMessage = document.getElementById('resubmitMessage');
+
+            if (data.status === "On Process") {
+                statusElement.style.color = "#FFA500";
+                claimMessage.style.display = "none";
+            } else if (data.status === "Declined") {
+                statusElement.classList.add('text-red-600');
+                claimMessage.style.display = "none";
+                resubmitMessage.style.display = "block";
+            } else if (data.status === "Approved") {
+                statusElement.classList.add('text-green-600');
+                claimMessage.style.display = "block";
+            }
+        } else {
+            document.getElementById("errorMessage").innerText = data.message || "Status not found";
+            document.getElementById("errorMessage").style.display = "block";
+        }
+    } catch (error) {
+        console.error('Error fetching status:', error);
+        document.getElementById("loadingMessage").style.display = "none";
+        document.getElementById("errorMessage").innerText = 'An error occurred while fetching status';
+        document.getElementById("errorMessage").style.display = "block";
+    }
+});
+
+document.getElementById('applicantDashboardLink').addEventListener('click', async function (event) {
+    event.preventDefault();
+
+    try {
+        const response = await fetch('/status/getStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            if (data.status === "Approved") {
+                alert("Your application has been approved. You cannot resubmit.");
+            } else if (data.status === "On Process") {
+                alert("Your application is being processed. Please wait.");
+            } else {
+                window.location.href = "applicantdashboard.html";
+            }
+        } else {
+            alert(data.message || "Status not found. Please submit your application.");
+            window.location.href = "applicantdashboard.html";
+        }
+    } catch (error) {
+        console.error('Error fetching status:', error);
+        alert('An error occurred while fetching status.');
+    }
+});
+
+
+
+        // Slideshow functionality
+        const images = document.querySelectorAll('.slideshow-image');
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            images.forEach((img, i) => {
+                img.classList.remove('active');
+                if (i === index) {
+                    img.classList.add('active');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % images.length;
+            showSlide(currentIndex);
+        }
+
+        // Auto-slide every 3 seconds
+        setInterval(nextSlide, 3000);
+
+        function goBack() {
+            window.history.back();
+        }
+
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            var confirmation = confirm("Are you sure you want to log out?");
+            if (confirmation) {
+                window.location.href = 'applicant.html';
+            }
+        });
+    </script>
+</body>
+</html>

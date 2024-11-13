@@ -1,0 +1,134 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+  background: url('assets/Background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  opacity: 0.8; /* Adjust background transparency */
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust overlay color and transparency */
+  z-index: 1;
+}
+
+.center {
+  position: relative;
+  z-index: 2;
+}
+
+.container {
+  background: #fff;
+  width: 90%; /* Adjusted width for responsiveness */
+  max-width: 500px; /* Added max-width for large screens */
+  padding: 20px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-radius: 20px;
+  margin-top: 20px; /* Added margin for better separation */
+  text-align: center; /* Center all text inside container */
+}
+
+.container:hover {
+  background: #f8f8f8;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.container .text {
+  font-size: 35px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.permit-options {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.permit-btn {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  text-align: center;
+  margin-bottom: 10px; /* Adjust margin between buttons */
+  width: 80%; /* Adjusted width for better fit */
+  max-width: 250px; /* Added max-width for large screens */
+}
+
+.permit-btn:hover {
+  background-color: #2980b9;
+}
+
+.member-link {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.member-link a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.member-link a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    max-width: 400px;
+  }
+  
+  .permit-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .container .text {
+    font-size: 28px;
+    margin-top: 30px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1080px) {
+  .container {
+    width: 80%;
+    max-width: 600px;
+  }
+  
+  .permit-btn {
+    max-width: 350px;
+  }
+  
+  .container .text {
+    font-size: 32px;
+    margin-top: 35px;
+  }
+}

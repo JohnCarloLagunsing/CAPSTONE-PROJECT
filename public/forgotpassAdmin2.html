@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <title>Ecenter San Luis - Reset Password</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen w-full bg-center bg-cover bg-no-repeat bg-fixed relative flex items-center justify-end" style="background-image: url('assets/Background.jpg');">
+  <div class="absolute inset-0 bg-black bg-opacity-50 z-1"></div>
+
+  <div class="relative z-10">
+    <div class="bg-white w-[410px] p-8 shadow-lg rounded-3xl mx-12">
+      <div class="text-xl font-semibold text-center mb-8">Changing your password</div>
+      
+      <div id="alert-container"></div> <!-- Alert container for error messages -->
+
+      <form id="resetForm">
+        <div class="mb-8">
+          <label class="block text-lg mb-2">Enter your new Password</label>
+          <div class="relative">
+            <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-800"></i>
+            <input type="password" name="password" id="password" required class="w-full h-12 pl-12 pr-4 text-lg border-2 border-gray-300 rounded-lg shadow-sm focus:border-blue-500 transition"/>
+          </div>
+        </div>
+        
+        <div class="mb-8">
+          <label class="block text-lg mb-2">Confirm Password</label>
+          <div class="relative">
+            <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-800"></i>
+            <input type="password" name="confirm_password" id="confirm_password" required class="w-full h-12 pl-12 pr-4 text-lg border-2 border-gray-300 rounded-lg shadow-sm focus:border-blue-500 transition"/>
+          </div>
+        </div>
+
+        <div class="relative mb-8">
+          <button type="button" onclick="resetPassword()" class="w-full h-12 bg-gray-900 text-white font-medium uppercase tracking-wide rounded-lg hover:bg-gray-700 transition">
+            Change Password
+          </button>
+        </div>
+
+        <div class="text-center text-sm text-gray-600">
+          In case you forget your password again, please contact your Head Administrator
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    async function resetPassword() {
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirm_password").value;
+      const email = localStorage.getItem("resetEmail"); // Retrieve email from local storage
+      const alertContainer = document.getElementById("alert-container");
+      alertContainer.innerHTML = ""; // Clear any previous alerts
+
+      if (!email) {
+        alertContainer.innerHTML = '<p class="text-red-500">No email provided. Please restart the process.</p>';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alertContainer.innerHTML = '<p class="text-red-500">Passwords do not match.</p>';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }) // Send both email and password
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alertContainer.innerHTML = '<p class="text-green-500">Password changed successfully. Redirecting to login...</p>';
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2000);
+        } else {
+          alertContainer.innerHTML = `<p class="text-red-500">${data.message}</p>`;
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alertContainer.innerHTML = '<p class="text-red-500">An error occurred. Please try again.</p>';
+      }
+    }
+  </script>
+</body>
+</html>

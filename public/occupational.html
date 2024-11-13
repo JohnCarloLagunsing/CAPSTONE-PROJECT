@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="occupational.css" />
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <title>Ecenter San Luis - Occupational Form</title>
+  <link rel="stylesheet" href="occupational.css">
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="center">
+    <div class="container">
+      <a href="choose.html" class="back-btn">Back</a>
+      <div class="text">Occupational Permit Form</div>
+      
+      <!-- Alert Messages -->
+      <div id="alert-success" style="display: none; color: green;">
+        <i class="fas fa-check-circle"></i> Account created successfully!
+      </div>
+      <div id="alert-failure" style="display: none; color: red;">
+        <i class="fas fa-times-circle"></i> Account creation failed. Please try again.
+      </div>
+
+      <div class="form-container">
+        <form id="signupForm">
+          <div class="data">
+            <label>First Name</label>
+            <input type="text" name="firstName" required />
+          </div>
+          <div class="data">
+            <label>Last Name</label>
+            <input type="text" name="lastName" required />
+          </div>
+          <div class="data">
+            <label>Email Address</label>
+            <input type="email" name="email" required />
+          </div>
+          <div class="data">
+            <label>Password</label>
+            <input type="password" name="password" required />
+          </div>
+          <div class="btn">
+            <div class="inner"></div>
+            <button type="submit">Sign Up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", async function(event) {
+      event.preventDefault(); // Prevent default form submission
+      
+      // Collect form data and convert to JSON format
+      const formData = new FormData(this);
+      const jsonData = Object.fromEntries(formData.entries());
+
+      try {
+        // Send POST request with JSON data
+        const response = await fetch("/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jsonData)
+        });
+        
+        // Show success or failure alert based on response
+        if (response.ok) {
+          document.getElementById("alert-success").style.display = "block";
+          setTimeout(() => { window.location.href = 'applicant.html'; }, 2000); // Redirect after success
+        } else {
+          document.getElementById("alert-failure").style.display = "block";
+        }
+      } catch (error) {
+        // Show failure alert on error
+        document.getElementById("alert-failure").style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>

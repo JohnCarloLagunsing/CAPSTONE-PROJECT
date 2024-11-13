@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inspector Signup</title>
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center h-screen bg-cover bg-fixed relative" style="background-image: url('assets/Background.jpg');">
+  <div class="absolute inset-0 bg-black opacity-50"></div>
+  <div class="relative z-10 w-full max-w-xs bg-white p-8 rounded-lg shadow-lg">
+    <div class="text-center text-2xl font-semibold mb-4">Sign up Inspector Account</div>
+    <form id="signupForm">
+      <div class="mb-6">
+        <label for="inspector_id" class="block text-sm font-medium">Inspector ID</label>
+        <input type="text" name="inspector_id" id="inspector_id" required class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition ease-in-out duration-300" />
+      </div>
+      <div class="mb-6">
+        <label for="name" class="block text-sm font-medium">Name</label>
+        <input type="text" name="name" id="name" required class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition ease-in-out duration-300" />
+      </div>
+      <div class="mb-6">
+        <label for="email" class="block text-sm font-medium">Email Address</label>
+        <input type="email" name="email" id="email" required class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition ease-in-out duration-300" />
+      </div>
+      <div class="mb-6 relative">
+        <label for="password" class="block text-sm font-medium">Password</label>
+        <input type="password" name="password" id="password" required class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition ease-in-out duration-300 pr-10" />
+        <i class="fas fa-eye absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-gray-400" id="togglePassword" style="top: 2.7rem;"></i>
+      </div>
+      <div class="text-sm text-center text-black-600 mb-6">Only HeadAdmin can Access this part. Authorized Personnel is Strictly Prohibited.</div>
+      <div>
+        <button type="submit" class="w-full py-2 bg-gray-800 text-white font-semibold rounded-lg uppercase tracking-wider transition ease-in-out duration-300 hover:bg-gray-700">Signup</button>
+      </div>
+    </form>
+
+    <!-- Success Alert box -->
+    <div id="alert" class="hidden bg-green-100 text-green-700 p-4 rounded-lg mt-6 flex items-center shadow-lg fixed top-4 right-4 z-50" style="display: none;">
+      <span class="mr-2"><i class="fas fa-check-circle"></i></span>
+      <span id="alertMessage">Signup successful!</span>
+    </div>
+
+    <!-- Error Alert box -->
+    <div id="errorAlert" class="hidden bg-red-100 text-red-700 p-4 rounded-lg mt-6 flex items-center shadow-lg fixed top-4 right-4 z-50" style="display: none;">
+      <span class="mr-2"><i class="fas fa-exclamation-circle"></i></span>
+      <span id="errorMessage">Error message here</span>
+    </div>
+  </div>
+
+  <script>
+    const passwordInput = document.getElementById('password');
+    const togglePasswordIcon = document.getElementById('togglePassword');
+
+    passwordInput.addEventListener('input', () => {
+      togglePasswordIcon.style.display = passwordInput.value ? 'inline' : 'none';
+    });
+
+    togglePasswordIcon.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePasswordIcon.classList.toggle('fa-eye');
+      togglePasswordIcon.classList.toggle('fa-eye-slash');
+    });
+
+    function showAlert() {
+      const alertBox = document.getElementById('alert');
+      alertBox.style.display = 'flex';
+      togglePasswordIcon.style.display = 'none';
+
+      setTimeout(() => {
+        alertBox.style.display = 'none';
+        document.getElementById('signupForm').reset();
+      }, 3000);
+    }
+
+    function showErrorAlert(message) {
+      const errorAlertBox = document.getElementById('errorAlert');
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = message;
+      errorAlertBox.style.display = 'flex';
+
+      setTimeout(() => {
+        errorAlertBox.style.display = 'none';
+      }, 3000);
+    }
+
+    document.getElementById('signupForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch('/signupInspector', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          showAlert();
+        } else {
+          showErrorAlert(result.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
+</body>
+</html>

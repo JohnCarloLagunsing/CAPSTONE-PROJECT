@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecenter San Luis - Occupational Permit</title>
+    <link rel="icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="font-sans bg-gray-100">
+    <div class="fixed w-56 h-screen bg-blue-800 text-white p-5">
+        <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 rounded-full mx-auto mb-4">
+        <h2 class="text-xl mb-5">Menu</h2>
+        <ul class="space-y-3 pl-2">
+            <li><a href="occustatus.html" onclick="showDashboard()" class="block text-lg hover:bg-blue-600 p-2 rounded"><i class="bx bxs-dashboard"></i> Dashboard</a></li>
+            <li><a href="applicantdashboard.html" class="block text-lg hover:bg-blue-600 p-2 rounded"><i class="fas fa-id-card icon"></i> Occupational Form</a></li>
+            <li><a href="#" id="logoutButton" class="block text-lg hover:bg-blue-600 p-2 rounded"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="ml-64 p-5">
+        <h1 class="text-2xl font-bold text-center uppercase mb-5">Occupational Application Form</h1>
+
+        <!-- Alert container -->
+        <div id="alert-container" class="hidden p-3 rounded mb-5 flex items-center space-x-2" role="alert">
+            <span id="alert-icon"></span>
+            <span id="alert-message" class="text-lg"></span>
+        </div>
+
+        <form onsubmit="calculateAge(); return confirmSubmission(event)" method="post" action="http://localhost:8000/submit/submitForm" enctype="multipart/form-data" class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+            <!-- Personal Information -->
+            <div class="flex space-x-4 mb-4">
+                <div class="w-1/2">
+                    <label for="lastName" class="block font-semibold mb-2">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/2">
+                    <label for="firstName" class="block font-semibold mb-2">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+            </div>
+
+            <div class="flex space-x-4 mb-4">
+                <div class="w-1/2">
+                    <label for="middleName" class="block font-semibold mb-2">Middle Name</label>
+                    <input type="text" id="middleName" name="middleName" class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/2">
+                    <label for="suffix" class="block font-semibold mb-2">Suffix</label>
+                    <input type="text" id="suffix" name="suffix" class="w-full p-3 border border-gray-300 rounded">
+                </div>
+            </div>
+
+            <div class="flex space-x-4 mb-4">
+                <div class="w-1/2">
+                    <label for="gender" class="block font-semibold mb-2">Gender</label>
+                    <select id="gender" name="gender" required class="w-full p-3 border border-gray-300 rounded">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="w-1/2">
+                    <label for="civilStatus" class="block font-semibold mb-2">Civil Status</label>
+                    <select id="civilStatus" name="civilStatus" required class="w-full p-3 border border-gray-300 rounded">
+                        <option value="single">Single</option>
+                        <option value="married">Married</option>
+                        <option value="widowed">Widowed</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Date of Birth and Age -->
+            <div class="flex space-x-4 mb-4">
+                <div class="w-1/2">
+                    <label for="dob" class="block font-semibold mb-2">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" onchange="calculateAge()" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/2">
+                    <label for="age" class="block font-semibold mb-2">Age</label>
+                    <input type="number" id="age" name="age" disabled class="w-full p-3 border border-gray-300 rounded">
+                </div>
+            </div>
+
+            <!-- Place of Birth and Address -->
+            <label for="placeOfBirth" class="block font-semibold mb-2">Place of Birth</label>
+            <input type="text" id="placeOfBirth" name="placeOfBirth" required class="w-full p-3 border border-gray-300 rounded mb-4">
+
+            <label for="homeAddress" class="block font-semibold mb-2">Home Address</label>
+            <input type="text" id="homeAddress" name="homeAddress" required class="w-full p-3 border border-gray-300 rounded mb-4">
+
+            <!-- Contact Information -->
+            <div class="flex space-x-4 mb-4">
+                <div class="w-1/2">
+                    <label for="email" class="block font-semibold mb-2">E-mail Address</label>
+                    <input type="email" id="email" name="email" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/2">
+                    <label for="cellphoneNumber" class="block font-semibold mb-2">Cellphone Number</label>
+                    <input type="tel" id="cellphoneNumber" name="cellphoneNumber" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+            </div>
+
+            <!-- Company Information -->
+            <div class="flex space-x-4 mb-4">
+                <div class="w-1/2">
+                    <label for="companyName" class="block font-semibold mb-2">Company Name</label>
+                    <input type="text" id="companyName" name="companyName" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/2">
+                    <label for="jobPosition" class="block font-semibold mb-2">Job Position</label>
+                    <input type="text" id="jobPosition" name="jobPosition" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+            </div>
+
+            <!-- ID Type and Number -->
+            <label class="block font-semibold mb-2">ID Type and Number</label>
+            <div class="flex items-center mb-4">
+                <select id="Typeofid" name="Typeofid" required class="w-1/3 p-3 border border-gray-300 rounded">
+                    <option value="Drivers License">Drivers License</option>
+                    <option value="Philhealth">Philhealth</option>
+                    <option value="NBI">NBI</option>
+                    <option value="Company ID">Company ID</option>
+                    <option value="Philsys ID">Philsys ID</option>
+                    <option value="National">National</option>
+                </select>
+                <input type="text" id="IDnumber" name="IDnumber" placeholder="ID Number" required class="ml-2 w-2/3 p-3 border border-gray-300 rounded">
+                <input type="hidden" id="combinedId" name="combinedId">
+            </div>
+
+            <!-- File Uploads -->
+            <label for="coe" class="block font-semibold mb-2">Certificate of Employment</label>
+            <input type="file" id="coe" name="coe" required class="w-full p-3 border border-gray-300 rounded mb-4">
+
+            <label for="healthCard" class="block font-semibold mb-2">Health Card (If Job Requires)</label>
+            <input type="file" id="healthCard" name="healthCard" class="w-full p-3 border border-gray-300 rounded mb-4">
+
+            <label for="birthCertificate" class="block font-semibold mb-2">Birth Certificate Or Affidavit of Consent (if Applicant is MINOR)</label>
+            <input type="file" id="birthCertificate" name="birthCertificate" class="w-full p-3 border border-gray-300 rounded mb-4">
+
+            <label for="officialReceipt" class="block font-semibold mb-2">Official Receipt</label>
+            <input type="file" id="officialReceipt" name="officialReceipt" required class="w-full p-3 border border-gray-300 rounded mb-4">
+
+            <!-- OR Information -->
+            <div class="flex space-x-4 mb-4">
+                <div class="w-1/4">
+                    <label for="orNumber" class="block font-semibold mb-2">OR Number</label>
+                    <input type="text" id="orNumber" name="orNumber" class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/4">
+                    <label for="orExtension" class="block font-semibold mb-2">OR Extension</label>
+                    <input type="text" id="orExtension" name="orExtension" class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/4">
+                    <label for="orDate" class="block font-semibold mb-2">OR Date</label>
+                    <input type="date" id="orDate" name="orDate" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/4">
+                    <label for="orAmount" class="block font-semibold mb-2">OR Amount</label>
+                    <input type="text" id="orAmount" name="orAmount" value="₱ " class="w-full p-3 border border-gray-300 rounded">
+                </div>
+            </div>
+
+            <!-- CTC Information -->
+            <div class="flex space-x-4 mb-4">
+                <div class="w-1/3">
+                    <label for="ctcNumber" class="block font-semibold mb-2">CTC Number</label>
+                    <input type="text" id="ctcNumber" name="ctcNumber" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/3">
+                    <label for="ctcDateIssued" class="block font-semibold mb-2">CTC Date Issued</label>
+                    <input type="date" id="ctcDateIssued" name="ctcDateIssued" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+                <div class="w-1/3">
+                    <label for="ctcPlaceIssued" class="block font-semibold mb-2">CTC Place Issued</label>
+                    <input type="text" id="ctcPlaceIssued" name="ctcPlaceIssued" required class="w-full p-3 border border-gray-300 rounded">
+                </div>
+            </div>
+
+            <!-- Consent Checkbox -->
+            <div class="flex items-start mt-4 space-x-2">
+                <input type="checkbox" id="consent" name="consent" required class="mt-1">
+                <label for="consent" class="text-sm text-gray-700">I hereby certify that all the information provided are true and correct based on personal knowledge of facts and further consent to the collection, use, and processing of my personal information by Municipal Government of San Luis for the purpose of processing my Occupational Permit application. I understand my information may be shared with relevant authorities and service providers as necessary. I acknowledge my rights regarding my personal data as outlined by data privacy laws.</label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex mt-6 space-x-4">
+                <button type="submit" class="bg-blue-800 text-white py-3 px-6 rounded hover:bg-blue-600 transition duration-300">Submit</button>
+                <button type="button" class="bg-red-600 text-white py-3 px-6 rounded hover:bg-red-500 transition duration-300" onclick="clearForm()">Clear Form</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function calculateAge() {
+            const dob = document.getElementById('dob').value;
+            const ageField = document.getElementById('age');
+
+            if (dob) {
+                const dobDate = new Date(dob);
+                const today = new Date();
+                let age = today.getFullYear() - dobDate.getFullYear();
+                const monthDifference = today.getMonth() - dobDate.getMonth();
+
+                if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dobDate.getDate())) {
+                    age--;
+                }
+
+                ageField.value = age;
+                ageField.disabled = false;
+            }
+        }
+
+        async function confirmSubmission(event) {
+            event.preventDefault();
+            const idType = document.getElementById('Typeofid').value;
+            const idNumber = document.getElementById('IDnumber').value;
+            const combinedIdField = document.getElementById('combinedId');
+
+            combinedIdField.value = `${idType}: ${idNumber}`;
+
+            const confirmed = confirm("Are you sure you want to submit this form?");
+            if (confirmed) {
+                try {
+                    const form = document.querySelector('form');
+                    const formData = new FormData(form);
+
+                    const response = await fetch(form.action, {
+                        method: form.method,
+                        body: formData,
+                    });
+
+                    if (response.ok) {
+                        showAlert('Form submitted successfully!', 'success');
+                    } else {
+                        const errorData = await response.json();
+                        showAlert(`Error: ${errorData.message}`, 'error');
+                    }
+                } catch (error) {
+                    showAlert(`Submission failed: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alertMessage = document.getElementById('alert-message');
+            const alertIcon = document.getElementById('alert-icon');
+
+            alertMessage.textContent = message;
+
+            if (type === 'success') {
+                alertIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                alertContainer.classList.remove('hidden');
+                alertContainer.classList.add('bg-green-500', 'text-white');
+            } else if (type === 'error') {
+                alertIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                alertContainer.classList.remove('hidden');
+                alertContainer.classList.add('bg-red-500', 'text-white');
+            }
+
+            window.scrollTo(0, 0);
+            setTimeout(() => {
+                alertContainer.classList.add('hidden');
+                if (type === 'success') {
+                    clearForm();
+                }
+            }, 2000);
+        }
+
+        function clearForm() {
+            const form = document.querySelector('form');
+            form.reset();
+            document.getElementById('age').value = '';
+            document.getElementById('age').disabled = true;
+        }
+
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            const confirmation = confirm("Are you sure you want to log out?");
+            if (confirmation) {
+                window.location.href = 'applicant.html';
+            }
+        });
+    </script>
+</body>
+
+</html>
