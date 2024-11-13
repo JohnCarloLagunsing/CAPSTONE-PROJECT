@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecenter San Luis - MTOP Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="assets/favicon.png"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+</head>
+
+<body class="font-sans m-0 p-0 box-border bg-gray-100">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
+        <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
+        <h2 class="text-xl text-center mb-6">Menu</h2>
+        <ul class="space-y-4">
+            <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
+            <li><a href="VerifyingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
+            <li><a href="AdminOccuForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Occupational Form</a></li>
+            <li><a href="FranchiseForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Franchise Form</a></li>
+            <li><a href="MtopForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> MTOP Form</a></li>
+            <li><a href="payment.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-wallet-alt mr-2'></i> Payment</a></li>
+            <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+        </ul>
+    </div>
+
+    <!-- Mobile Sidebar Toggle Button -->
+    <button id="menuToggle" class="lg:hidden fixed top-4 left-4 z-30 p-2 bg-blue-900 text-white rounded-md focus:outline-none">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Main Content -->
+    <div class="lg:ml-64 p-5">
+        <h1 class="text-2xl mb-5 text-center uppercase text-gray-800">MTOP Application Form</h1>
+
+        <!-- Form -->
+        <form method="post" action="http://localhost:8000/submitMtopForm" enctype="multipart/form-data" class="bg-white p-4 sm:p-8 rounded-lg shadow-lg max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+                <div class="flex flex-col mb-5">
+                    <label for="applicationType" class="font-semibold">Application Type</label>
+                    <select id="applicationType" name="applicationType" required class="border rounded-lg p-2">
+                        <option value="">Select Application Type</option>
+                        <option value="New">New</option>
+                        <option value="Renewal">Renewal</option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="applicantNo" class="font-semibold">Applicant No.</label>
+                    <input type="text" id="applicantNo" name="applicantNo" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="operatorName" class="font-semibold">Name of Operator</label>
+                    <input type="text" id="operatorName" name="operatorName" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col col-span-2">
+                    <label for="operatorAddress" class="font-semibold">Address</label>
+                    <input type="text" id="operatorAddress" name="operatorAddress" required class="border rounded-lg p-2">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+                <div class="flex flex-col">
+                    <label for="vehicleNameMake" class="font-semibold">Name/Make</label>
+                    <input type="text" id="vehicleNameMake" name="vehicleNameMake" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="engineNumber" class="font-semibold">Engine Number</label>
+                    <input type="text" id="engineNumber" name="engineNumber" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="chassisNo" class="font-semibold">Chassis No.</label>
+                    <input type="text" id="chassisNo" name="chassisNo" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="plateStickerNo" class="font-semibold">Plate/Sticker No.</label>
+                    <input type="text" id="plateStickerNo" name="plateStickerNo" required class="border rounded-lg p-2">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
+                <div class="flex flex-col">
+                    <label for="driverName" class="font-semibold">Driver</label>
+                    <input type="text" id="driverName" name="driverName" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col col-span-2">
+                    <label for="driverAddress" class="font-semibold">Driver's Address</label>
+                    <input type="text" id="driverAddress" name="driverAddress" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="licenseNo" class="font-semibold">License No.</label>
+                    <input type="text" id="licenseNo" name="licenseNo" required class="border rounded-lg p-2">
+                </div>
+                <div class="flex flex-col">
+                    <label for="applicationDate" class="font-semibold">Application Date</label>
+                    <input type="date" id="applicationDate" name="applicationDate" required class="border rounded-lg p-2">
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit" class="bg-blue-700 text-white px-5 py-3 rounded-lg hover:bg-blue-600">Submit</button>
+                <button type="button" class="bg-red-600 text-white px-5 py-3 rounded-lg hover:bg-red-500" onclick="clearForm()">Clear Form</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- JavaScript for Sidebar Toggle and Form Handling -->
+    <script>
+        // Sidebar toggle for mobile
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Function to clear form inputs
+        function clearForm() {
+            const form = document.querySelector("form");
+            form.reset();
+        }
+    </script>
+</body>
+</html>
