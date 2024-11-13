@@ -23,7 +23,7 @@ const OccupationalApplicants = require('./server/OccupationalApplicants');
 const Occuformhandler = require('./server/Occuformhandler');
 const Occustatus = require('./server/Occustatus');
 const SubmissionOccu = require('./server/SubmissionOccu');
-
+const MtopForm = require('./server/MtopForm'); // 
 
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -85,6 +85,7 @@ app.use("/auth", OccupationalApplicants);
 app.use("/submit", permitSession, Occuformhandler); 
 app.use("/status", permitSession, Occustatus);
 app.use('/',SubmissionOccu); 
+app.use('/', MtopForm); //
 
 
 app.get('/test-session', permitSession, (req, res) => {

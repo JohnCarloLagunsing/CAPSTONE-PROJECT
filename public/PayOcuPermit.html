@@ -49,48 +49,58 @@
 
 
         <!-- Details Container -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto p-6 bg-gray-100 rounded-lg shadow-inner">
             <!-- Info Container -->
-            <div class="space-y-4">
-                <label for="id" class="block text-lg font-bold">ID:</label>
-                <input type="text" id="id" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-               
-                <label for="name" class="block text-lg font-bold">Name:</label>
-                <input type="text" id="name" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-               
-                <label for="address" class="block text-lg font-bold">Address:</label>
-                <input type="text" id="address" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-               
-                <label for="date-issued" class="block text-lg font-bold">Date Issued:</label>
-                <input type="date" id="date-issued" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-               
-                <label for="expiration-date" class="block text-lg font-bold">Expiration Date:</label>
-                <input type="date" id="expiration-date" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-               
-                <label for="fee" class="block text-lg font-bold">Occupational Fee:</label>
-                <input type="text" id="fee" value="₱170.00" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-            </div>
-
-
-            <!-- Payment Container -->
-            <div class="space-y-4">
-                <label for="total" class="block text-lg font-bold">Total:</label>
-                <input type="text" id="total" value="₱170.00" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
-               
-                <label for="amount" class="block text-lg font-bold">Amount:</label>
-                <input type="number" id="amount" oninput="calculateChange(); checkInputs();" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-               
-                <label for="change" class="block text-lg font-bold">Change:</label>
-                <input type="text" id="change" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
-               
-                <div class="flex flex-wrap gap-2 mt-4">
-                    <button id="pay-button" class="w-full sm:w-1/2 py-4 text-lg font-semibold text-green-700 border-2 border-green-500 rounded-md hover:bg-green-500 hover:text-white transition duration-300 ease-in-out" disabled>PAY</button>
-                    <a href="payment.html" class="w-full sm:w-1/2 py-4 text-lg font-semibold text-red-700 text-center border-2 border-red-500 rounded-md hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">CANCEL</a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto p-6 bg-gray-100 rounded-lg shadow-inner">
+                <!-- Info Container -->
+                <div class="space-y-4">
+                    <label for="id" class="block text-lg font-bold">ID:</label>
+                    <input type="text" id="id" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                   
+                    <label for="name" class="block text-lg font-bold">Name:</label>
+                    <input type="text" id="name" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                   
+                    <label for="address" class="block text-lg font-bold">Address:</label>
+                    <input type="text" id="address" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                   
+                    <label for="date-issued" class="block text-lg font-bold">Date Issued:</label>
+                    <input type="date" id="date-issued" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                   
+                    <label for="expiration-date" class="block text-lg font-bold">Expiration Date:</label>
+                    <input type="date" id="expiration-date" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                   
+                    <label for="fee" class="block text-lg font-bold">Occupational Fee:</label>
+                    <input type="text" id="fee" value="₱170.00" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                </div>
+            
+                <!-- Payment Container with OR Information -->
+                <div class="space-y-4">
+                    <label for="orNumber" class="block text-lg font-bold">OR Number:</label>
+                    <input type="text" id="orNumber" name="orNumber" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                    
+                    <label for="orExtension" class="block text-lg font-bold">OR Extension:</label>
+                    <input type="text" id="orExtension" name="orExtension" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                    
+                    <label for="orDate" class="block text-lg font-bold">OR Date:</label>
+                    <input type="date" id="orDate" name="orDate" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                    
+                    <label for="orAmount" class="block text-lg font-bold">OR Amount:</label>
+                    <input type="text" id="orAmount" name="orAmount" value="₱" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+            
+                    <label for="total" class="block text-lg font-bold">Total:</label>
+                    <input type="text" id="total" value="₱170.00" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                   
+                    <label for="amount" class="block text-lg font-bold">Amount:</label>
+                    <input type="number" id="amount" oninput="calculateChange(); checkInputs();" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                   
+                    <label for="change" class="block text-lg font-bold">Change:</label>
+                    <input type="text" id="change" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                   
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <button id="pay-button" class="w-full sm:w-1/2 py-4 text-lg font-semibold text-green-700 border-2 border-green-500 rounded-md hover:bg-green-500 hover:text-white transition duration-300 ease-in-out" disabled>PAY</button>
+                        <a href="payment.html" class="w-full sm:w-1/2 py-4 text-lg font-semibold text-red-700 text-center border-2 border-red-500 rounded-md hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">CANCEL</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-
 
     <!-- JavaScript for Sidebar Toggle -->
     <script>
