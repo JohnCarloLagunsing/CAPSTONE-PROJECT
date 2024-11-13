@@ -137,4 +137,41 @@ router.get('/vehicle-types', async (req, res) => {
     }
 });
 
+
+router.get('/inspections-by-town', async (req, res) => {
+    try {
+        // Query to get the count of inspections for 'San Luis' and 'Other Towns'
+        const sanLuisQuery = `
+            SELECT COUNT(*) AS count 
+            FROM inspections 
+            WHERE town = 'San Luis'
+        `;
+
+        const otherTownsQuery = `
+            SELECT COUNT(*) AS count 
+            FROM inspections 
+            WHERE town != 'San Luis'
+        `;
+
+        // Execute both queries
+        const [sanLuisResult, otherTownsResult] = await Promise.all([
+            pool.query(sanLuisQuery),
+            pool.query(otherTownsQuery)
+        ]);
+
+        const sanLuisCount = parseInt(sanLuisResult.rows[0].count, 10);
+        const otherTownsCount = parseInt(otherTownsResult.rows[0].count, 10);
+
+        // Send the data as JSON
+        res.json({
+            sanLuis: sanLuisCount,
+            otherTowns: otherTownsCount
+        });
+    } catch (error) {
+        console.error('Error fetching inspection data:', error);
+        res.status(500).json({ error: 'Error fetching inspection data' });
+    }
+});
+
+
 module.exports = router;
