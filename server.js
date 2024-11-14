@@ -89,6 +89,11 @@ app.use("/status", Occustatus);
 app.use('/', SubmissionOccu);
 app.use('/', MtopForm);
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html')); // Ensure index.html exists in the 'public' folder
+    // Alternatively, use res.send('Welcome to the homepage!');
+});
+
 // Test route for session
 app.get('/test-session', isAuthenticated, (req, res) => {
     if (req.session.occuid) {
