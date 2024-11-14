@@ -110,9 +110,34 @@ document.getElementById('units').addEventListener('input', function() {
 
 
 document.getElementById('logoutButton').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent the default link behavior
-    var confirmation = confirm("Are you sure you want to log out?");
-    if (confirmation) {
-        window.location.href = 'login.html'; // Redirect to the login page
-    }
+    event.preventDefault();
+
+    // Create a modal container
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = "fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50";
+    modalOverlay.id = "logoutModal";
+
+    // Modal content
+    modalOverlay.innerHTML = `
+        <div class="bg-white rounded-lg shadow-lg p-6 w-80">
+            <h3 class="text-xl font-semibold mb-4">Are you sure you want to log out?</h3>
+            <div class="flex justify-end space-x-4">
+                <button id="cancelLogout" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+                <button id="confirmLogout" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Logout</button>
+            </div>
+        </div>
+    `;
+
+    // Append modal to the body
+    document.body.appendChild(modalOverlay);
+
+    // Add event listener for cancel button
+    document.getElementById('cancelLogout').addEventListener('click', function() {
+        modalOverlay.remove(); // Remove modal from DOM on cancel
+    });
+
+    // Add event listener for confirm logout button
+    document.getElementById('confirmLogout').addEventListener('click', function() {
+        window.location.href = 'login.html'; // Redirect to login.html on confirm
+    });
 });

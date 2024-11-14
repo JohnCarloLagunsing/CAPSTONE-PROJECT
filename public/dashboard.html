@@ -11,56 +11,38 @@
     <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-#applicantTable {
-    width: 100%; /* Full width for responsiveness */
-    max-width: 1200px; /* Maximum width */
-    margin-top: 3rem;
-    margin-left: -280px; /* Adjust left margin to move the table left */
-    overflow-x: auto; /* Enables horizontal scrolling if needed */
-    overflow-y: auto;
-}
-
-
-#applicantTable table {
-    width: 100%;
-}
-
-#applicantTable th, #applicantTable td {
-    padding: 1rem; /* Adjust padding to fit more content */
-    text-align: left;
-}
-
-       
-
-#toggleButton {
-    position: absolute;
-    top: 0; /* Align to the top of the container */
-    right: -125px; /* Align to the right of the container */
-    padding: 8px 16px;
-    background-color: #1e3a8a;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#toggleButton:hover {
-    background-color: #3b82f6; /* Add hover effect */
-}
-
-#townMessage {
-    font-weight: bold;
-    font-size: 0.7rem; /* Smaller font for better fit */
-    text-align: center;
-    margin: 0 auto;
-    padding: 0.2rem;
-    line-height: 1.0;
-    color: #333;
-    max-width: 100%; /* Restricts to container width */
-    width: fit-content; /* Fit content width dynamically */
-    word-wrap: break-word; /* Ensures text wraps to fit */
-    white-space: normal; /* Allows text wrapping within the container */
-}
+        #applicantTable {
+            width: 100%; /* Full width for responsiveness */
+            max-width: 1200px; /* Maximum width */
+            margin-top: 3rem;
+            overflow-x: auto; /* Enables horizontal scrolling if needed */
+            overflow-y: auto;
+        }
+    
+        #applicantTable table {
+            width: 100%;
+        }
+    
+        #applicantTable th, #applicantTable td {
+            padding: 1rem; /* Adjust padding to fit more content */
+            text-align: left;
+        }
+    
+        #toggleButton {
+            width: 100%; /* Full width within its container */
+            max-width: 200px; /* Maximum width for button */
+            margin: 0 auto; /* Center horizontally */
+            padding: 8px 16px;
+            background-color: #1e3a8a;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+    
+        #toggleButton:hover {
+            background-color: #3b82f6; /* Add hover effect */
+        }
     </style>
 </head>
 <body class="font-sans bg-gray-100 text-gray-900 overflow-x-hidden">
@@ -89,90 +71,90 @@
 
 
         <!-- Main Content -->
-         <div class="main-content flex-1 md:ml-60 overflow-y-auto p-6">
+        <div class="main-content flex-1 md:ml-60 overflow-y-auto p-6">
             <!-- Header -->
             <div class="header text-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
             </div>
-
-
+        
             <!-- Chart Grid Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                 <!-- Data Comparison Chart -->
-                <div class="bg-white shadow-md rounded-lg p-4 h-96 flex flex-col items-center">
-                    <canvas id="comparisonChart" class="w-full h-40 max-w-xs"></canvas>
-                    <div id="comparisonMessage" class="text-gray-700 text-center mt-1 p-2 leading-tight max-w-full text-[10px] md:text-sm"></div>
+                <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
+                    <canvas id="comparisonChart" class="w-11/12 h-5/6"></canvas>
+                    <div id="comparisonMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
+                        Comparison Data Message
+                    </div>
                 </div>
-
-
+        
                 <!-- Inspection Status Chart (Bar Graph) -->
-                <div class="bg-white shadow-md rounded-lg p-4 h-[28rem] flex flex-col items-center">
-                    <canvas id="notApprovedChart" class="w-full h-40 max-w-xs"></canvas>
-                    <div id="notApprovedMessage" class="text-gray-700 text-center mt-1 p-2 leading-tight max-w-full text-[10px] md:text-sm">
+                <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
+                    <canvas id="notApprovedChart" class="w-11/12 h-5/6"></canvas>
+                    <div id="notApprovedMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
                         <strong>Total Not Approved Inspections:</strong> 8.<br>
                         <strong>Common rejection reasons:</strong> Not Open Pipe, Light in Sidecar (8 each).
                     </div>
                 </div>
-
-
+        
                 <!-- Forecast Section (Line Graph) -->
-                <div class="bg-white shadow-md rounded-lg p-4 h-[28rem] flex flex-col items-center">
-                    <canvas id="forecastChart" class="w-full h-40 max-w-xs"></canvas>
-                    <div id="forecastMessage" class="text-gray-700 text-center mt-1 p-2 leading-tight max-w-full text-[10px] md:text-sm">
-                        Based on the trend, expect 65 new permits and 123 inspections next month.
-                        <br>Forecast:<br>
+                <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
+                    <canvas id="forecastChart" class="w-11/12 h-5/6"></canvas>
+                    <div id="forecastMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
+                        Based on the trend, expect 65 new permits and 123 inspections next month.<br>
+                        Forecast:<br>
                         - Dec 2024: 655 permits<br>
                         - Jan 2025: 6555 permits
                     </div>
                 </div>
-
-
+        
                 <!-- Vehicle Types Distribution -->
-                <div class="bg-white shadow-md rounded-lg p-4 h-96 flex flex-col items-center">
-                    <canvas id="townPieChart" class="w-full h-40 max-w-xs"></canvas>
-                    <div id="townMessage" class="text-gray-700 text-center mt-4 text-sm font-bold leading-tight"></div>
-
+                <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
+                    <canvas id="townPieChart" class="w-11/12 h-5/6"></canvas>
+                    <div id="townMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg font-semibold">
+                        Town Distribution Data
+                    </div>
                 </div>
-                
-           
-                <div class="relative mt-6 text-center">
-                    <button id="toggleButton" onclick="toggleTable()" class="w-full md:w-auto text-white text-xs sm:text-sm md:text-base bg-blue-700 hover:bg-blue-600 py-3 px-6 rounded-lg transition whitespace-normal text-center tracking-tight">
+            </div>
+        
+            <!-- Applicant Table Container with Toggle Button -->
+            <div class="bg-white shadow-lg rounded-lg p-6 mt-8 mx-auto w-full md:w-3/4 lg:w-1/2">
+                <!-- Toggle Button Positioned Inside the Table Container -->
+                <div class="text-center mb-4">
+                    <button id="toggleButton" onclick="toggleTable()">
                         View Applicants for Inspections
                     </button>
                 </div>
-                
-                
-                
-                
-                <div id="applicantTable" class="bg-white shadow-lg rounded-lg p-4 max-h-64 overflow-x-auto overflow-y-auto mt-4 text-xs sm:text-sm md:text-base lg:text-lg max-w-full">
+        
+                <!-- Applicant Table -->
+                <div id="applicantTable">
                     <table class="min-w-full border-collapse rounded-lg overflow-hidden shadow-lg">
                         <thead>
                             <tr class="bg-blue-700 text-white">
-                                <th class="py-2 sm:py-3 px-3 sm:px-5 font-semibold text-left">Occuid</th>
-                                <th class="py-2 sm:py-3 px-3 sm:px-5 font-semibold text-left">Name</th>
+                                <th class="py-3 px-5 font-semibold text-left">Occuid</th>
+                                <th class="py-3 px-5 font-semibold text-left">Name</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="bg-gray-50 hover:bg-blue-100">
-                                <td class="py-2 sm:py-3 px-3 sm:px-5 border-b border-gray-200">001-2024</td>
-                                <td class="py-2 sm:py-3 px-3 sm:px-5 border-b border-gray-200">Carl Jonel M. Hawak</td>
+                                <td class="py-3 px-5 border-b border-gray-200">001-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Carl Jonel M. Hawak</td>
                             </tr>
                             <tr class="bg-white hover:bg-blue-100">
-                                <td class="py-2 sm:py-3 px-3 sm:px-5 border-b border-gray-200">002-2024</td>
-                                <td class="py-2 sm:py-3 px-3 sm:px-5 border-b border-gray-200">John Carlo M. Lagunsing</td>
+                                <td class="py-3 px-5 border-b border-gray-200">002-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">John Carlo M. Lagunsing</td>
                             </tr>
                             <tr class="bg-gray-50 hover:bg-blue-100">
-                                <td class="py-2 sm:py-3 px-3 sm:px-5 border-b border-gray-200">003-2024</td>
-                                <td class="py-2 sm:py-3 px-3 sm:px-5 border-b border-gray-200">Pinky M. Lagunsing</td>
+                                <td class="py-3 px-5 border-b border-gray-200">003-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Pinky M. Lagunsing</td>
                             </tr>
                             <tr class="bg-white hover:bg-blue-100">
-                                <td class="py-2 sm:py-3 px-3 sm:px-5 border-b border-gray-200">004-2024</td>
-                                <td class="py-2 sm:py-3 px-3 sm:px-5 border-b border-gray-200">Pinkie Klein M. Lagunsing</td>
+                                <td class="py-3 px-5 border-b border-gray-200">004-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Pinkie Klein M. Lagunsing</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                
+            </div>
         </div>
     <script >
          function toggleSidebar() {
@@ -186,12 +168,37 @@
         }
 
 
-document.getElementById('logoutButton').addEventListener('click', function(event) {
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
     event.preventDefault();
-    var confirmation = confirm("Are you sure you want to log out?");
-    if (confirmation) {
-        window.location.href = 'login.html';
-    }
+
+    // Create a modal container
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = "fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50";
+    modalOverlay.id = "logoutModal";
+
+    // Modal content
+    modalOverlay.innerHTML = `
+        <div class="bg-white rounded-lg shadow-lg p-6 w-80">
+            <h3 class="text-xl font-semibold mb-4">Are you sure you want to log out?</h3>
+            <div class="flex justify-end space-x-4">
+                <button id="cancelLogout" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+                <button id="confirmLogout" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Logout</button>
+            </div>
+        </div>
+    `;
+
+    // Append modal to the body
+    document.body.appendChild(modalOverlay);
+
+    // Add event listener for cancel button
+    document.getElementById('cancelLogout').addEventListener('click', function() {
+        modalOverlay.remove(); // Remove modal from DOM on cancel
+    });
+
+    // Add event listener for confirm logout button
+    document.getElementById('confirmLogout').addEventListener('click', function() {
+        window.location.href = 'login.html'; // Redirect to login.html on confirm
+    });
 });
 
 // Fetch data for the donut chart

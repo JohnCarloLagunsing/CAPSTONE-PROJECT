@@ -33,7 +33,7 @@ router.post('/headadmin', [
         const result = await pool.query(query, [email]);
 
         if (result.rows.length === 0) {
-            return res.status(400).json({ message: 'Admin not found' });
+            return res.status(400).json({ message: 'ADMIN NOT FOUND' });
         }
 
         const admin = result.rows[0];
