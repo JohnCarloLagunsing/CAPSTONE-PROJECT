@@ -33,28 +33,30 @@ require('dotenv').config();
 app.use(session({
     store: new pgSession({
         pool: pool,
-        tableName: 'session' // Existing session table for general login activities
+        tableName: 'session' 
     }),
-    secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiration (30 days)
-        secure: false // Set to true in production with HTTPS
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        secure: app.get('env') === 'production', // true in production with HTTPS
+        httpOnly: true // Protects from client-side access
     }
 }));
 
 const permitSession = session({
     store: new pgSession({
         pool: pool,
-        tableName: 'permit_session' // New session table specifically for OccuPermit-related sessions
+        tableName: 'permit_session'
     }),
-    secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000,
-        secure: false
+        secure: app.get('env') === 'production',
+        httpOnly: true
     }
 });
 app.use(cookieParser());
