@@ -74,31 +74,43 @@ const permitSession = session({
     }
 });
 
+// Authentication Middleware
+function isAuthenticated(req, res, next) {
+    if (req.session && req.session.userId) { // Check if session exists and userId is present
+        next(); // Proceed to the next middleware or route handler
+    } else {
+        res.redirect('/applicantlogin.html'); // Redirect to login page if not authenticated
+    }
+}
+
 // Define routes
-app.use('/', loginProcessRouter);
-app.use('/data', Analysis);
+app.use('/', loginProcessRouter); // Login route does not need authentication
+
+// Apply the middleware to protect routes
+app.use('/data', isAuthenticated, Analysis);
+app.use('/verify', isAuthenticated, Verifying);
+app.use('/franchise', isAuthenticated, FranchiseProcess);
+app.use('/headadmin', isAuthenticated, HeadAdmin);
+app.use('/adminaccount', isAuthenticated, HeadAdminaccount);
+app.use('/changepass', isAuthenticated, AdminChangePass);
+app.use('/inspector', isAuthenticated, InspectorSignup);
+app.use('/submit', isAuthenticated, permitSession, Occuformhandler);
+app.use('/status', isAuthenticated, permitSession, Occustatus);
+app.use('/submission', isAuthenticated, SubmissionOccu);
+app.use('/mtopform', isAuthenticated, MtopForm);
+
+// Unprotected routes
 app.use('/', Occuprocess);
-app.use('/', Verifying);
-app.use('/', FranchiseProcess);
-app.use('/', HeadAdmin);
-app.use('/', HeadAdminaccount);
 app.use('/', PasswordReset);
-app.use('/', AdminChangePass);
-app.use('/', InspectorSignup);
 app.use('/', inspectorchangepass);
 app.use('/', inspectorchangepass2);
 app.use('/', Signup);
 app.use('/signup', Occupational);
 app.use('/auth', OccupationalApplicants);
-app.use('/submit', permitSession, Occuformhandler);
-app.use('/status', permitSession, Occustatus);
-app.use('/', SubmissionOccu);
-app.use('/', MtopForm);
 
 // Root route to serve the homepage or a welcome message
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'applicant.html')); // Ensure index.html exists in the 'public' folder
-    // Alternatively, use res.send('Welcome to the homepage!');
 });
 
 // Test session route
