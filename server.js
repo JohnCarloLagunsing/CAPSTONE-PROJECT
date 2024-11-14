@@ -74,47 +74,46 @@ const permitSession = session({
     }
 });
 
-// Authentication Middleware
-function isAuthenticated(req, res, next) {
-    if (req.session && req.session.userId) { // Check if session exists and userId is present
-        next(); // Proceed to the next middleware or route handler
+// Authentication middleware
+const checkAuth = (req, res, next) => {
+    if (req.session.occuid) {
+        // User is authenticated
+        next();
     } else {
-        res.redirect('/applicantlogin.html'); // Redirect to login page if not authenticated
+        // User is not authenticated
+        res.redirect('/applicantlogin.html'); // Redirect to login page
     }
-}
+};
 
 // Define routes
-app.use('/', loginProcessRouter); // Login route does not need authentication
-
-// Apply the middleware to protect routes
-app.use('/data', isAuthenticated, Analysis);
-app.use('/verify', isAuthenticated, Verifying);
-app.use('/franchise', isAuthenticated, FranchiseProcess);
-app.use('/headadmin', isAuthenticated, HeadAdmin);
-app.use('/adminaccount', isAuthenticated, HeadAdminaccount);
-app.use('/changepass', isAuthenticated, AdminChangePass);
-app.use('/inspector', isAuthenticated, InspectorSignup);
-app.use('/submit', isAuthenticated, permitSession, Occuformhandler);
-app.use('/status', isAuthenticated, permitSession, Occustatus);
-app.use('/submission', isAuthenticated, SubmissionOccu);
-app.use('/mtopform', isAuthenticated, MtopForm);
-
-// Unprotected routes
-app.use('/', Occuprocess);
-app.use('/', PasswordReset);
-app.use('/', inspectorchangepass);
-app.use('/', inspectorchangepass2);
-app.use('/', Signup);
-app.use('/signup', Occupational);
-app.use('/auth', OccupationalApplicants);
+app.use('/', loginProcessRouter);
+app.use('/data', checkAuth, Analysis);
+app.use('/', checkAuth, Occuprocess);
+app.use('/', checkAuth, Verifying);
+app.use('/', checkAuth, FranchiseProcess);
+app.use('/', checkAuth, HeadAdmin);
+app.use('/', checkAuth, HeadAdminaccount);
+app.use('/', checkAuth, PasswordReset);
+app.use('/', checkAuth, AdminChangePass);
+app.use('/', checkAuth, InspectorSignup);
+app.use('/', checkAuth, inspectorchangepass);
+app.use('/', checkAuth, inspectorchangepass2);
+app.use('/', checkAuth, Signup);
+app.use('/signup', checkAuth, Occupational);
+app.use('/auth', checkAuth, OccupationalApplicants);
+app.use('/submit', checkAuth, permitSession, Occuformhandler);
+app.use('/status', checkAuth, permitSession, Occustatus);
+app.use('/', checkAuth, SubmissionOccu);
+app.use('/', checkAuth, MtopForm);
 
 // Root route to serve the homepage or a welcome message
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'applicant.html')); // Ensure index.html exists in the 'public' folder
+    // Alternatively, use res.send('Welcome to the homepage!');
 });
 
 // Test session route
-app.get('/test-session', permitSession, (req, res) => {
+app.get('/test-session', checkAuth, permitSession, (req, res) => {
     if (req.session.occuid) {
         res.send(`Session occuid: ${req.session.occuid}`);
     } else {
