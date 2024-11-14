@@ -97,7 +97,7 @@ app.use('/', MtopForm);
 
 // Root route to serve the homepage or a welcome message
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html')); // Ensure index.html exists in the 'public' folder
+    res.sendFile(path.join(__dirname, 'public', 'login.html')); // Ensure index.html exists in the 'public' folder
     // Alternatively, use res.send('Welcome to the homepage!');
 });
 
