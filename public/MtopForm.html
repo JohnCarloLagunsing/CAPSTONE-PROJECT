@@ -36,6 +36,20 @@
     <div class="lg:ml-64 p-5">
         <h1 class="text-2xl mb-5 text-center uppercase text-gray-800">MTOP Application Form</h1>
 
+        <!-- Success Message Popup -->
+        <div id="successMessage" class="fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none">
+            Submission Successful!
+        </div>
+
+        <!-- Search Bar -->
+        <div class="mb-5 max-w-5xl mx-auto">
+            <label for="searchApplicant" class="block font-semibold mb-2">Search Applicant No.</label>
+            <div class="flex items-center space-x-2">
+                <input type="text" id="searchApplicant" class="border rounded-lg p-2 w-48" placeholder="Enter Applicant No.">
+                <button onclick="searchApplicant()" class="bg-blue-700 text-white px-5 py-2 rounded-lg hover:bg-blue-600">Search</button>
+            </div>
+        </div>
+
         <!-- Form -->
         <form method="post" action="http://localhost:8000/submitMtopForm" enctype="multipart/form-data" class="bg-white p-4 sm:p-8 rounded-lg shadow-lg max-w-5xl mx-auto">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
@@ -106,20 +120,8 @@
         </form>
     </div>
 
-    <!-- JavaScript for Sidebar Toggle and Form Handling -->
-    <script>
-        // Sidebar toggle for mobile
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-        });
+    <!-- Include the MtopFormsearch.js script -->
+    <script src="/scripts/MtopFormsearch.js"></script>
 
-        // Function to clear form inputs
-        function clearForm() {
-            const form = document.querySelector("form");
-            form.reset();
-        }
-    </script>
 </body>
 </html>
