@@ -11,9 +11,9 @@ const pool = require('./public/scripts/db');
 dotenv.config();
 
 const app = express();
-const bodyParser = require("body-parser")
-const PORT = 8000;
-const router = express.Router();
+const PORT = process.env.PORT || 8000;
+
+// Import route files
 const loginProcessRouter = require('./server/loginFunc');
 const Analysis = require('./server/Analysis');
 const Occuprocess = require('./server/Occuprocess');
@@ -33,26 +33,38 @@ const Occuformhandler = require('./server/Occuformhandler');
 const Occustatus = require('./server/Occustatus');
 const SubmissionOccu = require('./server/SubmissionOccu');
 const MtopForm = require('./server/MtopForm');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const pgSession = require('connect-pg-simple')(session);
-const pool = require('./public/scripts/db');
-require('dotenv').config();
 
-app.use(cookieParser());
+// Middleware configuration
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Session setup
+// Serve static files from 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Session configuration
 app.use(session({
     store: new pgSession({
         pool: pool,
-        tableName: 'session'
+        tableName: 'session' // General session table
     }),
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        secure: app.get('env') === 'production', // Use secure cookies in production
+        httpOnly: true
+    }
+}));
+
+const permitSession = session({
+    store: new pgSession({
+        pool: pool,
+        tableName: 'permit_session' // Permit session table
+    }),
+    secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -60,26 +72,10 @@ app.use(session({
         secure: app.get('env') === 'production',
         httpOnly: true
     }
-}));
+});
 
-// Middleware for protecting routes
-function isAuthenticated(req, res, next) {
-    if (req.session && req.session.occuid) {
-        next();
-    } else {
-        res.status(403).send("Access denied. Please log in.");
-    }
-}
-
-// Use an absolute path to the 'public' folder
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Public routes (accessible without authentication)
-app.use('/', loginProcessRouter); // Login route
-app.use('/signup', Signup); // Signup route
-
-// Protected routes (require authentication)
-app.use(isAuthenticated); // Apply middleware to all routes below this line
+// Define routes
+app.use('/', loginProcessRouter);
 app.use('/data', Analysis);
 app.use('/', Occuprocess);
 app.use('/', Verifying);
@@ -91,20 +87,22 @@ app.use('/', AdminChangePass);
 app.use('/', InspectorSignup);
 app.use('/', inspectorchangepass);
 app.use('/', inspectorchangepass2);
-app.use("/signup", Occupational);
-app.use("/auth", OccupationalApplicants);
-app.use("/submit", Occuformhandler);
-app.use("/status", Occustatus);
+app.use('/', Signup);
+app.use('/signup', Occupational);
+app.use('/auth', OccupationalApplicants);
+app.use('/submit', permitSession, Occuformhandler);
+app.use('/status', permitSession, Occustatus);
 app.use('/', SubmissionOccu);
 app.use('/', MtopForm);
 
+// Root route to serve the homepage or a welcome message
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html')); // Ensure index.html exists in the 'public' folder
+    res.sendFile(path.join(__dirname, 'public', 'applicant.html')); // Ensure index.html exists in the 'public' folder
     // Alternatively, use res.send('Welcome to the homepage!');
 });
 
-// Test route for session
-app.get('/test-session', isAuthenticated, (req, res) => {
+// Test session route
+app.get('/test-session', permitSession, (req, res) => {
     if (req.session.occuid) {
         res.send(`Session occuid: ${req.session.occuid}`);
     } else {
@@ -112,6 +110,7 @@ app.get('/test-session', isAuthenticated, (req, res) => {
     }
 });
 
+// Start server
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`);
-})
+});
