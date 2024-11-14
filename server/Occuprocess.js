@@ -27,7 +27,7 @@ router.post('/submitForm', upload.fields([
     const {
         lastName, firstName, middleName, suffix, homeAddress, dob, age, placeOfBirth,
         cellphoneNumber, email, gender, civilStatus, companyName, jobPosition, combinedId,
-        orNumber, orExtension, orDate, orAmount, ctcNumber, ctcDateIssued, ctcPlaceIssued
+        ctcNumber, ctcDateIssued, ctcPlaceIssued
     } = req.body;
 
     // Get binary data (buffers) from multer for each file
@@ -42,10 +42,10 @@ router.post('/submitForm', upload.fields([
                 "Lastname", "Firstname", "Middlename", "Suffix", "Address", "DateofBirth", "Age", "PlaceofBirth",
                 "ContactNo", "Email", "Gender", "CivilStatus", "CompanyName", "JobPosition", "combinedId",
                 "COE", "HealthCard", "BirthCertificate", "OfficialReceipt",
-                "ORNumber", "ORExtension", "ORDate", "ORAmount", "CTCNumber", "CTCDateIssued", "CTCPlaceIssued"
+                 "CTCNumber", "CTCDateIssued", "CTCPlaceIssued"
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-                $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26
+                $13, $14, $15, $16, $17, $18, $19, $20, $21, $22 
             )
         `;
         
@@ -56,7 +56,7 @@ router.post('/submitForm', upload.fields([
             lastName, firstName, middleName, suffix, homeAddress, dob, age, placeOfBirth,
             cellphoneNumber, email, gender, civilStatus, companyName, jobPosition, combinedId,
             coe, healthCard, birthCertificate, officialReceipt,
-            orNumber, orExtension, orDate, orAmount, ctcNumber, formattedCtcDateIssued, ctcPlaceIssued
+            ctcNumber, formattedCtcDateIssued, ctcPlaceIssued
         ];
 
         // Insert the form data along with the binary files into the database

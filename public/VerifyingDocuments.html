@@ -14,16 +14,17 @@
     <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
 </head>
 <body>
-    <div class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5">
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
         <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
         <h2 class="text-xl text-center mb-6">Menu</h2>
         <ul class="space-y-4">
             <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
-            <li><a href="VeryfingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
+            <li><a href="VerifyingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
             <li><a href="AdminOccuForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Occupational Form</a></li>
             <li><a href="FranchiseForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Franchise Form</a></li>
+            <li><a href="MtopForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> MTOP Form</a></li>
             <li><a href="payment.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-wallet-alt mr-2'></i> Payment</a></li>
-            <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a> 
+            <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
         </ul>
     </div>
     <div class="main-content">
@@ -102,9 +103,6 @@
         <p><strong>Company Name:</strong> <span id="occPermit-doc-compname"></span></p>
         <p><strong>Job Position:</strong> <span id="occPermit-doc-jobpos"></span></p>
         <p><strong></strong> <span id="occPermit-doc-combid"></span></p>
-        <p><strong>OR Number:</strong> <span id="occPermit-doc-ornumber"></span></p>
-        <p><strong>OR Extension:</strong> <span id="occPermit-doc-orextension"></span></p>
-        <p><strong>OR Amount:</strong> <span id="occPermit-doc-oramount"></span></p>
         <p><strong>CTC Number:</strong> <span id="occPermit-doc-ctcnumber"></span></p>
         <p><strong>CTC Date Issued:</strong> <span id="occPermit-doc-ctcdti"></span></p>
         <p><strong>CTC Place Issued:</strong> <span id="occPermit-doc-placeissued"></span></p>
@@ -503,9 +501,6 @@ function attachOccuPermitModalListeners() {
                     document.getElementById('occPermit-doc-compname').textContent = documentData.CompanyName;
                     document.getElementById('occPermit-doc-jobpos').textContent = documentData.JobPosition;
                     document.getElementById('occPermit-doc-combid').textContent = documentData.combinedId;
-                    document.getElementById('occPermit-doc-ornumber').textContent = documentData.ORNumber;
-                    document.getElementById('occPermit-doc-orextension').textContent = documentData.ORExtension;
-                    document.getElementById('occPermit-doc-oramount').textContent = documentData.ORAmount;
                     document.getElementById('occPermit-doc-ctcnumber').textContent = documentData.CTCNumber;
                    
 

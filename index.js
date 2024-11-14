@@ -24,10 +24,11 @@ const Occuformhandler = require('./server/Occuformhandler');
 const Occustatus = require('./server/Occustatus');
 const SubmissionOccu = require('./server/SubmissionOccu');
 const MtopForm = require('./server/MtopForm'); // 
-
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const pool = require('./public/scripts/db');
+require('dotenv').config(); 
 
 app.use(session({
     store: new pgSession({
@@ -56,7 +57,7 @@ const permitSession = session({
         secure: false
     }
 });
-
+app.use(cookieParser());
 
 router.use(cors());
 router.use(bodyParser.urlencoded({ extended: true }));

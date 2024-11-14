@@ -176,8 +176,8 @@ router.get('/getOccuPermitDocuments/:occuid', (req, res) => {
 
     const sqlQuery = `
         SELECT "Occuid","Lastname", "Firstname", "Middlename", "Suffix", "Address", "DateofBirth", "Age", "PlaceofBirth",
-         "ContactNo", "Email", "Gender", "CivilStatus", "CompanyName", "JobPosition", "combinedId", "ORNumber", "ORExtension",
-          "ORAmount", "CTCNumber", "CTCDateIssued", "CTCPlaceIssued", encode("COE", 'base64') as "COE", encode("HealthCard", 'base64') as "HealthCard",
+         "ContactNo", "Email", "Gender", "CivilStatus", "CompanyName", "JobPosition", "combinedId", 
+          "CTCNumber", "CTCDateIssued", "CTCPlaceIssued", encode("COE", 'base64') as "COE", encode("HealthCard", 'base64') as "HealthCard",
           encode("BirthCertificate", 'base64') as "BirthCertificate",encode("OfficialReceipt", 'base64') as "OfficialReceipt"
         FROM "OccuPermit"
         WHERE "Occuid" = $1;

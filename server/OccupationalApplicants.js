@@ -1,3 +1,4 @@
+// OccupationalAppplicant.js (Login Route)
 // auth.js
 const express = require("express");
 const router = express.Router();
@@ -23,8 +24,14 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid password. Please try again." });
     }
 
-    // Success: User authenticated
+    // Reset session data for new login
     req.session.user_id = user.id;
+    req.session.firstname = user.firstname;
+    req.session.lastname = user.lastname;
+    req.session.is_logged_in = true;
+
+    // Clear occuid to avoid any stale data
+    req.session.occuid = null;
 
     // Check if a session already exists in permit_session for this user
     const sessionResult = await pool.query("SELECT * FROM permit_session WHERE sid = $1", [user.id]);
@@ -38,9 +45,11 @@ router.post("/login", async (req, res) => {
         "INSERT INTO permit_session (sid, sess, expire, has_submitted) VALUES ($1, $2, $3, FALSE)",
         [user.id, JSON.stringify({}), expiresAt]
       );
-    }
 
-    res.status(200).json({ message: "Login successful", redirectUrl: "/applicantdashboard.html" });
+      res.status(200).json({ message: "Login successful", redirectUrl: "/applicantdashboard.html", isFirstTime: true });
+    } else {
+      res.status(200).json({ message: "Login successful", redirectUrl: "/occustatus.html", isFirstTime: false });
+    }
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ message: "An error occurred during login" });

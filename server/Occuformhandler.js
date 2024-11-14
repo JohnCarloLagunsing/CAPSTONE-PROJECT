@@ -27,40 +27,39 @@ router.post(
       return res.status(400).json({ message: "User not authenticated. Please log in." });
     }
 
-    // Log session data before checking for existing submission
-    console.log("Session occuid before check:", req.session.occuid);
-    console.log("Session data before check:", req.session);
+    // Check if occuid is set in the session and if a status check is needed
+    if (req.session.occuid) {
+      try {
+        console.log("Performing status check for occuid:", req.session.occuid);
 
-    // Ensure occuid is initialized in the session if it isn't set
-    if (!req.session.occuid) {
-      req.session.occuid = null; // Initialize to null if not set
-    }
+        // Query to check if there's an existing application with "Approved" or "On Process" status
+        const checkQuery = `
+          SELECT status 
+          FROM public."occustatus" 
+          WHERE "occuid" = $1 AND (status = 'Approved' OR status = 'On Process')
+        `;
+        const checkResult = await pool.query(checkQuery, [req.session.occuid]);
 
-    // Check if the user already has an approved application in the Occustatus table
-    try {
-      // Check if there's an existing application with "Approved" or "On Process" status
-      const checkQuery = `
-        SELECT status 
-        FROM public."occustatus" 
-        WHERE "occuid" = $1 AND (status ILIKE $2 OR status ILIKE $3)
-      `;
-      const checkResult = await pool.query(checkQuery, [req.session.occuid, 'Approved', 'On Process']);
+        // Debugging log to see the result of the status check
+        console.log("Status check result:", checkResult.rows);
 
-      if (checkResult.rows.length > 0) {
-        const existingStatus = checkResult.rows[0].status;
+        // If there's a matching result, prevent submission
+        if (checkResult.rows.length > 0) {
+          const existingStatus = checkResult.rows[0].status;
 
-        if (existingStatus === "Approved") {
-          return res.status(400).json({ message: "You already have an approved application and cannot submit another." });
-        } else if (existingStatus === "On Process") {
-          return res.status(400).json({ message: "Your application is still in process. Please wait for approval." });
+          if (existingStatus === "Approved") {
+            return res.status(400).json({ message: "You already have an approved application and cannot submit another." });
+          } else if (existingStatus === "On Process") {
+            return res.status(400).json({ message: "Your application is still in process. Please wait for approval." });
+          }
         }
+      } catch (error) {
+        console.error("Error checking for existing application:", error.stack);
+        return res.status(500).json({ message: "Error checking application status" });
       }
-    } catch (error) {
-      console.error("Error checking for existing application:", error.stack);
-      return res.status(500).json({ message: "Error checking application status" });
     }
 
-    // Log the received data for debugging
+    // If no restrictions are found, proceed with submission
     console.log("Form data:", req.body);
     console.log("Files:", req.files);
 
@@ -80,10 +79,6 @@ router.post(
       companyName,
       jobPosition,
       combinedId,
-      orNumber,
-      orExtension,
-      orDate,
-      orAmount,
       ctcNumber,
       ctcDateIssued,
       ctcPlaceIssued,
@@ -106,10 +101,10 @@ router.post(
           "Lastname", "Firstname", "Middlename", "Suffix", "Address", "DateofBirth", "Age", "PlaceofBirth",
           "ContactNo", "Email", "Gender", "CivilStatus", "CompanyName", "JobPosition", "combinedId",
           "COE", "HealthCard", "BirthCertificate", "OfficialReceipt",
-          "ORNumber", "ORExtension", "ORDate", "ORAmount", "CTCNumber", "CTCDateIssued", "CTCPlaceIssued"
+          "CTCNumber", "CTCDateIssued", "CTCPlaceIssued"
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-          $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26
+          $13, $14, $15, $16, $17, $18, $19, $20, $21, $22
         ) RETURNING "Occuid"
       `;
 
@@ -133,13 +128,9 @@ router.post(
         healthCard,
         birthCertificate,
         officialReceipt,
-        orNumber,
-        orExtension,
-        orDate,
-        orAmount,
         ctcNumber,
         ctcDateIssued,
-        ctcPlaceIssued,
+        ctcPlaceIssued
       ];
 
       // Insert the form data and get the generated Occuid
