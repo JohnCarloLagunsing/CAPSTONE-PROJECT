@@ -57,7 +57,7 @@
                 <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
                 <li><a href="VeryfingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
                 <li><a href="AdminOccuForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Occupational Form</a></li>
-                <li><a href="FranchiseForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Franchise Form</a></li>
+                <li><a href="MtopForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> MTOP Form</a></li>
                 <li><a href="payment.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-wallet-alt mr-2'></i> Payment</a></li>
                 <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
             </ul>
@@ -168,12 +168,37 @@
         }
 
 
-document.getElementById('logoutButton').addEventListener('click', function(event) {
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
     event.preventDefault();
-    var confirmation = confirm("Are you sure you want to log out?");
-    if (confirmation) {
-        window.location.href = 'login.html';
-    }
+
+    // Create a modal container
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = "fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50";
+    modalOverlay.id = "logoutModal";
+
+    // Modal content
+    modalOverlay.innerHTML = `
+        <div class="bg-white rounded-lg shadow-lg p-6 w-80">
+            <h3 class="text-xl font-semibold mb-4">Are you sure you want to log out?</h3>
+            <div class="flex justify-end space-x-4">
+                <button id="cancelLogout" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+                <button id="confirmLogout" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Logout</button>
+            </div>
+        </div>
+    `;
+
+    // Append modal to the body
+    document.body.appendChild(modalOverlay);
+
+    // Add event listener for cancel button
+    document.getElementById('cancelLogout').addEventListener('click', function() {
+        modalOverlay.remove(); // Remove modal from DOM on cancel
+    });
+
+    // Add event listener for confirm logout button
+    document.getElementById('confirmLogout').addEventListener('click', function() {
+        window.location.href = 'login.html'; // Redirect to login.html on confirm
+    });
 });
 
 // Fetch data for the donut chart
