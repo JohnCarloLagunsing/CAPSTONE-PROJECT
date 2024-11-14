@@ -2,7 +2,9 @@
   "name": "capstone",
   "version": "1.0.0",
   "scripts": {
-    "start": "node ."
+    "build": "echo",
+    "start": "node .",
+    "predeploy": "npm run build"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
