@@ -76,11 +76,12 @@ const permitSession = session({
 
 // Authentication middleware
 const checkAuth = (req, res, next) => {
+    console.log(`Checking auth for ${req.path}`);
     if (req.session.occuid) {
-        // User is authenticated
+        console.log('User is authenticated');
         next();
     } else {
-        // User is not authenticated
+        console.log('User is not authenticated, redirecting to /applicantlogin.html');
         res.redirect('/applicantlogin.html'); // Redirect to login page
     }
 };
@@ -108,7 +109,7 @@ app.use('/', checkAuth, MtopForm);
 
 // Root route to serve the homepage or a welcome message
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'applicant.html')); // Ensure index.html exists in the 'public' folder
+    res.sendFile(path.join(__dirname, 'public', 'applicant.html')); // Ensure applicant.html exists in the 'public' folder
     // Alternatively, use res.send('Welcome to the homepage!');
 });
 
