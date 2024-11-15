@@ -74,47 +74,35 @@ const permitSession = session({
     }
 });
 
-// Authentication middleware
-const checkAuth = (req, res, next) => {
-    console.log(`Checking auth for ${req.path}`);
-    if (req.session.occuid) {
-        console.log('User is authenticated');
-        next();
-    } else {
-        console.log('User is not authenticated, redirecting to /applicantlogin.html');
-        res.redirect('/applicantlogin.html'); // Redirect to login page
-    }
-};
-
 // Define routes
 app.use('/', loginProcessRouter);
-app.use('/data', checkAuth, Analysis);
-app.use('/', checkAuth, Occuprocess);
-app.use('/', checkAuth, Verifying);
-app.use('/', checkAuth, FranchiseProcess);
-app.use('/', checkAuth, HeadAdmin);
-app.use('/', checkAuth, HeadAdminaccount);
-app.use('/', checkAuth, PasswordReset);
-app.use('/', checkAuth, AdminChangePass);
-app.use('/', checkAuth, InspectorSignup);
-app.use('/', checkAuth, inspectorchangepass);
-app.use('/', checkAuth, inspectorchangepass2);
-app.use('/', checkAuth, Signup);
-app.use('/signup', checkAuth, Occupational);
-app.use('/auth', checkAuth, OccupationalApplicants);
-app.use('/submit', checkAuth, permitSession, Occuformhandler);
-app.use('/status', checkAuth, permitSession, Occustatus);
-app.use('/', checkAuth, SubmissionOccu);
-app.use('/', checkAuth, MtopForm);
+app.use('/data', Analysis);
+app.use('/', Occuprocess);
+app.use('/', Verifying);
+app.use('/', FranchiseProcess);
+app.use('/', HeadAdmin);
+app.use('/', HeadAdminaccount);
+app.use('/', PasswordReset);
+app.use('/', AdminChangePass);
+app.use('/', InspectorSignup);
+app.use('/', inspectorchangepass);
+app.use('/', inspectorchangepass2);
+app.use('/', Signup);
+app.use('/signup', Occupational);
+app.use('/auth', OccupationalApplicants);
+app.use('/submit', permitSession, Occuformhandler);
+app.use('/status', permitSession, Occustatus);
+app.use('/', SubmissionOccu);
+app.use('/', MtopForm);
 
 // Root route to serve the homepage or a welcome message
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'applicant.html')); // Ensure applicant.html exists in the 'public' folder
+    res.sendFile(path.join(__dirname, 'public', 'login.html')); // Ensure index.html exists in the 'public' folder
     // Alternatively, use res.send('Welcome to the homepage!');
 });
 
 // Test session route
-app.get('/test-session', checkAuth, permitSession, (req, res) => {
+app.get('/test-session', permitSession, (req, res) => {
     if (req.session.occuid) {
         res.send(`Session occuid: ${req.session.occuid}`);
     } else {
