@@ -1,11 +1,14 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost', // or localhost192.168.5.59
-  database: 'MTOPandOccupational_Permit',
-  password: 'password',
-  port: 5433,
+  user: 'MTOPandOccupationalPermit_owner',
+  host: 'ep-crimson-mode-a5iqjgor.us-east-2.aws.neon.tech', // Update this as needed
+  database: 'MTOPandOccupationalPermit',
+  password: 'v3yCDOfH5mAG',
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false,
+  }, // Closing the configuration object
 });
 
 module.exports = pool;
