@@ -1,56 +1,59 @@
-// occustatus.js
+// OccupationalAppplicant.js (Login Route)
+// auth.js
 const express = require("express");
 const router = express.Router();
-const pool = require('../public/scripts/db');
+const bcrypt = require("bcryptjs");
+const pool = require('../public/scripts/db'); // Assuming db.js exports a properly configured pool
 
-// Route to get application status
-router.post("/getStatus", async (req, res) => {
-    const userId = req.session.user_id;
-    const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || "http://localhost:8000"; // Default to localhost if not defined
+// Login route
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
-    if (!userId) {
-        return res.status(401).json({
-            message: "Unauthorized. Please log in first.",
-            redirectUrl: `${PUBLIC_BASE_URL}/applicantlogin.html`
-        });
+  try {
+    // Check if user exists
+    const userResult = await pool.query("SELECT * FROM Users WHERE email = $1", [email]);
+    const user = userResult.rows[0];
+    
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email and password. Please try again." });
     }
 
-    try {
-        // Check if the user has a submitted application
-        const sessionResult = await pool.query(
-            "SELECT occuid FROM permit_session WHERE sid = $1 AND has_submitted = TRUE",
-            [userId]
-        );
-
-        if (sessionResult.rows.length === 0) {
-            // No submitted application found
-            return res.status(404).json({
-                message: "No submitted application found, please submit first.",
-                redirect: true,
-                redirectUrl: `${PUBLIC_BASE_URL}/applicantdashboard.html`
-            });
-        }
-
-        const occuid = sessionResult.rows[0].occuid;
-        const statusResult = await pool.query(
-            "SELECT * FROM Occustatus WHERE occuid = $1",
-            [occuid]
-        );
-
-        if (statusResult.rows.length > 0) {
-            // Status found
-            res.status(200).json({ status: statusResult.rows[0] });
-        } else {
-            // Status not found for the provided occuid
-            res.status(404).json({
-                message: "Status not found for the provided Occuid.",
-                redirect: false
-            });
-        }
-    } catch (error) {
-        console.error("Error fetching status:", error);
-        res.status(500).json({ message: "An error occurred while fetching the status" });
+    // Compare passwords
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid password. Please try again." });
     }
+
+    // Reset session data for new login
+    req.session.user_id = user.id;
+    req.session.firstname = user.firstname;
+    req.session.lastname = user.lastname;
+    req.session.is_logged_in = true;
+
+    // Clear occuid to avoid any stale data
+    req.session.occuid = null;
+
+    // Check if a session already exists in permit_session for this user
+    const sessionResult = await pool.query("SELECT * FROM permit_session WHERE sid = $1", [user.id]);
+    
+    if (sessionResult.rows.length === 0) {
+      // No session exists, create a new one with has_submitted set to FALSE
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 1); // Session expires in 1 hour
+
+      await pool.query(
+        "INSERT INTO permit_session (sid, sess, expire, has_submitted) VALUES ($1, $2, $3, FALSE)",
+        [user.id, JSON.stringify({}), expiresAt]
+      );
+
+      res.status(200).json({ message: "Login successful", redirectUrl: "/applicantdashboard.html", isFirstTime: true });
+    } else {
+      res.status(200).json({ message: "Login successful", redirectUrl: "/occustatus.html", isFirstTime: false });
+    }
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).json({ message: "An error occurred during login" });
+  }
 });
 
 module.exports = router;
