@@ -10,7 +10,9 @@ router.post("/getStatus", async (req, res) => {
 
     if (!userId) {
         return res.status(401).json({
+            status: "error",
             message: "Unauthorized. Please log in first.",
+            redirect: true,
             redirectUrl: `${PUBLIC_BASE_URL}/applicantlogin.html`
         });
     }
@@ -25,6 +27,7 @@ router.post("/getStatus", async (req, res) => {
         if (sessionResult.rows.length === 0) {
             // No submitted application found
             return res.status(404).json({
+                status: "error",
                 message: "No submitted application found, please submit first.",
                 redirect: true,
                 redirectUrl: `${PUBLIC_BASE_URL}/applicantdashboard.html`
@@ -39,17 +42,24 @@ router.post("/getStatus", async (req, res) => {
 
         if (statusResult.rows.length > 0) {
             // Status found
-            res.status(200).json({ status: statusResult.rows[0] });
+            res.status(200).json({
+                status: "success",
+                data: statusResult.rows[0]
+            });
         } else {
             // Status not found for the provided occuid
             res.status(404).json({
+                status: "error",
                 message: "Status not found for the provided Occuid.",
                 redirect: false
             });
         }
     } catch (error) {
         console.error("Error fetching status:", error);
-        res.status(500).json({ message: "An error occurred while fetching the status" });
+        res.status(500).json({
+            status: "error",
+            message: "An error occurred while fetching the status"
+        });
     }
 });
 
