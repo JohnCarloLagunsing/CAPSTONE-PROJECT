@@ -9,6 +9,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
     <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
     <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+  <style>
+    @media print {
+        body {
+            overflow: hidden; /* Remove scrollbars from the page */
+        }
+
+        #receiptModal {
+            position: static; /* Allow the modal to expand naturally */
+            max-height: none; /* Ensure the modal content is fully visible */
+            overflow: visible; /* Disable scrolling within the modal */
+            width: 100%; /* Optional: Make modal span full width for printing */
+        }
+
+        #receiptContent {
+            max-height: none; /* Allow content to expand fully */
+            overflow: visible; /* Disable internal scrollbars */
+        }
+
+        /* Hide unnecessary elements during printing */
+        button, #menuToggle, #sidebar, .not-for-print {
+            display: none;
+        }
+    }
+</style>
+
+    </style>
+    
 </head>
 <body class="font-sans overflow-x-hidden bg-gray-50">
     <!-- Sidebar -->
