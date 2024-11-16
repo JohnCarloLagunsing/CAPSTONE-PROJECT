@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,15 +10,17 @@
     <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
     <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
 </head>
-<body class="font-sans overflow-x-hidden bg-gray-50">
+<body class="font-sans bg-gray-50 overflow-x-hidden">
 
+    <!-- Notification -->
     <div id="notification" class="fixed top-4 right-4 hidden bg-green-500 text-white py-3 px-6 rounded-lg shadow-lg z-50 transition duration-300 ease-in-out">
         <span id="notification-message"></span>
         <button id="close-notification" class="ml-4 font-bold">&times;</button>
     </div>
+
     <!-- Sidebar -->
-    <div id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
-        <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
+        <img src="assets/favicon.png" alt="Logo" class="w-16 h-16 mx-auto mb-4 rounded-full">
         <h2 class="text-xl text-center mb-6">Menu</h2>
         <ul class="space-y-4">
             <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
@@ -29,34 +32,28 @@
         </ul>
     </div>
 
-
     <!-- Mobile Sidebar Toggle Button -->
     <button id="menuToggle" class="lg:hidden fixed top-4 left-4 z-30 p-2 bg-blue-900 text-white rounded-md focus:outline-none">
         <i class="fas fa-bars"></i>
     </button>
 
-
     <!-- Main Content -->
-    <div class="lg:ml-64 p-10 space-y-8">
+    <div class="lg:ml-64 p-4 sm:p-10 space-y-8">
         <h1 class="text-3xl font-semibold text-center">Payment for MTOP</h1>
 
-
         <!-- Search Container -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-5xl mx-auto items-center mb-8">
-            <label for="search-id" class="text-lg font-bold col-span-1">Search:</label>
-            <input type="text" id="search-id" placeholder="Search Motor Operator ID" required class="col-span-1 sm:col-span-2 p-3 text-lg border rounded-md border-gray-300 focus:outline-none">
-            <div class="flex space-x-3 col-span-1">
-                <!-- Add an ID or class to the button for functionality -->
+        <div class="flex flex-wrap items-center justify-start gap-4 max-w-5xl mx-auto mb-8">
+            <label for="search-id" class="text-lg font-bold">Search:</label>
+            <div class="flex items-center gap-2">
+                <input type="text" id="search-id" placeholder="Search Motor Operator ID" required class="p-3 text-lg border rounded-md border-gray-300 focus:outline-none">
                 <button id="searchButton" class="px-4 py-3 text-lg font-semibold text-white bg-blue-900 rounded-md hover:bg-blue-700">Search</button>
-                <button id="viewReceiptButton" class="px-4 py-3 text-lg font-semibold text-white bg-blue-900 rounded-md hover:bg-blue-700">View Receipt</button>
             </div>
+            <button id="viewReceiptButton" class="px-4 py-3 text-lg font-semibold text-white bg-blue-900 rounded-md hover:bg-blue-700 ml-auto">View Receipt</button>
         </div>
-        
-
 
         <!-- Details Container -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6 max-w-5xl mx-auto bg-gray-100 rounded-lg shadow-inner">
-            <!-- First Row -->
+            <!-- Applicant Information -->
             <div>
                 <label for="id" class="block text-lg font-bold mb-1">Applicant No:</label>
                 <input type="text" id="id" class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
@@ -78,77 +75,71 @@
                 </select>
             </div>
 
-
-            <!-- Second Row -->
+            <!-- Fees -->
             <div>
-                <label for="filling-fee" class="block text-lg font-bold mb-1">Filling Fee:</label>
-                <input type="text" id="filling-fee" value="₱22.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <label for="filling-fee" class="block text-lg font-bold mb-1">Filing Fee:</label>
+                <input type="number" id="filling-fee" value="22.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
             <div>
-                <label for="business-permit" class="block text-lg font-bold mb-1">Business Permit:</label>
-                <input type="text" id="business-permit" value="₱33.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <label for="business-permit-fee" class="block text-lg font-bold mb-1">Business Permit:</label>
+                <input type="number" id="business-permit-fee" value="33.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
             <div>
-                <label for="mtop" class="block text-lg font-bold mb-1">MTOP:</label>
-                <input type="text" id="mtop" value="₱165.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <label for="mtop-fee" class="block text-lg font-bold mb-1">MTOP Fee:</label>
+                <input type="number" id="mtop-fee" value="165.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
             <div>
-                <label for="pol-med-mayor" class="block text-lg font-bold mb-1">Pol/Med/Mayor:</label>
-                <input type="text" id="pol-med-mayor" value="₱99.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <label for="pol-med-mayor-fee" class="block text-lg font-bold mb-1">Pol/Med/Mayor Fee:</label>
+                <input type="number" id="pol-med-mayor-fee" value="99.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
-            
-            <!-- Third Row -->
             <div>
-                <label for="plate-number" class="block text-lg font-bold mb-1">Plate No./Sticker No.:</label>
-                <input type="text" id="plate-number" value="₱130.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <label for="plate-number-fee" class="block text-lg font-bold mb-1">Plate No./Sticker No.:</label>
+                <input type="number" id="plate-number-fee" value="130.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
             <div>
                 <label for="inspection-fee" class="block text-lg font-bold mb-1">Inspection Fee:</label>
-                <input type="text" id="inspection-fee" value="₱55.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <input type="number" id="inspection-fee" value="55.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
             <div>
-                <label for="id-card" class="block text-lg font-bold mb-1">ID Card:</label>
-                <input type="text" id="id-card" value="₱0.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <label for="id-card-fee" class="block text-lg font-bold mb-1">ID Card:</label>
+                <input type="number" id="id-card-fee" value="0.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
             <div>
                 <label for="sec-fee" class="block text-lg font-bold mb-1">Sec Fee:</label>
-                <input type="text" id="sec-fee" value="₱37.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <input type="number" id="sec-fee" value="37.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
-            
-            <!-- Fourth Row -->
             <div>
-                <label for="dst" class="block text-lg font-bold mb-1">DST:</label>
-                <input type="text" id="dst" value="₱0.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <label for="dst-fee" class="block text-lg font-bold mb-1">DST:</label>
+                <input type="number" id="dst-fee" value="0.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
             <div>
                 <label for="supervision-fee" class="block text-lg font-bold mb-1">Supervision Fee:</label>
-                <input type="text" id="supervision-fee" value="₱40.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <input type="number" id="supervision-fee" value="40.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
             <div>
-                <label for="penalty" class="block text-lg font-bold mb-1">Penalty:</label>
-                <input type="text" id="penalty" value="₱0.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                <label for="penalty-fee" class="block text-lg font-bold mb-1">Penalty:</label>
+                <input type="number" id="penalty-fee" value="0.00" class="fee-input w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
             </div>
-            
-            <!-- Payment Section -->
+
+            <!-- Payment -->
             <div class="col-span-1 sm:col-span-2 lg:col-span-4 grid grid-cols-2 sm:grid-cols-4 gap-4 items-center">
-                <div class="col-span-1">
+                <div>
                     <label for="total" class="block text-lg font-bold mb-1">Total:</label>
-                    <input type="text" id="total" value="₱581.00" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+                    <input type="text" id="total" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
                 </div>
-                <div class="col-span-1">
+                <div>
                     <label for="units" class="block text-lg font-bold mb-1">Units:</label>
                     <input type="number" id="units" value="1" class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
                 </div>
-                <div class="col-span-1">
+                <div>
                     <label for="amount" class="block text-lg font-bold mb-1">Amount:</label>
                     <input type="number" id="amount" class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
                 </div>
-                <div class="col-span-1">
+                <div>
                     <label for="change" class="block text-lg font-bold mb-1">Change:</label>
                     <input type="text" id="change" readonly class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
                 </div>
             </div>
-            
 
             <!-- Action Buttons -->
             <div class="col-span-1 sm:col-span-2 lg:col-span-4 flex justify-center gap-6 mt-4">
@@ -158,6 +149,6 @@
         </div>
     </div>
 
-<script src="scripts/FindingApplicant.js"></script>
+    <script src="scripts/FindingApplicant.js"></script>
 </body>
 </html>

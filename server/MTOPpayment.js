@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db'); // Adjust to your database configuration
+const pool = require('../public/scripts/db'); // Adjust the path if needed
 
 // Submit payment details
 router.post('/submitPayment', async (req, res) => {
