@@ -57,4 +57,56 @@ router.post('/submitPayment', async (req, res) => {
     }
 });
 
+router.get('/getReceipt/:applicant_no', async (req, res) => {
+    const { applicant_no } = req.params;
+
+    try {
+        const result = await pool.query(
+            `SELECT 
+                applicant_no, operator_name, operator_address, category, units, total, amount_paid, change_due
+             FROM ApplicantPayments
+             WHERE applicant_no = $1`,
+            [applicant_no]
+        );
+
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows[0]);
+        } else {
+            res.status(404).json({ message: 'Receipt not found for the given Applicant No.' });
+        }
+    } catch (err) {
+        console.error('Error fetching receipt details:', err);
+        res.status(500).json({ message: 'Server error while fetching receipt details.' });
+    }
+});
+
+// Fetch the past 5 successful receipts
+router.get('/getPastReceipts', async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT 
+                applicant_no, 
+                operator_name, 
+                operator_address, 
+                category, 
+                units, 
+                total, 
+                amount_paid, 
+                change_due
+             FROM ApplicantPayments
+             ORDER BY payment_id DESC -- Replace 'id' with your primary key or ordering column
+             LIMIT 5`
+        );
+
+        if (result.rows.length > 0) {
+            res.status(200).json(result.rows);
+        } else {
+            res.status(404).json({ message: 'No past receipts found.' });
+        }
+    } catch (err) {
+        console.error('Error fetching past receipts:', err);
+        res.status(500).json({ message: 'Server error while fetching past receipts.' });
+    }
+});
+
 module.exports = router;

@@ -21,6 +21,28 @@ document.getElementById('close-notification').addEventListener('click', () => {
     document.getElementById('notification').classList.add('hidden');
 });
 
+// Function to show the receipt notification
+function showReceiptNotification() {
+    const notification = document.getElementById('receipt-notification');
+    const message = document.getElementById('receipt-notification-message');
+
+    // Customize the message
+    message.textContent = 'Receipt is available. Click the "Receipt" button to view it.';
+
+    // Show the notification
+    notification.classList.remove('hidden');
+
+    // Automatically hide the notification after 5 seconds
+    setTimeout(() => {
+        notification.classList.add('hidden');
+    }, 5000);
+}
+
+// Event listener to close the notification manually
+document.getElementById('close-notification').addEventListener('click', () => {
+    document.getElementById('receipt-notification').classList.add('hidden');
+});
+
 // Function to calculate total dynamically based on units and specific fees
 function calculateDynamicTotal() {
     const fees = {
@@ -168,6 +190,7 @@ async function submitPayment() {
         if (response.ok) {
             const data = await response.json();
             showNotification(data.message);
+            showReceiptNotification();
         } else {
             const errorData = await response.json();
             showNotification(errorData.message || 'Payment submission failed.', 'error');
@@ -178,12 +201,237 @@ async function submitPayment() {
     }
 }
 
+async function fetchAndDisplayReceipt() {
+    const applicantNo = document.getElementById('id').value.trim(); // Fetch Applicant No. from the input field
+
+    // Validate if Applicant No. exists
+    if (!applicantNo) {
+        showNotification('⚠️ Please provide a valid Applicant No. to generate the receipt.', 'error');
+        return;
+    }
+
+    try {
+        // Fetch receipt details from the backend
+        const response = await fetch(`http://localhost:8000/payment/getReceipt/${applicantNo}`);
+
+        if (response.ok) {
+            const receiptData = await response.json();
+            generateReceipt(receiptData);
+        } else {
+            const errorData = await response.json();
+            showNotification(errorData.message || 'Error fetching receipt details.', 'error');
+        }
+    } catch (error) {
+        console.error('Error fetching receipt details:', error);
+        showNotification('🚨 An unexpected error occurred. Please try again.', 'error');
+    }
+}
+
+// Function to generate and print receipt
+function fetchAndDisplayReceipt() {
+    const applicantNo = document.getElementById('id').value.trim();
+    const operatorName = document.getElementById('name').value.trim();
+    const operatorAddress = document.getElementById('address').value.trim();
+    const category = document.getElementById('category').value.trim();
+    const units = parseInt(document.getElementById('units').value) || 0;
+    const total = parseFloat(document.getElementById('total').value.replace('₱', '')) || 0;
+    const amountPaid = parseFloat(document.getElementById('amount').value) || 0;
+    const changeDue = parseFloat(document.getElementById('change').value.replace('₱', '')) || 0;
+
+    const receiptData = {
+        applicant_no: applicantNo,
+        operator_name: operatorName,
+        operator_address: operatorAddress,
+        category: category,
+        units: units,
+        total: total,
+        amount_paid: amountPaid,
+        change_due: changeDue,
+    };
+
+    generateReceipt(receiptData);
+}
+
+// Function to generate the receipt
+function generateReceipt(data) {
+    const receiptWindow = window.open('', '_blank', 'width=300,height=500');
+    const receiptContent = `
+        <html>
+        <head>
+            <title>Receipt</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 20px;
+                    width: 250px;
+                }
+                .receipt {
+                    text-align: center;
+                }
+                .receipt-header {
+                    font-size: 18px;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                }
+                .receipt-details {
+                    margin-top: 20px;
+                    text-align: left;
+                }
+                .receipt-details table {
+                    width: 100%;
+                }
+                .receipt-details table td {
+                    padding: 5px;
+                }
+                .receipt-footer {
+                    margin-top: 20px;
+                    text-align: center;
+                    font-size: 14px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="receipt">
+                <div class="receipt-header">Payment Receipt</div>
+                <div class="receipt-details">
+                    <table>
+                        <tr>
+                            <td>Applicant No:</td>
+                            <td>${data.applicant_no}</td>
+                        </tr>
+                        <tr>
+                            <td>Name:</td>
+                            <td>${data.operator_name}</td>
+                        </tr>
+                        <tr>
+                            <td>Address:</td>
+                            <td>${data.operator_address}</td>
+                        </tr>
+                        <tr>
+                            <td>Category:</td>
+                            <td>${data.category}</td>
+                        </tr>
+                        <tr>
+                            <td>Units:</td>
+                            <td>${data.units}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Amount:</td>
+                            <td>₱${data.total.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>Amount Paid:</td>
+                            <td>₱${data.amount_paid.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>Change Due:</td>
+                            <td>₱${data.change_due.toFixed(2)}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="receipt-footer">
+                    <p>Thank you for your payment!</p>
+                    <p>Powered by Payment System</p>
+                </div>
+                <button onclick="window.print();">Print Receipt</button>
+            </div>
+        </body>
+        </html>
+    `;
+    receiptWindow.document.write(receiptContent);
+    receiptWindow.document.close();
+    receiptWindow.focus();
+}
+
+// Function to fetch and display past 5 receipts
+async function fetchAndDisplayPastReceipts() {
+    try {
+        // Fetch the last 5 receipts from the backend
+        const response = await fetch('http://localhost:8000/payment/getPastReceipts');
+
+        if (response.ok) {
+            const receipts = await response.json();
+            displayReceipts(receipts); // Pass receipts data to display function
+        } else {
+            const errorData = await response.json();
+            showNotification(errorData.message || 'Error fetching past receipts.', 'error');
+        }
+    } catch (error) {
+        console.error('Error fetching past receipts:', error);
+        showNotification('🚨 An unexpected error occurred. Please try again.', 'error');
+    }
+}
+
+// Function to fetch and display past 5 receipts
+function displayReceipts(receipts) {
+    // Ensure receipts are not empty
+    if (!receipts || receipts.length === 0) {
+        showNotification('No past receipts available.', 'error');
+        return;
+    }
+
+    // Create a modal for displaying the receipts
+    const modalContent = `
+        <div class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-[90%] h-[80%] overflow-y-scroll">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold">Past 5 Receipts</h2>
+                    <button id="closeModal" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Close</button>
+                </div>
+                <div class="grid grid-cols-4 gap-4">
+                    ${receipts
+                        .map(
+                            (receipt, index) => `
+                        <div class="border border-gray-300 rounded-lg p-4 shadow-md">
+                            <p><strong>Applicant No:</strong> ${receipt.applicant_no}</p>
+                            <p><strong>Name:</strong> ${receipt.operator_name}</p>
+                            <p><strong>Address:</strong> ${receipt.operator_address}</p>
+                            <p><strong>Category:</strong> ${receipt.category}</p>
+                            <p><strong>Units:</strong> ${receipt.units}</p>
+                            <p><strong>Total:</strong> <input type="number" id="total-${index}" class="editable w-full border rounded px-2 py-1" value="${parseFloat(receipt.total).toFixed(2)}" /></p>
+                            <p><strong>Amount Paid:</strong> <input type="number" id="amountPaid-${index}" class="editable w-full border rounded px-2 py-1" value="${parseFloat(receipt.amount_paid).toFixed(2)}" /></p>
+                            <p><strong>Change Due:</strong> <input type="number" id="changeDue-${index}" class="editable w-full border rounded px-2 py-1" value="${parseFloat(receipt.change_due).toFixed(2)}" readonly /></p>
+                        </div>
+                    `
+                        )
+                        .join('')}
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Append the modal to the body
+    const modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalContent;
+    document.body.appendChild(modalContainer);
+
+    // Add event listener for dynamically updating "Change Due" on input change
+    receipts.forEach((receipt, index) => {
+        document.getElementById(`amountPaid-${index}`).addEventListener('input', function () {
+            const total = parseFloat(document.getElementById(`total-${index}`).value) || 0;
+            const amountPaid = parseFloat(this.value) || 0;
+            const changeDue = Math.max(amountPaid - total, 0); // Ensure no negative values
+            document.getElementById(`changeDue-${index}`).value = changeDue.toFixed(2);
+        });
+    });
+
+    // Add event listener to close the modal
+    document.getElementById('closeModal').addEventListener('click', () => {
+        modalContainer.remove();
+    });
+}
+// Attach the fetchAndDisplayPastReceipts function to the "View Receipt" button
+document.getElementById('viewReceiptButton').addEventListener('click', fetchAndDisplayPastReceipts);
+
+
 // Attach event listeners
 document.getElementById('searchButton').addEventListener('click', fetchApplicantDetails);
 document.querySelectorAll('.fee-input').forEach((input) => input.addEventListener('input', calculateDynamicTotal));
 document.getElementById('units').addEventListener('input', calculateDynamicTotal);
 document.getElementById('amount').addEventListener('input', calculateChange);
 document.getElementById('pay-button').addEventListener('click', submitPayment);
+document.getElementById('receiptButton').addEventListener('click', fetchAndDisplayReceipt);
 
 // Sidebar toggle logic
 const menuToggle = document.getElementById('menuToggle');
