@@ -33,6 +33,8 @@ const Occuformhandler = require('./server/Occuformhandler');
 const Occustatus = require('./server/Occustatus');
 const SubmissionOccu = require('./server/SubmissionOccu');
 const MtopForm = require('./server/MtopForm');
+const Occupayment = require('./server/Occupayment');
+
 
 // Middleware configuration
 app.use(cors());
@@ -94,6 +96,7 @@ app.use('/submit', permitSession, Occuformhandler);
 app.use('/status', permitSession, Occustatus);
 app.use('/', SubmissionOccu);
 app.use('/', MtopForm);
+app.use('/payment', Occupayment);
 
 // Root route to serve the homepage or a welcome message
 app.get('/', (req, res) => {
