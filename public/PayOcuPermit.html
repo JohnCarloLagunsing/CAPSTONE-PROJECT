@@ -11,8 +11,6 @@
     <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
 </head>
 <body class="font-sans overflow-x-hidden bg-gray-50">
-
-
     <!-- Sidebar -->
     <div id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
         <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
@@ -27,128 +25,379 @@
         </ul>
     </div>
 
-
     <!-- Mobile Sidebar Toggle Button -->
     <button id="menuToggle" class="lg:hidden fixed top-4 left-4 z-30 p-2 bg-blue-900 text-white rounded-md focus:outline-none">
         <i class="fas fa-bars"></i>
     </button>
 
+    <div id="receiptModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden z-50">
+        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-lg">
+            <h2 class="text-2xl font-bold text-center mb-6">Receipt</h2>
+            <div id="receiptContent" class="text-base text-gray-700 space-y-4 max-h-96 overflow-y-auto">
+                <!-- Title -->
+                <p class="font-semibold text-center border-t border-gray-300 pt-4">
+                    Receipt for Occupational Payment
+                </p>
+    
+                <!-- Personal Information Section -->
+                <div class="space-y-2 border-b border-gray-300 pb-4">
+                    <p><span class="font-bold">Name:</span> Meno M. Catalo</p>
+                    <p><span class="font-bold">Occuid:</span> 025-2024</p>
+                    <p><span class="font-bold">Date Issued:</span> 2024-11-14</p>
+                    <p><span class="font-bold">OR Number:</span> 21</p>
+                </div>
+    
+                <!-- Fee Breakdown Section -->
+                <div class="space-y-2">
+                    <p><span class="font-bold">Police/Medical Clearance Fee:</span> ₱20.00</p>
+                    <p><span class="font-bold">Calling Fee:</span> ₱20.00</p>
+                    <p><span class="font-bold">ID Card Fee:</span> ₱40.00</p>
+                    <p><span class="font-bold">Occupational Fee:</span> ₱170.00</p>
+                </div>
+    
+                <!-- Total Section -->
+                <hr class="my-4 border-gray-300">
+                <div class="space-y-1">
+                    <p><span class="font-bold text-lg">Total:</span> ₱250.00</p>
+                    <p><span class="font-bold">Amount Paid:</span> ₱500.00</p>
+                    <p><span class="font-bold">Change:</span> ₱250.00</p>
+                </div>
+            </div>
+    
+            <!-- Close Button -->
+            <div class="flex justify-center mt-6 space-x-4">
+                <button onclick="printReceipt()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">
+                    Print Receipt
+                </button>                
+                <button onclick="closeReceiptModal()" class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+
+    
+    
+    
 
     <!-- Main Content -->
     <div class="lg:ml-60 p-5 md:p-10 space-y-10">
         <h1 class="text-2xl md:text-3xl font-semibold text-center">Payment for Occupational Permit</h1>
 
-
         <!-- Search Container -->
         <div class="flex flex-wrap items-center max-w-xl mx-auto space-y-4 sm:space-y-0 sm:space-x-4">
             <label for="search-id" class="text-lg font-bold">Search:</label>
             <input type="text" id="search-id" placeholder="Search ID" required class="flex-grow p-3 text-lg border rounded-md border-gray-300 focus:outline-none">
-            <button class="px-4 py-3 text-lg font-semibold text-white bg-blue-900 rounded-md hover:bg-blue-700">Search</button>
-            <button class="px-4 py-3 text-lg font-semibold text-white bg-blue-900 rounded-md hover:bg-blue-700">View Receipt</button>
+            <button onclick="searchRecord()" class="px-4 py-3 text-lg font-semibold text-white bg-blue-900 rounded-md hover:bg-blue-700">Search</button>
+            <button onclick="viewReceipt()" class="px-4 py-3 text-lg font-semibold text-white bg-blue-900 rounded-md hover:bg-blue-700">View Receipt</button>
         </div>
 
-
         <!-- Details Container -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto p-6 bg-gray-100 rounded-lg shadow-inner">
             <!-- Info Container -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto p-6 bg-gray-100 rounded-lg shadow-inner">
-                <!-- Info Container -->
-                <div class="space-y-4">
-                    <label for="id" class="block text-lg font-bold">ID:</label>
-                    <input type="text" id="id" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                   
-                    <label for="name" class="block text-lg font-bold">Name:</label>
-                    <input type="text" id="name" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                   
-                    <label for="address" class="block text-lg font-bold">Address:</label>
-                    <input type="text" id="address" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                   
-                    <label for="date-issued" class="block text-lg font-bold">Date Issued:</label>
-                    <input type="date" id="date-issued" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                   
-                    <label for="expiration-date" class="block text-lg font-bold">Expiration Date:</label>
-                    <input type="date" id="expiration-date" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                   
-                    <label for="fee" class="block text-lg font-bold">Occupational Fee:</label>
-                    <input type="text" id="fee" value="₱170.00" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                </div>
-            
-                <!-- Payment Container with OR Information -->
-                <div class="space-y-4">
-                    <label for="orNumber" class="block text-lg font-bold">OR Number:</label>
-                    <input type="text" id="orNumber" name="orNumber" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                    
-                    <label for="orExtension" class="block text-lg font-bold">OR Extension:</label>
-                    <input type="text" id="orExtension" name="orExtension" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                    
-                    <label for="orDate" class="block text-lg font-bold">OR Date:</label>
-                    <input type="date" id="orDate" name="orDate" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                    
-                    <label for="orAmount" class="block text-lg font-bold">OR Amount:</label>
-                    <input type="text" id="orAmount" name="orAmount" value="₱" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-            
-                    <label for="total" class="block text-lg font-bold">Total:</label>
-                    <input type="text" id="total" value="₱170.00" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
-                   
-                    <label for="amount" class="block text-lg font-bold">Amount:</label>
-                    <input type="number" id="amount" oninput="calculateChange(); checkInputs();" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-                   
-                    <label for="change" class="block text-lg font-bold">Change:</label>
-                    <input type="text" id="change" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
-                   
-                    <div class="flex flex-wrap gap-2 mt-4">
-                        <button id="pay-button" class="w-full sm:w-1/2 py-4 text-lg font-semibold text-green-700 border-2 border-green-500 rounded-md hover:bg-green-500 hover:text-white transition duration-300 ease-in-out" disabled>PAY</button>
-                        <a href="payment.html" class="w-full sm:w-1/2 py-4 text-lg font-semibold text-red-700 text-center border-2 border-red-500 rounded-md hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">CANCEL</a>
-                    </div>
+            <div class="space-y-4">
+                <label for="id" class="block text-lg font-bold">ID:</label>
+                <input type="text" id="id" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none" readonly>
+               
+                <label for="name" class="block text-lg font-bold">Name:</label>
+                <input type="text" id="name" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none" readonly>
+               
+                <label for="address" class="block text-lg font-bold">Address:</label>
+                <input type="text" id="address" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none" readonly>
+               
+                <label for="date-issued" class="block text-lg font-bold">Date Issued:</label>
+                <input type="date" id="date-issued" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none" readonly>
+
+                <label for="police-medical-clearance-fee" class="block text-lg font-bold">Police/Medical Clearance Fee:</label>
+                <input type="number" id="police-medical-clearance-fee" value="0" oninput="calculateTotal()" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+
+                <label for="calling-fee" class="block text-lg font-bold">Calling Fee:</label>
+                <input type="number" id="calling-fee" value="0" oninput="calculateTotal()" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+
+                <label for="id-card-fee" class="block text-lg font-bold">ID Card Fee:</label>
+                <input type="number" id="id-card-fee" value="0" oninput="calculateTotal()" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+
+               
+                <label for="fee" class="block text-lg font-bold">Occupational Fee:</label>
+                <input type="number" id="fee" value="170" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+            </div>
+        
+            <!-- Payment Container with OR Information -->
+            <div class="space-y-4">
+                <label for="orNumber" class="block text-lg font-bold">OR Number:</label>
+                <input type="text" id="orNumber" name="orNumber" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                
+                <label for="total" class="block text-lg font-bold">Total:</label>
+                <input type="number" id="total" value="170" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+               
+                <label for="amount" class="block text-lg font-bold">Amount Paid:</label>
+                <input type="number" id="amount" oninput="calculateChange()" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+               
+                <label for="change" class="block text-lg font-bold">Change:</label>
+                <input type="number" id="change" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none bg-gray-200">
+               
+                <div class="flex flex-wrap gap-2 mt-4">
+                    <button id="pay-button" onclick="savePayment()" class="w-full sm:w-1/2 py-4 text-lg font-semibold text-green-700 border-2 border-green-500 rounded-md hover:bg-green-500 hover:text-white transition duration-300 ease-in-out" disabled>PAY</button>
+                    <a href="payment.html" class="w-full sm:w-1/2 py-4 text-lg font-semibold text-red-700 text-center border-2 border-red-500 rounded-md hover:bg-red-500 hover:text-white transition duration-300 ease-in-out">CANCEL</a>
                 </div>
             </div>
+        </div>
+    </div>
+
 
     <!-- JavaScript for Sidebar Toggle -->
     <script>
+
+        async function searchRecord() {
+            const searchValue = document.getElementById('search-id').value;
+            if (!searchValue) {
+                alert('Please enter an ID or Name to search.');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8000/payment/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ searchValue: searchValue.trim() }),
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('id').value = result.data.Occuid;
+                    document.getElementById('name').value = result.data.name;
+                    document.getElementById('address').value = result.data.Address;
+
+                    const dateIssued = new Date(result.data.date_issued);
+                    const formattedDate = dateIssued.toISOString().split('T')[0];
+                    document.getElementById('date-issued').value = formattedDate;
+                } else {
+                    alert('No record found.');
+                    clearInputs();
+                }
+            } catch (error) {
+                console.error('Error fetching record:', error);
+                alert('An error occurred while fetching the record.');
+            }
+        }
+
+        function calculateTotal() {
+            const fee = parseFloat(document.getElementById('fee').value) || 0;
+            const policeMedicalFee = parseFloat(document.getElementById('police-medical-clearance-fee').value) || 0;
+            const callingFee = parseFloat(document.getElementById('calling-fee').value) || 0;
+            const idCardFee = parseFloat(document.getElementById('id-card-fee').value) || 0;
+            const total = fee + policeMedicalFee + callingFee + idCardFee;
+            document.getElementById('total').value = total.toFixed(2);
+            checkInputs();
+        }
+
+        function calculateChange() {
+            const total = parseFloat(document.getElementById('total').value) || 0;
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            const change = amount - total;
+            document.getElementById('change').value = change.toFixed(2);
+            checkInputs();
+        }
+
+        function checkInputs() {
+            const total = parseFloat(document.getElementById('total').value) || 0;
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            document.getElementById('pay-button').disabled = amount < total;
+        }
+
+        async function savePayment() {
+    const paymentData = {
+        occuid: document.getElementById('id').value,
+        name: document.getElementById('name').value,
+        dateIssued: document.getElementById('date-issued').value,
+        policeMedicalClearance: parseFloat(document.getElementById('police-medical-clearance-fee').value) || 0,
+        callingFee: parseFloat(document.getElementById('calling-fee').value) || 0,
+        idCardFee: parseFloat(document.getElementById('id-card-fee').value) || 0,
+        occupationalFee: parseFloat(document.getElementById('fee').value) || 0,
+        total: parseFloat(document.getElementById('total').value) || 0,
+        amountPaid: parseFloat(document.getElementById('amount').value) || 0,
+        orNumber: document.getElementById('orNumber').value,
+    };
+
+    try {
+        const response = await fetch('http://localhost:8000/payment/save-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(paymentData),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            showReceiptModal(result.receipt); // Pass the receipt data
+            clearInputs();
+        } else if (result.message === 'The applicant has already paid.') {
+    alert(result.message); // Show an alert for already paid applicants
+}
+ else {
+            alert('Failed to save payment: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error saving payment:', error);
+        alert('An error occurred while saving the payment.');
+    }
+}
+
+
+function showReceiptModal(receiptData) {
+    const receiptHTML = `
+        <p class="font-semibold text-center border-t border-gray-300 pt-4">Receipt for Occupational Payment</p>
+        <div class="space-y-2 border-b border-gray-300 pb-4">
+            <p><span class="font-bold">Name:</span> ${receiptData.name}</p>
+            <p><span class="font-bold">Occuid:</span> ${receiptData.occuid}</p>
+            <p><span class="font-bold">Date Issued:</span> ${receiptData.dateIssued}</p>
+            <p><span class="font-bold">OR Number:</span> ${receiptData.orNumber}</p>
+        </div>
+        <div class="space-y-2">
+            <p><span class="font-bold">Police/Medical Clearance Fee:</span> ₱${receiptData.policeFee}</p>
+            <p><span class="font-bold">Calling Fee:</span> ₱${receiptData.callingFee}</p>
+            <p><span class="font-bold">ID Card Fee:</span> ₱${receiptData.idCardFee}</p>
+            <p><span class="font-bold">Occupational Fee:</span> ₱${receiptData.occupationalFee}</p>
+        </div>
+        <hr class="my-4 border-gray-300">
+        <div class="space-y-1">
+            <p><span class="font-bold text-lg">Total:</span> ₱${receiptData.total}</p>
+            <p><span class="font-bold">Amount Paid:</span> ₱${receiptData.amountPaid}</p>
+            <p><span class="font-bold">Change:</span> ₱${receiptData.change}</p>
+        </div>`;
+    
+    document.getElementById('receiptContent').innerHTML = receiptHTML;
+    document.getElementById('receiptModal').classList.remove('hidden');
+}
+
+
+function closeReceiptModal() {
+    document.getElementById('receiptModal').classList.add('hidden');
+}
+
+
+    
+        function clearInputs() {
+            document.getElementById('id').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('address').value = '';
+            document.getElementById('date-issued').value = '';
+            document.getElementById('police-medical-clearance-fee').value = '0';
+            document.getElementById('calling-fee').value = '0';
+            document.getElementById('id-card-fee').value = '0';
+            document.getElementById('amount').value = '';
+            document.getElementById('orNumber').value = '';
+            document.getElementById('total').value = '';
+            document.getElementById('change').value = '';
+        }
+//function for receipt
+
+async function viewReceipt() {
+    try {
+        const response = await fetch('http://localhost:8000/payment/get-paid-receipts', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            const receiptList = document.getElementById('receiptContent');
+            receiptList.innerHTML = ''; // Clear existing receipts
+
+            result.data.slice(0, 5).forEach(receipt => { // Show only the last 5 receipts
+                const receiptItem = document.createElement('div');
+                receiptItem.classList.add('mb-4', 'border-b', 'border-gray-300', 'pb-2');
+
+                const receiptText = `
+                    <p><strong>ID:</strong> ${receipt.occuid}</p>
+                    <p><strong>Name:</strong> ${receipt.name}</p>
+                    <p><strong>Total Paid:</strong> ₱${receipt.total}</p>
+                    <p><strong>Date Paid:</strong> ${new Date(receipt.date_issued).toLocaleDateString()}</p>
+                    <p><strong>OR Number:</strong> ${receipt.or_number || 'N/A'}</p>
+                `;
+                receiptItem.innerHTML = receiptText;
+                receiptList.appendChild(receiptItem);
+            });
+
+            document.getElementById('receiptModal').classList.remove('hidden');
+        } else {
+            alert(result.message || 'No paid receipts found.');
+        }
+    } catch (error) {
+        console.error('Error fetching paid receipts:', error);
+        alert('An error occurred while fetching the paid receipts.');
+    }
+}
+
+
+
+function closeReceiptModal() {
+    document.getElementById('receiptModal').classList.add('hidden');
+}
+
+
+function closeReceiptModal() {
+    document.getElementById('receiptModal').classList.add('hidden');
+}
+
+    
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
-
 
         menuToggle.addEventListener('click', () => {
             sidebar.classList.toggle('-translate-x-full');
         });
-    </script>
 
-
-    <!-- JavaScript -->
-    <script src="scripts/Calcu.js"></script>
-    <script>
         document.getElementById('logoutButton').addEventListener('click', function(event) {
-    event.preventDefault();
+            event.preventDefault();
+            const modalOverlay = document.createElement('div');
+            modalOverlay.className = "fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50";
+            modalOverlay.id = "logoutModal";
 
-    // Create a modal container
-    const modalOverlay = document.createElement('div');
-    modalOverlay.className = "fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50";
-    modalOverlay.id = "logoutModal";
+            modalOverlay.innerHTML = `
+                <div class="bg-white rounded-lg shadow-lg p-6 w-80">
+                    <h3 class="text-xl font-semibold mb-4">Are you sure you want to log out?</h3>
+                    <div class="flex justify-end space-x-4">
+                        <button id="cancelLogout" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+                        <button id="confirmLogout" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Logout</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modalOverlay);
 
-    // Modal content
-    modalOverlay.innerHTML = `
-        <div class="bg-white rounded-lg shadow-lg p-6 w-80">
-            <h3 class="text-xl font-semibold mb-4">Are you sure you want to log out?</h3>
-            <div class="flex justify-end space-x-4">
-                <button id="cancelLogout" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
-                <button id="confirmLogout" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Logout</button>
-            </div>
+            document.getElementById('cancelLogout').addEventListener('click', function() {
+                modalOverlay.remove();
+            });
+
+            document.getElementById('confirmLogout').addEventListener('click', function() {
+                window.location.href = 'login.html';
+            });
+        });
+
+        function printReceipt() {
+    const receiptModal = document.getElementById('receiptModal'); // The receipt modal
+    const originalContent = document.body.innerHTML; // Save the original content of the body
+
+    // Replace the body's content with the receipt modal's content
+    document.body.innerHTML = `
+        <div class="bg-white p-6">
+            ${receiptModal.innerHTML}
         </div>
     `;
 
-    // Append modal to the body
-    document.body.appendChild(modalOverlay);
+    window.print(); // Open the print dialog
 
-    // Add event listener for cancel button
-    document.getElementById('cancelLogout').addEventListener('click', function() {
-        modalOverlay.remove(); // Remove modal from DOM on cancel
-    });
+    // Restore the original content of the page
+    document.body.innerHTML = originalContent;
+    location.reload(); // Reload to restore JavaScript functionality
+}
 
-    // Add event listener for confirm logout button
-    document.getElementById('confirmLogout').addEventListener('click', function() {
-        window.location.href = 'login.html'; // Redirect to login.html on confirm
-    });
-});
+
+
     </script>
 </body>
 </html>
