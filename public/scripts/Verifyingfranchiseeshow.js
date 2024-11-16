@@ -204,15 +204,6 @@
             });
         });
 
-        // Logout confirmation
-        document.getElementById('logoutButton').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent the default link behavior
-            var confirmation = confirm("Are you sure you want to log out?");
-            if (confirmation) {
-                window.location.href = 'login.html'; // Redirect to the login page
-            }
-        });
-
         // Print button functionality
         document.getElementById('printBtn').addEventListener('click', function() {
             // Get the modal content
