@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -167,79 +166,48 @@
             sidebar.classList.toggle('-translate-x-full');
         });
     </script>
-
-
-    <!-- JavaScript -->
-     <!-- JavaScript for Calculating Total and Change -->
-     <script src="scripts/Calcu.js"></script>
-
-<!-- Include SweetAlert for modern alert messages -->
+    
 <script>
-    // Add event listener to the "Search" button
-    document.getElementById('searchButton').addEventListener('click', fetchApplicantData);
+    // Function to calculate the total based on units
+    function calculateTotal() {
+        const baseTotal = 581.00; // Base total value
+        const unitsInput = document.getElementById('units');
+        const totalInput = document.getElementById('total');
+        const changeInput = document.getElementById('change');
+        const amountInput = document.getElementById('amount');
+        
+        const units = parseInt(unitsInput.value) || 1; // Default to 1 if invalid
+        const totalValue = (baseTotal * units).toFixed(2); // Multiply base total by units
+        totalInput.value = `₱${totalValue}`; // Update total field
+        
+        // Clear amount and change fields if units are changed
+        amountInput.value = '';
+        changeInput.value = '₱0.00';
+    }
 
-    // Function to fetch applicant data
-    async function fetchApplicantData() {
-        const applicantNo = document.getElementById('search-id').value; // Get the input value
+    // Function to calculate the change based on the entered amount
+    function calculateChange() {
+        const totalInput = document.getElementById('total');
+        const amountInput = document.getElementById('amount');
+        const changeInput = document.getElementById('change');
+        
+        const totalValue = parseFloat(totalInput.value.replace('₱', '')) || 0;
+        const enteredAmount = parseFloat(amountInput.value) || 0;
 
-        if (!applicantNo) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Input Required',
-                text: 'Please enter an Applicant No.',
-            });
-            return;
-        }
-
-        try {
-    // Make a request to the backend to fetch applicant data
-    const response = await fetch(`http://localhost:8000/searchApplicant/${applicantNo}`);
-
-    if (response.ok) {
-        const data = await response.json();
-
-                // Check the application type and handle accordingly
-                if (data.application_type === 'New') {
-                    // Populate the input fields with the fetched data
-                    document.getElementById('id').value = data.applicant_no;
-                    document.getElementById('name').value = data.operator_name;
-                    document.getElementById('address').value = data.operator_address;
-                } else if (data.application_type === 'Renewal') {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Renewal Alert',
-                        text: 'Renewal applicants need to pay in the new year of their application date.',
-                    });
-                }
-            } else if (response.status === 400) {
-                const error = await response.json();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Action Not Allowed',
-                    text: error.message,
-                });
-            } else if (response.status === 404) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Not Found',
-                    text: 'Applicant not found.',
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An unexpected error occurred. Please try again later.',
-                });
-            }
-        } catch (error) {
-            console.error('Error fetching applicant data:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Could not connect to the server. Please try again later.',
-            });
+        if (enteredAmount >= totalValue) {
+            const changeValue = (enteredAmount - totalValue).toFixed(2);
+            changeInput.value = `₱${changeValue}`;
+        } else {
+            changeInput.value = '₱0.00'; // Reset change if amount is less than total
         }
     }
+
+    // Attach event listeners
+    document.getElementById('units').addEventListener('input', calculateTotal);
+    document.getElementById('amount').addEventListener('input', calculateChange);
 </script>
+
+
+<script src="scripts/FindingApplicant.js"></script>
 </body>
 </html>

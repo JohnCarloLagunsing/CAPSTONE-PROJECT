@@ -34,6 +34,7 @@ const Occustatus = require('./server/Occustatus');
 const SubmissionOccu = require('./server/SubmissionOccu');
 const MtopForm = require('./server/MtopForm');
 const Occupayment = require('./server/Occupayment');
+const SearchingApplicant = require('./server/SearchingApplicant.js'); // Correct capitalization
 
 
 // Middleware configuration
@@ -97,6 +98,8 @@ app.use('/status', permitSession, Occustatus);
 app.use('/', SubmissionOccu);
 app.use('/', MtopForm);
 app.use('/payment', Occupayment);
+app.use('/applicant', SearchingApplicant);
+
 
 // Root route to serve the homepage or a welcome message
 app.get('/', (req, res) => {
