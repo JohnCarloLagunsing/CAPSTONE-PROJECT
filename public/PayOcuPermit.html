@@ -10,28 +10,41 @@
     <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
     <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
   <style>
-    @media print {
-        body {
-            overflow: hidden; /* Remove scrollbars from the page */
-        }
-
-        #receiptModal {
-            position: static; /* Allow the modal to expand naturally */
-            max-height: none; /* Ensure the modal content is fully visible */
-            overflow: visible; /* Disable scrolling within the modal */
-            width: 100%; /* Optional: Make modal span full width for printing */
-        }
-
-        #receiptContent {
-            max-height: none; /* Allow content to expand fully */
-            overflow: visible; /* Disable internal scrollbars */
-        }
-
-        /* Hide unnecessary elements during printing */
-        button, #menuToggle, #sidebar, .not-for-print {
-            display: none;
-        }
+   @media print {
+    @page {
+        size: statement; /* Statement size: 5.5 x 8.5 inches */
+        margin: 0; /* Optional: Adjust to control margins */
     }
+
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    #receiptModal {
+        position: static;
+        max-width: 5.5in; /* Match statement size width */
+        height: 8.5in; /* Match statement size height */
+        margin: auto; /* Center modal on the page */
+        box-sizing: border-box;
+        padding: 1in; /* Optional: Add padding */
+        background-color: white; /* Ensure a white background for printing */
+        overflow: visible;
+    }
+
+    #receiptContent {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
+    /* Hide unnecessary UI elements */
+    button, #menuToggle, #sidebar, .not-for-print {
+        display: none;
+    }
+}
+
 </style>
 
     </style>
@@ -406,21 +419,13 @@ function closeReceiptModal() {
         });
 
         function printReceipt() {
-    const receiptModal = document.getElementById('receiptModal'); // The receipt modal
-    const originalContent = document.body.innerHTML; // Save the original content of the body
+    const originalContent = document.body.innerHTML; // Save the original content
+    const receiptModal = document.getElementById('receiptModal').outerHTML; // Get the modal content
 
-    // Replace the body's content with the receipt modal's content
-    document.body.innerHTML = `
-        <div class="bg-white p-6">
-            ${receiptModal.innerHTML}
-        </div>
-    `;
-
-    window.print(); // Open the print dialog
-
-    // Restore the original content of the page
-    document.body.innerHTML = originalContent;
-    location.reload(); // Reload to restore JavaScript functionality
+    document.body.innerHTML = receiptModal; // Replace the body with the modal content
+    window.print(); // Trigger the print dialog
+    document.body.innerHTML = originalContent; // Restore the original content
+    location.reload(); // Reload the page to reinitialize JavaScript
 }
 
 
