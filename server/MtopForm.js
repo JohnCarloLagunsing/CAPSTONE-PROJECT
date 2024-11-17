@@ -8,13 +8,18 @@ router.use(cors());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
+// Function to show response messages in modern style
+const sendModernResponse = (res, statusCode, message, data = null) => {
+    res.status(statusCode).json({ message, data });
+};
+
 // Endpoint to submit MTOP form data
 router.post('/submitMtopForm', async (req, res) => {
     console.log('Request Body:', req.body); // Log request body for debugging
     const client = await pool.connect();
     try {
         const {
-            applicationType,    // New or Renewal
+            applicationType,
             applicantNo,
             operatorName,
             operatorAddress,
@@ -30,19 +35,23 @@ router.post('/submitMtopForm', async (req, res) => {
 
         await client.query('BEGIN');
 
-        if (applicationType === 'New') {
-            // Check if applicantNo already exists in the database for new applications
-            const checkQuery = 'SELECT id FROM MtopApplication WHERE applicant_no = $1';
-            const checkResult = await client.query(checkQuery, [applicantNo]);
+        const currentYear = new Date().getFullYear();
+        const checkQuery = 'SELECT id, application_date FROM MtopApplication WHERE applicant_no = $1';
+        const checkResult = await client.query(checkQuery, [applicantNo]);
 
-            if (checkResult.rows.length > 0) {
+        if (checkResult.rows.length > 0) {
+            const existingApplicationDate = new Date(checkResult.rows[0].application_date);
+            if (existingApplicationDate.getFullYear() === currentYear) {
                 await client.query('ROLLBACK');
-                return res.status(400).json({ message: 'Applicant No. already exists for a new application.' });
+                return sendModernResponse(
+                    res,
+                    400,
+                    'Applicant No. already exists for the current year. Submission not allowed.'
+                );
             }
         }
 
         if (applicationType === 'Renewal') {
-            // Update existing record for renewal
             const updateQuery = `
                 UPDATE MtopApplication
                 SET 
@@ -74,9 +83,8 @@ router.post('/submitMtopForm', async (req, res) => {
             ]);
 
             await client.query('COMMIT');
-            res.json({ id: result.rows[0].id }); // Return response without success message
+            return sendModernResponse(res, 200, 'Renewal application successfully updated.', result.rows[0]);
         } else {
-            // Insert new record for new application
             const insertMtopQuery = `
                 INSERT INTO MtopApplication (
                     application_type,
@@ -110,12 +118,12 @@ router.post('/submitMtopForm', async (req, res) => {
             ]);
 
             await client.query('COMMIT');
-            res.json({ id: result.rows[0].id }); // Return response without success message
+            return sendModernResponse(res, 200, 'New application successfully submitted.', result.rows[0]);
         }
     } catch (err) {
         await client.query('ROLLBACK');
         console.error('Error submitting MTOP form:', err);
-        res.status(500).json({ message: 'Error submitting form' });
+        return sendModernResponse(res, 500, 'An error occurred while submitting the form.');
     } finally {
         client.release();
     }
@@ -132,18 +140,17 @@ router.get('/searchApplicant/:applicantNo', async (req, res) => {
             const applicationDate = new Date(applicantData.application_date);
             const currentYear = new Date().getFullYear();
 
-            // Check if applicationDate is not from the current year to allow renewal
             if (applicationDate.getFullYear() !== currentYear) {
-                res.json(applicantData); // Return applicant data if renewal is allowed
+                return sendModernResponse(res, 200, 'Applicant data retrieved successfully.', applicantData);
             } else {
-                res.status(400).json({ message: 'Renewal not allowed as the application is already within the current year.' });
+                return sendModernResponse(res, 400, 'Renewal not allowed as the application is already within the current year.');
             }
         } else {
-            res.status(404).json({ message: 'Applicant not found.' });
+            return sendModernResponse(res, 404, 'Applicant not found.');
         }
     } catch (err) {
         console.error('Error searching for applicant:', err);
-        res.status(500).json({ message: 'Error searching for applicant.' });
+        return sendModernResponse(res, 500, 'An error occurred while searching for the applicant.');
     }
 });
 
