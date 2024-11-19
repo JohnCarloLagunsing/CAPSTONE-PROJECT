@@ -36,6 +36,7 @@ const MtopForm = require('./server/MtopForm');
 const Occupayment = require('./server/Occupayment');
 const SearchingApplicant = require('./server/SearchingApplicant.js'); // Correct capitalization
 const MTOPpayment = require('./server/MTOPpayment');
+const VerifyingMTOP = require('./server/VerifyingMTOP.js')
 
 
 // Middleware configuration
@@ -101,6 +102,7 @@ app.use('/', MtopForm);
 app.use('/payment', Occupayment);
 app.use('/applicant', SearchingApplicant);
 app.use('/payment', MTOPpayment);
+app.use('/api', VerifyingMTOP);
 
 
 // Root route to serve the homepage or a welcome message
