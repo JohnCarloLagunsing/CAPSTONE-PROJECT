@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecenter San Luis - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+<body class="bg-gray-100">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
+            <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
+            <h2 class="text-xl text-center mb-6">Menu</h2>
+            <ul class="space-y-4">
+                <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
+                <li><a href="VerifyingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
+                <li><a href="VerifyingMTOP.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Verifying MTOP</a></li>
+                <li><a href="AdminOccuForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Occupational Form</a></li>
+                <li><a href="MtopForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> MTOP Form</a></li>
+                <li><a href="payment.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-wallet-alt mr-2'></i> Payment</a></li>
+                <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Toggle Button -->
+        <button id="menuToggle" class="lg:hidden fixed top-4 left-4 z-30 p-2 bg-blue-900 text-white rounded-md focus:outline-none" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+    <!-- Content -->
+    <div class="flex-1 lg:ml-56 p-6">
+        <h1 class="text-2xl font-bold mb-4">Verifying MTOP</h1>
+
+        <!-- Search Bar -->
+        <div class="flex mb-4">
+            <input type="text" class="flex-grow p-2 border rounded-md" placeholder="Search">
+            <button class="bg-blue-900 text-white px-4 ml-2 rounded-md">Search</button>
+        </div>
+
+        <!-- Table -->
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-blue-900 text-white">
+                    <th class="p-2 border border-gray-300">#</th>
+                    <th class="p-2 border border-gray-300">MTOP ID</th>
+                    <th class="p-2 border border-gray-300">Documents</th>
+                    <th class="p-2 border border-gray-300">Status</th>
+                </tr>
+            </thead>
+            <tbody id="mtopTableBody" class="bg-white"></tbody>
+        </table>
+        <div id="pagination" class="flex justify-center space-x-4 mt-4"></div>
+        
+<!-- Image Modal -->
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+    <div
+        class="bg-white rounded-lg relative p-4"
+        style="width: 4in; height: 6in; display: flex; flex-direction: column; justify-content: center; align-items: center;"
+    >
+        <!-- Close Button -->
+        <button id="closeModal" class="absolute top-2 left-2 bg-white text-red-500 font-bold text-lg rounded-full p-2 shadow-lg">
+            X
+        </button>
+        <!-- Modal Image -->
+        <img id="modalImage" src="" alt="Document" class="h-full w-full object-cover rounded-md">
+    </div>
+</div>
+
+<script>
+    // Function to fetch data from backend
+    let currentPage = 1;
+
+    async function fetchScandocuments(page = 1) {
+        try {
+            const response = await fetch(`http://localhost:8000/api/fetchMTOPDetails?page=${page}&limit=10`); // Paginated request
+            const responseData = await response.json();
+
+            if (responseData.status === 'success') {
+                const tableBody = document.getElementById('mtopTableBody');
+                tableBody.innerHTML = ''; // Clear existing table rows
+
+                responseData.data.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-t';
+
+                    // Generate 7 image icons for documents
+                    const imagesHTML = `
+                        <img src="" data-src="data:image/png;base64,${item.documents.barangay_clearance}" alt="Barangay Clearance" class="lazy w-8 h-8 cursor-pointer" onclick="viewImage('data:image/png;base64,${item.documents.barangay_clearance}')">
+                        <img src="" data-src="data:image/png;base64,${item.documents.police_clearance}" alt="Police Clearance" class="lazy w-8 h-8 cursor-pointer" onclick="viewImage('data:image/png;base64,${item.documents.police_clearance}')">
+                        <img src="" data-src="data:image/png;base64,${item.documents.sss_certificate}" alt="SSS Certificate" class="lazy w-8 h-8 cursor-pointer" onclick="viewImage('data:image/png;base64,${item.documents.sss_certificate}')">
+                        <img src="" data-src="data:image/png;base64,${item.documents.philhealth_certificate}" alt="Philhealth Certificate" class="lazy w-8 h-8 cursor-pointer" onclick="viewImage('data:image/png;base64,${item.documents.philhealth_certificate}')">
+                        <img src="" data-src="data:image/png;base64,${item.documents.applicant_fee}" alt="Application Fee" class="lazy w-8 h-8 cursor-pointer" onclick="viewImage('data:image/png;base64,${item.documents.applicant_fee}')">
+                        <img src="" data-src="data:image/png;base64,${item.documents.certificate_of_registration}" alt="Certificate of Registration" class="lazy w-8 h-8 cursor-pointer" onclick="viewImage('data:image/png;base64,${item.documents.certificate_of_registration}')">
+                        <img src="" data-src="data:image/png;base64,${item.documents.drivers_license}" alt="Driver's License" class="lazy w-8 h-8 cursor-pointer" onclick="viewImage('data:image/png;base64,${item.documents.drivers_license}')">
+                    `;
+
+                    row.innerHTML = `
+                        <td class="p-2 text-center">${(page - 1) * 10 + index + 1}</td>
+                        <td class="p-2 text-center">${item.mtop_id}</td>
+                        <td class="p-2 flex space-x-2 justify-center">${imagesHTML}</td>
+                        <td class="p-2 text-center">
+                            <span class="px-2 py-1 rounded-md bg-gray-200 text-gray-800">
+                                Pending
+                            </span>
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+
+                // Initialize lazy loading after rendering
+                initializeLazyLoading();
+            } else {
+                console.error(responseData.message);
+            }
+        } catch (error) {
+            console.error('Error fetching scan documents:', error);
+        }
+    }
+
+    // Function to open the modal and display the clicked image
+    function viewImage(imageSrc) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        modalImage.src = imageSrc; // Set the source of the modal image
+        modal.classList.remove('hidden'); // Show the modal
+    }
+
+    // Function to close the modal
+    document.getElementById('closeModal').addEventListener('click', () => {
+        const modal = document.getElementById('imageModal');
+        modal.classList.add('hidden'); // Hide the modal
+    });
+
+    // Lazy loading implementation
+    function initializeLazyLoading() {
+        const lazyImages = document.querySelectorAll("img.lazy");
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.getAttribute("data-src"); // Load the image
+                    img.classList.remove("lazy"); // Remove lazy class
+                    observer.unobserve(img); // Stop observing once loaded
+                }
+            });
+        });
+
+        lazyImages.forEach((img) => observer.observe(img));
+    }
+
+    // Pagination controls
+    function updatePaginationControls() {
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = `
+            <button class="px-3 py-1 bg-blue-500 text-white rounded-md" onclick="navigatePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+            <span class="px-3">${currentPage}</span>
+            <button class="px-3 py-1 bg-blue-500 text-white rounded-md" onclick="navigatePage(${currentPage + 1})">Next</button>
+        `;
+    }
+
+    // Navigate to a specific page
+    function navigatePage(page) {
+        if (page < 1) return;
+        currentPage = page;
+        fetchScandocuments(page);
+        updatePaginationControls();
+    }
+
+    // Fetch data on page load
+    window.onload = () => {
+        fetchScandocuments(currentPage);
+        updatePaginationControls();
+    };
+</script>
+
+</body>
+</html>
