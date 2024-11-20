@@ -128,6 +128,7 @@ const protectedRoutes = [
     '/signup',
     '/SignupforInspector',
     '/VerifyingDocuments',
+    '/applicant'
 ];
 
 protectedRoutes.forEach((route) => {
