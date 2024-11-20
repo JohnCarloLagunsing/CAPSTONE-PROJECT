@@ -103,6 +103,45 @@ app.use('/applicant', SearchingApplicant);
 app.use('/payment', MTOPpayment);
 
 
+const isAuthenticated = (req, res, next) => {
+    if (req.session && req.session.userId) {
+        return next();
+    } else {
+        res.redirect('/login');
+    }
+};
+const protectedRoutes = [
+    '/AdminOccuForm',
+    '/applicantdashboard',
+    '/dashboard',
+    '/forgotpassAdmin',
+    '/forgotpassAdmin2',
+    '/FranchiseForm',
+    '/HeadAdmin',
+    '/HeadDashboard',
+    '/inspectorchangepass',
+    '/inspectorchangepass2',
+    '/login',
+    '/MtopForm',
+    '/occupational',
+    '/occustatus',
+    '/PayForMTOP',
+    '/payment',
+    '/PayOccuPermit',
+    '/signup',
+    '/SignupforInspector',
+    '/VerifyingDocuments',
+];
+
+protectedRoutes.forEach((route) => {
+    app.get(route, isAuthenticated, (req, res) => {
+        const filePath = path.join(__dirname, 'public', `${route.substring(1)}.html`);
+        console.log('Serving file:', filePath); // Debugging file path
+        res.sendFile(filePath);
+    });
+});
+
+
 // Root route to serve the homepage or a welcome message
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'applicant.html')); // Ensure index.html exists in the 'public' folder

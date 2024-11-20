@@ -1,5 +1,3 @@
-// Form Submission & Alerts
-const loadingOverlay = document.getElementById('loadingOverlay');
 document.getElementById("loginForm").addEventListener("submit", async function(event) {
   event.preventDefault();
   const formData = new FormData(this);
@@ -21,20 +19,15 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
       // Redirect on success
       window.location.href = result.redirectUrl;
     } else {
-      // Check for specific error messages in the response
-      if (result.message.includes("Invalid email and password")) {
-        showAlert("Incorrect email or password.", "error");
-      } else if (result.message.includes("Invalid password")) {
-        showAlert("Incorrect password.", "error");
-      } else {
-        showAlert(result.message, "error"); // General error fallback
-      }
+      // Show error message
+      showAlert(result.message, "error");
     }
   } catch (error) {
     showAlert("An error occurred. Please try again.", "error");
     loadingOverlay.style.display = 'none';
   }
 });
+
 
 // Function to display alert messages
 function showAlert(message, type) {
