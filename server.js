@@ -13,6 +13,40 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+// Middleware configuration
+app.use(cors({
+    origin: 'http://your-frontend-url', // Replace with your frontend URL
+    credentials: true, // Allow cookies to be sent
+}));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+// Unified session configuration
+app.use(session({
+    store: new pgSession({
+        pool: pool,
+        tableName: 'permit_session', // Use this table for all session data
+    }),
+    secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        secure: false, // Set to true in production with HTTPS
+        httpOnly: true,
+    },
+}));
+
+// Debugging middleware for session logging
+app.use((req, res, next) => {
+    console.log("Session data on request:", req.session);
+    next();
+});
+
+// Serve static files from 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Import route files
 const loginProcessRouter = require('./server/loginFunc');
 const Analysis = require('./server/Analysis');
@@ -36,48 +70,7 @@ const MtopForm = require('./server/MtopForm');
 const Occupayment = require('./server/Occupayment');
 const SearchingApplicant = require('./server/SearchingApplicant.js'); // Correct capitalization
 const MTOPpayment = require('./server/MTOPpayment');
-const VerifyingMTOP = require('./server/VerifyingMTOP.js')
-
-
-// Middleware configuration
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(cookieParser());
-
-// Serve static files from 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Session configuration
-app.use(session({
-    store: new pgSession({
-        pool: pool,
-        tableName: 'session' // General session table
-    }),
-    secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: app.get('env') === 'production', // Use secure cookies in production
-        httpOnly: true
-    }
-}));
-
-const permitSession = session({
-    store: new pgSession({
-        pool: pool,
-        tableName: 'permit_session' // Permit session table
-    }),
-    secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        secure: app.get('env') === 'production',
-        httpOnly: true
-    }
-});
+const VerifyingMTOP = require('./server/VerifyingMTOP.js');
 
 // Define routes
 app.use('/', loginProcessRouter);
@@ -95,8 +88,8 @@ app.use('/', inspectorchangepass2);
 app.use('/', Signup);
 app.use('/signup', Occupational);
 app.use('/auth', OccupationalApplicants);
-app.use('/submit', permitSession, Occuformhandler);
-app.use('/status', permitSession, Occustatus);
+app.use('/submit', Occuformhandler);
+app.use('/status', Occustatus);
 app.use('/', SubmissionOccu);
 app.use('/', MtopForm);
 app.use('/payment', Occupayment);
@@ -104,14 +97,16 @@ app.use('/applicant', SearchingApplicant);
 app.use('/payment', MTOPpayment);
 app.use('/api', VerifyingMTOP);
 
-
+// Authentication middleware
 const isAuthenticated = (req, res, next) => {
-    if (req.session && req.session.userId) {
+    if (req.session && req.session.user_id) {
         return next();
     } else {
         res.redirect('/login');
     }
 };
+
+// Protect specific routes
 const protectedRoutes = [
     '/AdminOccuForm',
     '/applicantdashboard',
@@ -138,20 +133,18 @@ const protectedRoutes = [
 protectedRoutes.forEach((route) => {
     app.get(route, isAuthenticated, (req, res) => {
         const filePath = path.join(__dirname, 'public', `${route.substring(1)}.html`);
-        console.log('Serving file:', filePath); // Debugging file path
+        console.log('Serving file:', filePath);
         res.sendFile(filePath);
     });
 });
 
-
-// Root route to serve the homepage or a welcome message
+// Root route
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'applicant.html')); // Ensure index.html exists in the 'public' folder
-    // Alternatively, use res.send('Welcome to the homepage!');
+    res.sendFile(path.join(__dirname, 'public', 'applicant.html'));
 });
 
 // Test session route
-app.get('/test-session', permitSession, (req, res) => {
+app.get('/test-session', (req, res) => {
     if (req.session.occuid) {
         res.send(`Session occuid: ${req.session.occuid}`);
     } else {

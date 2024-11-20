@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
-const pool = require('../public/scripts/db'); // Assuming db.js exports a properly configured pool
+const pool = require("../public/scripts/db"); // Assuming db.js exports a properly configured pool
 
 // Helper function to set session
 const setSession = (req, user, role) => {
   req.session.user_id = user.id || user.headadminid; // Use appropriate ID column
-  req.session.first_name = user.first_name || user.firstname;
-  req.session.last_name = user.last_name || user.lastname;
+  req.session.first_name = user.firstname || user.first_name;
+  req.session.last_name = user.lastname || user.last_name;
   req.session.role = role;
   req.session.is_logged_in = true;
 
@@ -33,48 +33,56 @@ router.post("/login", async (req, res) => {
     let user = null;
     let role = null;
 
-    // Debug: Log input values
-    console.log("Login attempt:", { email, password });
+    console.log("Login attempt:", { email });
 
-    // 1. Check in headadmin table first
-    const headadminResult = await pool.query('SELECT * FROM "headadmin" WHERE LOWER(email) = LOWER($1)', [email]);
+    // 1. Check in headadmin table
+    const headadminResult = await pool.query(
+      'SELECT * FROM "headadmin" WHERE LOWER(email) = LOWER($1)',
+      [email]
+    );
     if (headadminResult.rows.length > 0) {
       user = headadminResult.rows[0];
-      user.firstname = user.firstname?.trim();
-      user.lastname = user.lastname?.trim();
-      user.email = user.email?.trim();
-      user.password = user.password?.trim();
-      role = 'headadmin';
+      role = "headadmin";
     }
 
-    // 2. If not found, check in AdminStaff table
-    const adminResult = await pool.query('SELECT * FROM "AdminStaff" WHERE LOWER(email) = LOWER($1)', [email]);
-if (adminResult.rows.length > 0) {
-  user = adminResult.rows[0];
-  user.firstname = user.firstname?.trim();
-  user.lastname = user.lastname?.trim();
-  user.email = user.email?.trim();
-  user.password = user.password?.trim(); // Trim the password to ensure no extra spaces
-  role = 'admin';
-}
-
-
-    // 3. If not found, check in users table (applicants)
+    // 2. Check in AdminStaff table
     if (!user) {
-      const userResult = await pool.query('SELECT * FROM "users" WHERE LOWER(email) = LOWER($1)', [email]);
+      const adminResult = await pool.query(
+        'SELECT * FROM "AdminStaff" WHERE LOWER(email) = LOWER($1)',
+        [email]
+      );
+      if (adminResult.rows.length > 0) {
+        user = adminResult.rows[0];
+        role = "admin";
+      }
+    }
+
+    // 3. Check in users table (applicants)
+    if (!user) {
+      const userResult = await pool.query(
+        'SELECT * FROM "users" WHERE LOWER(email) = LOWER($1)',
+        [email]
+      );
       if (userResult.rows.length > 0) {
         user = userResult.rows[0];
-        role = 'applicant';
+        role = "applicant";
       }
     }
 
     // If no user is found
     if (!user) {
       console.log("User not found in any table.");
-      return res.status(400).json({ message: "Invalid email and password. Please try again." });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
 
-    // Debug: Log fetched user
+    // Clean user fields to remove trailing spaces
+    user.firstname = user.firstname?.trim();
+    user.lastname = user.lastname?.trim();
+    user.email = user.email?.trim();
+    user.password = user.password?.trim();
+    user.role = user.role?.trim();
+
+    // Debug fetched user data
     console.log("Fetched user data:", user);
 
     // Compare passwords
@@ -86,26 +94,32 @@ if (adminResult.rows.length > 0) {
     }
 
     // Handle session and redirection for each role
-    if (role === 'headadmin') {
-      setSession(req, user, role);
+    setSession(req, user, role);
+
+    if (role === "headadmin") {
       console.log("Headadmin login successful:", user.email);
-      return res.status(200).json({ message: "Login successful", redirectUrl: "/HeadDashboard" });
+      return res.status(200).json({
+        message: "Login successful",
+        redirectUrl: "/HeadDashboard.html",
+      });
     }
 
-    if (role === 'admin') {
-      setSession(req, user, role);
+    if (role === "admin") {
       console.log("Admin login successful:", user.email);
-      return res.status(200).json({ message: "Login successful", redirectUrl: "/dashboard" });
+      return res.status(200).json({
+        message: "Login successful",
+        redirectUrl: "/dashboard.html",
+      });
     }
 
-    if (role === 'applicant') {
-      setSession(req, user, role);
-
-      // Clear occuid to avoid stale data
-      req.session.occuid = null;
+    if (role === "applicant") {
+      req.session.occuid = null; // Clear any stale occuid
 
       console.log(`Checking permit_session for user ID: ${user.id}`);
-      const sessionResult = await pool.query("SELECT * FROM permit_session WHERE sid = $1", [user.id]);
+      const sessionResult = await pool.query(
+        "SELECT * FROM permit_session WHERE sid = $1",
+        [user.id]
+      );
 
       if (sessionResult.rows.length === 0) {
         // Create a new session in permit_session
@@ -135,7 +149,9 @@ if (adminResult.rows.length > 0) {
     }
   } catch (error) {
     console.error("Error during login:", error);
-    return res.status(500).json({ message: "An error occurred during login. Please try again later." });
+    return res.status(500).json({
+      message: "An error occurred during login. Please try again later.",
+    });
   }
 });
 
