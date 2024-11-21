@@ -108,7 +108,7 @@ router.post("/login", async (req, res) => {
       console.log("Admin login successful:", user.email);
       return res.status(200).json({
         message: "Login successful",
-        redirectUrl: "/dashboard.html",
+        redirectUrl: "/Dashboard.html",
       });
     }
 
