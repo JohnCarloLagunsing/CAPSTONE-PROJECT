@@ -204,7 +204,7 @@
 // Fetch data for the donut chart
 async function fetchData() {
     try {
-        const response = await fetch('http://capstone-project-six-psi.vercel.app/data/comparison');
+        const response = await fetch('http://capstone-project-six-psi.vercel.app/data/comparison')
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
         return data;
@@ -260,7 +260,7 @@ renderChart();
 // Fetch and render inspection status chart
 async function fetchInspectionStatusAndRenderChart() {
     try {
-        const response = await fetch('http://capstone-project-six-psi.vercel.app/data/inspection-status');
+        const response = await fetch('http://capstone-project-six-psi.vercel.app/data/inspection-status')
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
 
@@ -369,7 +369,7 @@ fetchInspectionStatusAndRenderChart();
 //forecasted Data part 
 async function fetchForecastData() {
     try {
-        const response = await fetch('http://capstone-project-six-psi.vercel.app/data/forecast-data');
+        const response = await fetch('http://capstone-project-six-psi.vercel.app/data/forecast-data')
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
         return data;
