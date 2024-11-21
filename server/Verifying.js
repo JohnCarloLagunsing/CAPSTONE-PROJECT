@@ -126,19 +126,22 @@ router.get('/getOccupationalApplicants', (req, res) => {
     });
 });
 
-// Route to update status
-// Route to update status
-// Route to update status
-// Route to update status
 router.post('/updateStatus', (req, res) => {
     console.log("Session data in Verifying.js:", req.session);
+
     const { tfid, occuid, status, firstname, lastname } = req.body;
-    const processedBy = (firstname || req.session.firstname || '').trim() + ' ' + (lastname || req.session.lastname || '').trim();
+    const processedBy = [
+        firstname?.trim() || req.session.first_name || req.session.firstname || '',
+        lastname?.trim() || req.session.last_name || req.session.lastname || ''
+    ].filter(Boolean).join(' ');
 
     console.log("Processed By:", processedBy); // Check what is being passed
 
+    if (!occuid && !tfid) {
+        return res.status(400).send('Missing required parameters: tfid or occuid');
+    }
+
     if (occuid) {
-        // Update for occupational applicants
         const sqlUpdateOccustatus = `
             UPDATE occustatus
             SET status = $1, process_by = $2
@@ -152,7 +155,6 @@ router.post('/updateStatus', (req, res) => {
             res.json({ message: 'Occustatus updated successfully' });
         });
     } else if (tfid) {
-        // Update for tricycle franchise applicants
         const sqlUpdateStatus = `
             UPDATE status
             SET status = $1, processed_by = $2
@@ -165,8 +167,6 @@ router.post('/updateStatus', (req, res) => {
             }
             res.json({ message: 'Status updated successfully' });
         });
-    } else {
-        res.status(400).send('Missing tfid or occuid');
     }
 });
 

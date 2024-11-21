@@ -465,7 +465,7 @@ renderForecastChart();
 // Fetch vehicle types and render pie chart
 async function fetchInspectionDataAndRenderChart() {
     try {
-        const response = await fetch('http://localhost:8000/data/inspections-by-town');
+        const response = await fetch('http://capstone-project-six-psi.vercel.app/data/inspections-by-town');
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const inspections = await response.json();
 
