@@ -14,7 +14,14 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Middleware configuration
-app.use(cors());
+app.use(
+    cors({
+      origin: 'https://capstone-project-six-psi.vercel.app', // Replace with your actual domain
+      methods: '*', // Allows all HTTP methods
+      credentials: true, // Include credentials (cookies, authorization headers, etc.)
+    })
+  );
+  
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
