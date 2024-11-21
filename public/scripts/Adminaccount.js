@@ -8,7 +8,7 @@
      event.preventDefault();
      var confirmation = confirm("Are you sure you want to log out?");
      if (confirmation) {
-         window.location.href = 'HeadAdmin.html';
+         window.location.href = 'applicant.html';
      }
  });
 
