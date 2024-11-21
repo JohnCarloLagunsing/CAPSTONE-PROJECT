@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecenter San Luis - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #applicantTable {
+            width: 100%; /* Full width for responsiveness */
+            max-width: 1200px; /* Maximum width */
+            margin-top: 3rem;
+            overflow-x: auto; /* Enables horizontal scrolling if needed */
+            overflow-y: auto;
+        }
+    
+        #applicantTable table {
+            width: 100%;
+        }
+    
+        #applicantTable th, #applicantTable td {
+            padding: 1rem; /* Adjust padding to fit more content */
+            text-align: left;
+        }
+    
+        #toggleButton {
+            width: 100%; /* Full width within its container */
+            max-width: 200px; /* Maximum width for button */
+            margin: 0 auto; /* Center horizontally1 */
+            padding: 8px 16px;
+            background-color: #1e3a8a;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+    
+        #toggleButton:hover {
+            background-color: #3b82f6; /* Add hover effect */
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-100 text-gray-900 overflow-x-hidden">
+
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
+            <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
+            <h2 class="text-xl text-center mb-6">Menu</h2>
+            <ul class="space-y-4">
+                <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
+                <li><a href="VerifyingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
+                <li><a href="VerifyingMTOP.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Verifying MTOP</a></li>
+                <li><a href="AdminOccuForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Occupational Form</a></li>
+                <li><a href="MtopForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> MTOP Form</a></li>
+                <li><a href="payment.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-wallet-alt mr-2'></i> Payment</a></li>
+                <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+            </ul>
+        </div>
+
+        <!-- Mobile Sidebar Toggle Button -->
+        <button id="menuToggle" class="lg:hidden fixed top-4 left-4 z-30 p-2 bg-blue-900 text-white rounded-md focus:outline-none" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 md:ml-60 overflow-y-auto p-6">
+            <!-- Header -->
+            <div class="header text-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+            </div>
+        
+            <!-- Chart Grid Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                <!-- Data Comparison Chart -->
+                <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
+                    <canvas id="comparisonChart" class="w-11/12 h-5/6"></canvas>
+                    <div id="comparisonMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
+                        Comparison Data Message
+                    </div>
+                </div>
+        
+                <!-- Inspection Status Chart (Bar Graph) -->
+                <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
+                    <canvas id="notApprovedChart" class="w-11/12 h-5/6"></canvas>
+                    <div id="notApprovedMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
+                        <strong>Total Not Approved Inspections:</strong> 8.<br>
+                        <strong>Common rejection reasons:</strong> Not Open Pipe, Light in Sidecar (8 each).
+                    </div>
+                </div>
+        
+                <!-- Forecast Section (Line Graph) -->
+                <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
+                    <canvas id="forecastChart" class="w-11/12 h-5/6"></canvas>
+                    <div id="forecastMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
+                        Based on the trend, expect 65 new permits and 123 inspections next month.<br>
+                        Forecast:<br>
+                        - Dec 2024: 655 permits<br>
+                        - Jan 2025: 6555 permits
+                    </div>
+                </div>
+        
+                <!-- Vehicle Types Distribution -->
+                <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
+                    <canvas id="townPieChart" class="w-11/12 h-5/6"></canvas>
+                    <div id="townMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg font-semibold">
+                        Town Distribution Data
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Applicant Table Container with Toggle Button -->
+            <div class="bg-white shadow-lg rounded-lg p-6 mt-8 mx-auto w-full md:w-3/4 lg:w-1/2">
+                <!-- Toggle Button Positioned Inside the Table Container -->
+                <div class="text-center mb-4">
+                    <button id="toggleButton" onclick="toggleTable()">
+                        View Applicants for Inspections
+                    </button>
+                </div>
+        
+                <!-- Applicant Table -->
+                <div id="applicantTable">
+                    <table class="min-w-full border-collapse rounded-lg overflow-hidden shadow-lg">
+                        <thead>
+                            <tr class="bg-blue-700 text-white">
+                                <th class="py-3 px-5 font-semibold text-left">Occuid</th>
+                                <th class="py-3 px-5 font-semibold text-left">Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-gray-50 hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">001-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Carl Jonel M. Hawak</td>
+                            </tr>
+                            <tr class="bg-white hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">002-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">John Carlo M. Lagunsing</td>
+                            </tr>
+                            <tr class="bg-gray-50 hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">003-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Pinky M. Lagunsing</td>
+                            </tr>
+                            <tr class="bg-white hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">004-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Pinkie Klein M. Lagunsing</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <script >
+         function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("-translate-x-full");
+        }
+       
+        function toggleTable() {
+            const table = document.getElementById("applicantTable");
+            table.classList.toggle("hidden");
+        }
+
+
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    // Create a modal container
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = "fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50";
+    modalOverlay.id = "logoutModal";
+
+    // Modal content
+    modalOverlay.innerHTML = `
+        <div class="bg-white rounded-lg shadow-lg p-6 w-80">
+            <h3 class="text-xl font-semibold mb-4">Are you sure you want to log out?</h3>
+            <div class="flex justify-end space-x-4">
+                <button id="cancelLogout" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+                <button id="confirmLogout" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Logout</button>
+            </div>
+        </div>
+    `;
+
+    // Append modal to the body
+    document.body.appendChild(modalOverlay);
+
+    // Add event listener for cancel button
+    document.getElementById('cancelLogout').addEventListener('click', function() {
+        modalOverlay.remove(); // Remove modal from DOM on cancel
+    });
+
+    // Add event listener for confirm logout button
+    document.getElementById('confirmLogout').addEventListener('click', function() {
+        window.location.href = 'login.html'; // Redirect to login.html on confirm
+    });
+});
+
+// Fetch data for the donut chart
+async function fetchData() {
+    try {
+        const response = await fetch('https://capstone-project-six-psi.vercel.app/data/comparison')
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return { inspectionsCount: 0, occuPermitCount: 0 }; // Default values if there's an error
+    }
+}
+
+// Render Donut Chart
+async function renderChart() {
+    const data = await fetchData();
+    const counts = [data.inspectionsCount, data.occuPermitCount];
+    const colors = counts.map(count => count === Math.min(...counts) ? 'red' : 'blue');
+    const labels = ['Inspections', 'Occupational Permits'];
+    const maxCountIndex = counts.indexOf(Math.max(...counts));
+    const highestLabel = labels[maxCountIndex];
+    const highestCount = counts[maxCountIndex];
+
+    document.getElementById('comparisonMessage').innerText = `The most numerous record is ${highestLabel} with ${highestCount} records.`;
+
+    const ctx = document.getElementById('comparisonChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Records',
+                data: counts,
+                backgroundColor: colors
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw} records`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+renderChart();
+
+// Fetch and render inspection status chart
+async function fetchInspectionStatusAndRenderChart() {
+    try {
+        const response = await fetch('https://capstone-project-six-psi.vercel.app/data/inspection-status')
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+
+        const notApprovedCount = data.notApprovedCount;
+        const reasons = data.reasons;
+
+        const labels = [
+            "Signal Lights",
+            "Taillights",
+            "Motor Number",
+            "Garbage Can",
+            "Chassis Number",
+            "Vehicle Registration",
+            "Not Open Pipe",
+            "Light in Sidecar",
+            "Side Mirror"
+        ];
+
+        const reasonCounts = [
+            Number(reasons.signal_lights_not_approved),
+            Number(reasons.taillights_not_approved),
+            Number(reasons.motor_number_not_approved),
+            Number(reasons.garbage_can_not_approved),
+            Number(reasons.chassis_number_not_approved),
+            Number(reasons.vehicle_registration_not_approved),
+            Number(reasons.not_open_pipe_not_approved),
+            Number(reasons.light_in_sidecar_not_approved),
+            Number(reasons.side_mirror_not_approved)
+        ];
+
+        const maxCount = Math.max(...reasonCounts);
+        const mostCommonReasons = labels.filter((label, index) => reasonCounts[index] === maxCount);
+        const reasonsText = mostCommonReasons.length > 0 ? mostCommonReasons.join(", ") : "No common reasons";
+
+        // Define default colors
+        const colors = [
+            'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 
+            'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)', 
+            'rgba(100, 100, 255, 1)', 'rgba(200, 200, 64, 1)', 'rgba(255, 80, 80, 1)'
+        ];
+
+        // Set red color for most common reasons
+        const backgroundColors = labels.map((label, index) =>
+            mostCommonReasons.includes(label) ? 'rgba(255, 0, 0, 1)' : colors[index]
+        );
+
+        const ctx = document.getElementById('notApprovedChart').getContext('2d');
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Common reasons for Not Approved Inspections',
+                data: reasonCounts,
+                backgroundColor: backgroundColors, // This changes the bars dynamically
+                
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        generateLabels: (chart) => {
+                            let defaultLegend = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                            return defaultLegend.map(item => {
+                                item.fillStyle = 'rgba(255, 0, 0, 1)'; // Set legend color to red
+                                return item;
+                            });
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw} not approved`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Not Approved Inspections'
+                    }
+                }
+            }
+        }
+    });
+
+        document.getElementById('notApprovedMessage').innerHTML = `
+            <strong>Total Not Approved Inspections:</strong> ${notApprovedCount}.<br>
+            <strong>The most common reasons for rejection are:</strong> ${reasonsText} with ${maxCount} occurrences each.
+        `;
+    } catch (error) {
+        console.error('Error fetching inspection status:', error);
+        document.getElementById('notApprovedMessage').innerText = 'Error fetching inspection status data';
+    }
+}
+
+fetchInspectionStatusAndRenderChart();
+//forecasted Data part 
+async function fetchForecastData() {
+    try {
+        const response = await fetch('https://capstone-project-six-psi.vercel.app/data/forecast-data')
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching forecast data:', error);
+        return null;
+    }
+}
+
+async function renderForecastChart() {
+    const data = await fetchForecastData();
+    if (!data) return;
+
+    // Prepare datasets for chart
+    const labels = data.occuPermitData.map(item => new Date(item.month).toLocaleDateString('en', { month: 'short', year: 'numeric' }));
+    const occuPermitCounts = data.occuPermitData.map(item => item.count);
+    const inspectionCounts = data.inspectionsData.map(item => item.count);
+
+    // Get the current date
+    const currentDate = new Date();
+    const nextThreeMonths = [];
+    for (let i = 1; i <= 3; i++) {
+        const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+        nextThreeMonths.push(nextMonth.toLocaleDateString('en', { month: 'short', year: 'numeric' }));
+    }
+
+    // Apply linear extrapolation for forecasting (naive example)
+    const forecastLength = 3; // forecast 3 more points
+    const occuPermitForecast = [...occuPermitCounts];
+    const inspectionForecast = [...inspectionCounts];
+    for (let i = 1; i <= forecastLength; i++) {
+        occuPermitForecast.push(occuPermitForecast[occuPermitForecast.length - 1] + 5); // increase by last trend
+        inspectionForecast.push(inspectionForecast[inspectionForecast.length - 1] + 3); // increase by last trend
+    }
+
+    // Render forecast chart
+    const ctx = document.getElementById('forecastChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [...labels, ...nextThreeMonths], // Update labels to include next three months
+            datasets: [
+                {
+                    label: 'OccuPermit',
+                    data: occuPermitForecast,
+                    fill: false,
+                    borderColor: 'blue',
+                    tension: 0.1
+                },
+                {
+                    label: 'Inspections',
+                    data: inspectionForecast,
+                    fill: false,
+                    borderColor: 'green',
+                    tension: 0.1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw} applications`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Applications Count' }
+                }
+            }
+        }
+    });
+
+    // Display the forecasted count for next months in exact text format
+    const nextMonthOccuPermitCount = occuPermitForecast[occuPermitCounts.length]; // first forecasted value
+    const nextMonthInspectionCount = inspectionForecast[inspectionCounts.length]; // first forecasted value
+
+    document.getElementById('forecastMessage').innerText = `
+      Based on the current trend, we estimate that there will be approximately ${nextMonthOccuPermitCount} new occupational permit applicants 
+    and ${nextMonthInspectionCount} new inspections in the next month. Additionally, we forecast:
+    - ${nextThreeMonths[0]}: ${occuPermitForecast[occuPermitCounts.length + 1]} new occupational permit applicants
+    - ${nextThreeMonths[1]}: ${occuPermitForecast[occuPermitCounts.length + 2]} new occupational permit applicants
+`;
+}
+
+renderForecastChart();
+// Fetch vehicle types and render pie chart
+async function fetchInspectionDataAndRenderChart() {
+    try {
+        const response = await fetch('https://capstone-project-six-psi.vercel.app/data/inspections-by-town')
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const inspections = await response.json();
+
+        const sanLuisCount = inspections.sanLuis;
+        const otherTownsCount = inspections.otherTowns;
+
+        const ctx = document.getElementById('townPieChart').getContext('2d');
+        new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['San Luis', 'Other Towns'],
+        datasets: [{
+            data: [sanLuisCount, otherTownsCount],
+            backgroundColor: ['rgba(255, 0, 0, 0.6)', 'rgba(0, 0, 255, 0.6)'], // Red and Blue colors
+            borderColor: ['rgba(255, 0, 0, 1)', 'rgba(0, 0, 255, 1)'], // Red and Blue with full opacity
+            borderWidth: 4, // Increased border thickness
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    font: {
+                        size: 14,
+                        weight: 'bold'
+                    }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.label || '';
+                        const value = context.raw || 0;
+                        return `${label}: ${value} inspections`;
+                    }
+                }
+            }
+        }
+    }
+});
+
+
+        // Display message about the most numerous town
+    // Display message showing inspection counts for both San Luis and Other Towns
+document.getElementById('townMessage').innerText = `
+    Inspection Counts:
+    - San Luis: ${sanLuisCount} inspections
+    - Other Towns: ${otherTownsCount} inspections
+`;
+
+        
+    } catch (error) {
+        console.error('Error fetching inspection data:', error);
+    }
+}
+
+// Call the function to load data and render the chart
+fetchInspectionDataAndRenderChart();
+
+
+
+
+    </script>
+    <script src="scripts/dashboardTable.js"></script>
+</body>
+</html>
