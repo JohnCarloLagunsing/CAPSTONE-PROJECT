@@ -100,7 +100,7 @@ async function fetchApplicantDetails() {
 
     try {
         // Fetch data from the backend
-        const response = await fetch(`http://localhost:8000/applicant/getApplicantByNo/${applicantNo}`);
+        const response = await fetch(`https://capstone-project-six-psi.vercel.app/applicant/getApplicantByNo/${applicantNo}`);
 
         if (response.ok) {
             const data = await response.json(); // Parse the JSON response
@@ -181,7 +181,7 @@ async function submitPayment() {
     };
 
     try {
-        const response = await fetch('http://localhost:8000/payment/submitPayment', {
+        const response = await fetch('https://capstone-project-six-psi.vercel.app/payment/submitPayment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(paymentDetails),
@@ -212,7 +212,7 @@ async function fetchAndDisplayReceipt() {
 
     try {
         // Fetch receipt details from the backend
-        const response = await fetch(`http://localhost:8000/payment/getReceipt/${applicantNo}`);
+        const response = await fetch(`https://capstone-project-six-psi.vercel.app/payment/getReceipt/${applicantNo}`);
 
         if (response.ok) {
             const receiptData = await response.json();
@@ -348,7 +348,7 @@ function generateReceipt(data) {
 async function fetchAndDisplayPastReceipts() {
     try {
         // Fetch the last 5 receipts from the backend
-        const response = await fetch('http://localhost:8000/payment/getPastReceipts');
+        const response = await fetch('https://capstone-project-six-psi.vercel.app/payment/getPastReceipts');
 
         if (response.ok) {
             const receipts = await response.json();

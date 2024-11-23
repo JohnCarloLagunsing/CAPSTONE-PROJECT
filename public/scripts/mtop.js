@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Fetch and display MTOP records
-    fetch('http://127.0.0.1:8000/getMtopRecords') // Replace with your actual MTOP endpoint
+    fetch('https://capstone-project-six-psi.vercel.appgetMtopRecords') // Replace with your actual MTOP endpoint
         .then(response => response.json())
         .then(data => {
             const tableBody = document.getElementById('mtop-table-body');

@@ -27,7 +27,7 @@ function submitForm(event) {
   event.preventDefault(); // Prevent default form submission
   const formData = new FormData(event.target);
 
-  fetch('http://localhost:8000/signup_process', { // Replace with your Node.js endpoint
+  fetch('https://capstone-project-six-psi.vercel.app/signup_process', { // Replace with your Node.js endpoint
     method: 'POST',
     body: new URLSearchParams(formData).toString(),
     headers: {

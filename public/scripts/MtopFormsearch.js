@@ -29,7 +29,7 @@ function searchApplicant() {
         return;
     }
 
-    fetch(`http://localhost:8000/searchApplicant/${applicantNo}`)
+    fetch(`https://lcapstone-project-six-psi.vercel.app/searchApplicant/${applicantNo}`)
         .then(response => {
             if (!response.ok) {
                 return response.json().then(errorData => { throw new Error(errorData.message); });
@@ -64,7 +64,7 @@ document.querySelector("form").addEventListener("submit", function(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    fetch("http://localhost:8000/submitMtopForm", {
+    fetch("https://capstone-project-six-psi.vercel.app/submitMtopForm", {
         method: "POST",
         body: new URLSearchParams(formData),
     })

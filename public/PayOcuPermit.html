@@ -201,7 +201,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:8000/payment/search', {
+                const response = await fetch('https://capstone-project-six-psi.vercel.app/payment/search', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ searchValue: searchValue.trim() }),
@@ -265,7 +265,7 @@
     };
 
     try {
-        const response = await fetch('http://localhost:8000/payment/save-payment', {
+        const response = await fetch('https://capstone-project-six-psi.vercel.app/payment/save-payment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(paymentData),
@@ -338,7 +338,7 @@ function closeReceiptModal() {
 
 async function viewReceipt() {
     try {
-        const response = await fetch('http://localhost:8000/payment/get-paid-receipts', {
+        const response = await fetch('https://capstone-project-six-psi.vercel.app/payment/get-paid-receipts', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
