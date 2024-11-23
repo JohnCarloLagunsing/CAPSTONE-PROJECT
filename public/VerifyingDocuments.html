@@ -42,6 +42,7 @@
                 <select id="filter-dropdown" class="filter-dropdown"> 
                     <option value="Tricycle Franchise Applicants">Tricycle Franchise Applicants</option>
                     <option value="Occupational Applicants">Occupational Applicants</option>
+                    <option value="Motor Operator Applicants">Motor Operator Applicants</option>
                 </select>
             </div>
             <table id="applicants-table" class="custom-table">
@@ -118,6 +119,34 @@
     </div>
 </div>
 
+<table id="mtop-status-table" class="custom-table" style="display: none;">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Application Type</th>
+            <th>Full Name</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="mtop-status-body"></tbody>
+</table>
+
+<!-- Modal for MTOP Applicant Details -->
+<div id="mtopModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close-mtop">&times;</span>
+        <div class="modal-body">
+            <h2>MTOP Application Details</h2>
+            <p><strong>ID:</strong> <span id="mtop-modal-id"></span></p>
+            <p><strong>Application Type:</strong> <span id="mtop-modal-application-type"></span></p>
+            <p><strong>Applicant Number:</strong> <span id="mtop-modal-applicant-no"></span></p>
+            <p><strong>Operator Name:</strong> <span id="mtop-modal-operator-name"></span></p>
+            <p><strong>Operator Address:</strong> <span id="mtop-modal-operator-address"></span></p>
+        </div>
+    </div>
+</div>
+
+
 
   
         <!-- Modal for displaying details -->
@@ -159,12 +188,8 @@
             </div>
         </div>
         <div id="printArea" style="display:none;"></div>
-        <script src="scripts/Verifyingfranchiseeshow.js"></script>
-        <script src="scripts/Occupationalshow.js">
-          
-
-
-
+        <script type="module" src="scripts/Verifyingfranchiseeshow.js"></script>
+        <script type="module" src="scripts/Occupationalshow.js"></script>
         </script>
     </div>
 </body>

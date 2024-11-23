@@ -197,6 +197,66 @@ router.get('/getOccuPermitDocuments/:occuid', (req, res) => {
 });
 
 
+router.get('/getMtopStatus', async (req, res) => {
+    try {
+        const query = `
+            SELECT id, name AS full_name, status
+            FROM mtopapplicationstatus;
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching MTOP status:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+
+router.get('/getMotorOperatorApplicants', async (req, res) => {
+    try {
+        const query = `
+            SELECT id, name, status
+            FROM mtopapplicationstatus
+        `;
+        const result = await pool.query(query); // Use pool.query instead of db.query
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching motor operator applicants:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+router.get('/getMtopApplication/:id', (req, res) => {
+    const { id } = req.params;
+    const query = `
+        SELECT 
+            id, 
+            application_type, 
+            applicant_no, 
+            operator_name, 
+            operator_address 
+        FROM mtopapplication
+        WHERE id = $1
+    `;
+
+    pool.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Error fetching MTOP application:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'No record found' });
+        }
+
+        res.json(result.rows[0]); // Send the first row as response
+    });
+});
+
+
+
 
 module.exports = router;
 
