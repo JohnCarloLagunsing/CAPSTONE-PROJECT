@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     let allData = [];
-    fetch('http://127.0.0.1:8000/getRecords')
+    fetch('https://1capstone-project-six-psi.vercel.app/getRecords')
   .then(response => {
       if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       const selectedStatus = this.value;
                       const tfid = this.getAttribute('data-id');
                       const occuid = this.getAttribute('data-occuid');
-      fetch('http://localhost:8000/updateStatus', {
+      fetch('https://capstone-project-six-psi.vercel.app/updateStatus', {
        method: 'POST',
 credentials: 'include',
 headers: {
@@ -185,7 +185,7 @@ body: JSON.stringify({ tfid, occuid, status: selectedStatus })  // Ensure occuid
           filterTypeDropdown.style.display = 'none';
   
           // Fetch and display Occupational Applicants
-          fetch('http://127.0.0.1:8000/getOccupationalApplicants')
+          fetch('http://capstone-project-six-psi.vercel.app/getOccupationalApplicants')
               .then((response) => response.json())
               .then((data) => {
                   displayOccupationalApplicants(data);
@@ -199,7 +199,7 @@ body: JSON.stringify({ tfid, occuid, status: selectedStatus })  // Ensure occuid
           filterTypeDropdown.style.display = 'none';
   
           // Fetch and display Motor Operator Applicants
-          fetch('http://127.0.0.1:8000/getMotorOperatorApplicants')
+          fetch('https://capstone-project-six-psi.vercel.app/getMotorOperatorApplicants')
               .then((response) => response.json())
               .then((data) => {
                   displayMotorOperatorApplicants(data);
@@ -278,7 +278,7 @@ document.querySelectorAll('.status-dropdown').forEach(select => {
       const occuid = this.getAttribute('data-occuid');
 
       // Call the backend to update status
-      fetch('http://localhost:8000/updateStatus', {
+      fetch('https://capstone-project-six-psi.vercel.app/updateStatus', {
           method: 'POST',
           credentials: 'include',
           headers: {
@@ -306,7 +306,7 @@ document.querySelectorAll('.custom-icon-occPermit').forEach(icon => {
       const occuid = this.getAttribute('data-occuid');  // Fetch occuid
       
       // Fetch the documents for the specific OccuPermit
-      fetch(`http://127.0.0.1:8000/getOccuPermitDocuments/${occuid}`)
+      fetch(`https://capstone-project-six-psi.vercel.app/getOccuPermitDocuments/${occuid}`)
       .then(response => {
           if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -473,7 +473,7 @@ document.getElementById('filter-dropdown').addEventListener('change', function (
         otherTables.forEach(table => (table.style.display = 'none'));
 
         // Fetch and display MTOP Status Table
-        fetch('http://127.0.0.1:8000/getMtopStatus') // Adjust endpoint accordingly
+        fetch('https://capstone-project-six-psi.vercel.app/getMtopStatus') // Adjust endpoint accordingly
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.getElementById('mtop-status-body');
@@ -507,7 +507,7 @@ document.querySelectorAll('.custom-icon').forEach(icon => {
     icon.addEventListener('click', function () {
         const id = this.getAttribute('data-id'); // MTOP Application ID
 
-        fetch(`http://127.0.0.1:8000/getMtopApplication/${id}`) // Adjust endpoint
+        fetch(`https://capstone-project-six-psi.vercel.app/getMtopApplication/${id}`) // Adjust endpoint
             .then(response => response.json())
             .then(data => {
                 document.getElementById('mtop-modal-id').textContent = data.id || 'N/A';
