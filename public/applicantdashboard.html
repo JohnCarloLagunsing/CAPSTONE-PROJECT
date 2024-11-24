@@ -13,7 +13,8 @@
 </head>
 
 <body class="font-sans bg-gray-100">
-    <div class="fixed w-56 h-screen bg-blue-800 text-white p-5">
+    <!-- Sidebar for larger screens -->
+    <div class="hidden lg:block fixed w-56 h-screen bg-blue-800 text-white p-5">
         <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 rounded-full mx-auto mb-4">
         <h2 class="text-xl mb-5">Menu</h2>
         <ul class="space-y-3 pl-2">
@@ -23,7 +24,29 @@
         </ul>
     </div>
 
-    <div class="ml-64 p-5">
+    <!-- Mobile Hamburger Menu -->
+    <div class="lg:hidden fixed top-0 left-0 bg-blue-800 w-full p-4 flex justify-between items-center text-white">
+        <span class="text-lg font-semibold">Menu</span>
+        <button id="hamburgerMenu" class="focus:outline-none">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="mobileSidebar" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden">
+        <div class="w-56 h-screen bg-blue-800 text-white p-5 z-50">
+            <button id="closeSidebar" class="focus:outline-none text-white mb-5">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <ul class="space-y-3">
+                <li><a href="occustatus.html" onclick="showDashboard()" class="block text-lg hover:bg-blue-600 p-2 rounded"><i class="bx bxs-dashboard"></i> Dashboard</a></li>
+                <li><a href="applicantdashboard.html" class="block text-lg hover:bg-blue-600 p-2 rounded"><i class="fas fa-id-card icon"></i> Occupational Form</a></li>
+                <li><a href="#" id="logoutButtonMobile" class="block text-lg hover:bg-blue-600 p-2 rounded"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="lg:ml-64 p-5">
         <h1 class="text-2xl font-bold text-center uppercase mb-5">Occupational Application Form</h1>
 
         <!-- Alert container -->
@@ -34,30 +57,30 @@
 
         <form onsubmit="calculateAge(); return confirmSubmission(event)" method="post" action="https://ecentersanluis.com/submit/submitForm" enctype="multipart/form-data" class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
             <!-- Personal Information -->
-            <div class="flex space-x-4 mb-4">
-                <div class="w-1/2">
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+                <div class="w-full md:w-1/2">
                     <label for="lastName" class="block font-semibold mb-2">Last Name</label>
                     <input type="text" id="lastName" name="lastName" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
-                <div class="w-1/2">
+                <div class="w-full md:w-1/2">
                     <label for="firstName" class="block font-semibold mb-2">First Name</label>
                     <input type="text" id="firstName" name="firstName" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
             </div>
 
-            <div class="flex space-x-4 mb-4">
-                <div class="w-1/2">
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+                <div class="w-full md:w-1/2">
                     <label for="middleName" class="block font-semibold mb-2">Middle Name</label>
                     <input type="text" id="middleName" name="middleName" class="w-full p-3 border border-gray-300 rounded">
                 </div>
-                <div class="w-1/2">
+                <div class="w-full md:w-1/2">
                     <label for="suffix" class="block font-semibold mb-2">Suffix</label>
                     <input type="text" id="suffix" name="suffix" class="w-full p-3 border border-gray-300 rounded">
                 </div>
             </div>
 
-            <div class="flex space-x-4 mb-4">
-                <div class="w-1/2">
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+                <div class="w-full md:w-1/2">
                     <label for="gender" class="block font-semibold mb-2">Gender</label>
                     <select id="gender" name="gender" required class="w-full p-3 border border-gray-300 rounded">
                         <option value="male">Male</option>
@@ -65,7 +88,7 @@
                         <option value="other">Other</option>
                     </select>
                 </div>
-                <div class="w-1/2">
+                <div class="w-full md:w-1/2">
                     <label for="civilStatus" class="block font-semibold mb-2">Civil Status</label>
                     <select id="civilStatus" name="civilStatus" required class="w-full p-3 border border-gray-300 rounded">
                         <option value="single">Single</option>
@@ -76,12 +99,12 @@
             </div>
 
             <!-- Date of Birth and Age -->
-            <div class="flex space-x-4 mb-4">
-                <div class="w-1/2">
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+                <div class="w-full md:w-1/2">
                     <label for="dob" class="block font-semibold mb-2">Date of Birth</label>
                     <input type="date" id="dob" name="dob" onchange="calculateAge()" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
-                <div class="w-1/2">
+                <div class="w-full md:w-1/2">
                     <label for="age" class="block font-semibold mb-2">Age</label>
                     <input type="number" id="age" name="age" disabled class="w-full p-3 border border-gray-300 rounded">
                 </div>
@@ -95,24 +118,24 @@
             <input type="text" id="homeAddress" name="homeAddress" required class="w-full p-3 border border-gray-300 rounded mb-4">
 
             <!-- Contact Information -->
-            <div class="flex space-x-4 mb-4">
-                <div class="w-1/2">
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+                <div class="w-full md:w-1/2">
                     <label for="email" class="block font-semibold mb-2">E-mail Address</label>
                     <input type="email" id="email" name="email" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
-                <div class="w-1/2">
+                <div class="w-full md:w-1/2">
                     <label for="cellphoneNumber" class="block font-semibold mb-2">Cellphone Number</label>
                     <input type="tel" id="cellphoneNumber" name="cellphoneNumber" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
             </div>
 
             <!-- Company Information -->
-            <div class="flex space-x-4 mb-4">
-                <div class="w-1/2">
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+                <div class="w-full md:w-1/2">
                     <label for="companyName" class="block font-semibold mb-2">Company Name</label>
                     <input type="text" id="companyName" name="companyName" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
-                <div class="w-1/2">
+                <div class="w-full md:w-1/2">
                     <label for="jobPosition" class="block font-semibold mb-2">Job Position</label>
                     <input type="text" id="jobPosition" name="jobPosition" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
@@ -120,8 +143,8 @@
 
             <!-- ID Type and Number -->
             <label class="block font-semibold mb-2">ID Type and Number</label>
-            <div class="flex items-center mb-4">
-                <select id="Typeofid" name="Typeofid" required class="w-1/3 p-3 border border-gray-300 rounded">
+            <div class="flex flex-col md:flex-row items-start md:items-center mb-4 space-y-4 md:space-y-0 md:space-x-4">
+                <select id="Typeofid" name="Typeofid" required class="w-full md:w-1/3 p-3 border border-gray-300 rounded">
                     <option value="Drivers License">Drivers License</option>
                     <option value="Philhealth">Philhealth</option>
                     <option value="NBI">NBI</option>
@@ -129,7 +152,7 @@
                     <option value="Philsys ID">Philsys ID</option>
                     <option value="National">National</option>
                 </select>
-                <input type="text" id="IDnumber" name="IDnumber" placeholder="ID Number" required class="ml-2 w-2/3 p-3 border border-gray-300 rounded">
+                <input type="text" id="IDnumber" name="IDnumber" placeholder="ID Number" required class="w-full md:w-2/3 p-3 border border-gray-300 rounded">
                 <input type="hidden" id="combinedId" name="combinedId">
             </div>
 
@@ -146,18 +169,17 @@
             <label for="officialReceipt" class="block font-semibold mb-2">Official Receipt</label>
             <input type="file" id="officialReceipt" name="officialReceipt" required class="w-full p-3 border border-gray-300 rounded mb-4">
 
-
             <!-- CTC Information -->
-            <div class="flex space-x-4 mb-4">
-                <div class="w-1/3">
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+                <div class="w-full md:w-1/3">
                     <label for="ctcNumber" class="block font-semibold mb-2">CTC Number</label>
                     <input type="text" id="ctcNumber" name="ctcNumber" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
-                <div class="w-1/3">
+                <div class="w-full md:w-1/3">
                     <label for="ctcDateIssued" class="block font-semibold mb-2">CTC Date Issued</label>
                     <input type="date" id="ctcDateIssued" name="ctcDateIssued" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
-                <div class="w-1/3">
+                <div class="w-full md:w-1/3">
                     <label for="ctcPlaceIssued" class="block font-semibold mb-2">CTC Place Issued</label>
                     <input type="text" id="ctcPlaceIssued" name="ctcPlaceIssued" required class="w-full p-3 border border-gray-300 rounded">
                 </div>
@@ -170,7 +192,7 @@
             </div>
 
             <!-- Buttons -->
-            <div class="flex mt-6 space-x-4">
+            <div class="flex flex-col md:flex-row mt-6 space-y-4 md:space-y-0 md:space-x-4">
                 <button type="submit" class="bg-blue-800 text-white py-3 px-6 rounded hover:bg-blue-600 transition duration-300">Submit</button>
                 <button type="button" class="bg-red-600 text-white py-3 px-6 rounded hover:bg-red-500 transition duration-300" onclick="clearForm()">Clear Form</button>
             </div>
@@ -178,6 +200,18 @@
     </div>
 
     <script>
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+        const closeSidebar = document.getElementById('closeSidebar');
+
+        hamburgerMenu.addEventListener('click', () => {
+            mobileSidebar.classList.toggle('hidden');
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            mobileSidebar.classList.add('hidden');
+        });
+
         function calculateAge() {
             const dob = document.getElementById('dob').value;
             const ageField = document.getElementById('age');
@@ -262,6 +296,14 @@
         }
 
         document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            const confirmation = confirm("Are you sure you want to log out?");
+            if (confirmation) {
+                window.location.href = 'applicant.html';
+            }
+        });
+
+        document.getElementById('logoutButtonMobile').addEventListener('click', function(event) {
             event.preventDefault();
             const confirmation = confirm("Are you sure you want to log out?");
             if (confirmation) {
