@@ -16,7 +16,7 @@ function toggleTable() {
 }
 
 async function displayOccuPermitApplicants() {
-    const occuPermitApplicants = await fetchData(`https://capstone-project-six-psi.vercel.app/data/occupermit-applicants`);
+    const occuPermitApplicants = await fetchData(`https://ecentersanluis.com/data/occupermit-applicants`);
     const applicantTable = document.getElementById('applicantTable');
     applicantTable.innerHTML = ''; 
 
