@@ -25,7 +25,7 @@ async function displayOccuPermitApplicants() {
 }
 
 async function displayInspectionsApplicants() {
-    const inspectionsApplicants = await fetchData(`https://capstone-project-six-psi.vercel.app/data/inspections-applicants`);
+    const inspectionsApplicants = await fetchData(`https://ecentersanluis.com/data/inspections-applicants`);
     const applicantTable = document.getElementById('applicantTable');
     applicantTable.innerHTML = ''; 
 
