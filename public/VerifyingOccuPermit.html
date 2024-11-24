@@ -138,7 +138,7 @@
         let selectedRecord = null; // To track the currently selected record
     
         // Fetch records and populate the table
-        fetch('http://localhost:8000/getOccupationalRecords')
+        fetch('https://ecentersanluis.com/getOccupationalRecords')
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -182,7 +182,7 @@
     
         // Open modal and populate details
         function openPermitModal(id) {
-    fetch(`http://localhost:8000/getOccupationalDetails/${id}`)
+    fetch(`https://ecentersanluis.com/getOccupationalDetails/${id}`)
         .then((response) => response.json())
         .then((record) => {
             const formattedDate = record.dateofbirth
@@ -239,7 +239,7 @@
     function updateStatus(id, newStatus) {
     console.log('Updating Status:', { occuid: id, status: newStatus, approvedBy: currentAdmin });
 
-    fetch('http://localhost:8000/updateStatus', {
+    fetch('https://ecentersanluis.com/updateStatus', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

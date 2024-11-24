@@ -224,7 +224,7 @@
 
 async function fetchMtopData() {
   try {
-    const response = await fetch('/mtopdata'); // Backend route to fetch data
+    const response = await fetch('https://ecentersanluis.com/mtopdata'); // Backend route to fetch data
     const data = await response.json();
 
     const tableBody = document.getElementById('mtopTableBody');
@@ -261,7 +261,7 @@ async function showDetails(id) {
     }
 
     try {
-        const response = await fetch(`/mtopapplication/${id}`);
+        const response = await fetch(`https://ecentersanluis.com/mtopapplication/${id}`);
         if (!response.ok) {
             throw new Error('Failed to fetch details');
         }

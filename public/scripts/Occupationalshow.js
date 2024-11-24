@@ -54,7 +54,7 @@ function displayOccupationalApplicants(data) {
             const occuid = this.getAttribute('data-occuid');
 
             // Call the backend to update status
-            fetch('https://capstone-project-six-psi.vercel.app/updateStatus', {
+            fetch('https://ecentersanluis.com/updateStatus', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -82,7 +82,7 @@ function attachOccuPermitModalListeners() {
             const occuid = this.getAttribute('data-occuid');  // Fetch occuid
             
             // Fetch the documents for the specific OccuPermit
-            fetch(`https://capstone-project-six-psi.vercel.app/getOccuPermitDocuments/${occuid}`)
+            fetch(`https://ecentersanluis.com/getOccuPermitDocuments/${occuid}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

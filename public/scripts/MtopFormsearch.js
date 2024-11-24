@@ -64,7 +64,7 @@ document.querySelector("form").addEventListener("submit", function(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    fetch("https://capstone-project-six-psi.vercel.app/submitMtopForm", {
+    fetch("https://ecentersanluis.com/submitMtopForm", {
         method: "POST",
         body: new URLSearchParams(formData),
     })
