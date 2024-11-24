@@ -247,7 +247,7 @@ renderChart();
 // Fetch and render inspection status chart
 async function fetchInspectionStatusAndRenderChart() {
     try {
-        const response = await fetch('http://localhost:8000/data/inspection-status');
+        const response = await fetch('https://ecentersanluis.com/data/inspection-status');
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
 

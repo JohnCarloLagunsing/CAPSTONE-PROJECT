@@ -29,7 +29,7 @@ function searchApplicant() {
         return;
     }
 
-    fetch(`https://lcapstone-project-six-psi.vercel.app/searchApplicant/${applicantNo}`)
+    fetch(`https://ecentersanluis.com/searchApplicant/${applicantNo}`)
         .then(response => {
             if (!response.ok) {
                 return response.json().then(errorData => { throw new Error(errorData.message); });
