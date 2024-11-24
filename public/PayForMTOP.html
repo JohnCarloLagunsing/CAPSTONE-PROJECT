@@ -25,12 +25,13 @@
     
 
     <!-- Sidebar -->
-    <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
-        <img src="assets/favicon.png" alt="Logo" class="w-16 h-16 mx-auto mb-4 rounded-full">
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-56 bg-blue-900 text-white p-5 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-20">
+        <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 mx-auto mb-4 rounded-full">
         <h2 class="text-xl text-center mb-6">Menu</h2>
         <ul class="space-y-4">
             <li><a href="Dashboard.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="bx bxs-dashboard mr-2"></i> Dashboard</a></li>
-            <li><a href="VerifyingDocuments.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i> Verifying Documents</a></li>
+            <li><a href="VerifyingOccuPermit.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i>Verify Occupational</a></li>    
+            <li><a href="Verifyingmtopform.html" class="block py-2 rounded-md hover:bg-blue-700"><i class='bx bxs-file-find mr-2'></i>Print MTOP</a></li>  
             <li><a href="VerifyingMTOP.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Verifying MTOP</a></li>
             <li><a href="AdminOccuForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> Occupational Form</a></li>
             <li><a href="MtopForm.html" class="block py-2 rounded-md hover:bg-blue-700"><i class="fas fa-id-card mr-2"></i> MTOP Form</a></li>
@@ -40,7 +41,7 @@
     </div>
 
     <!-- Mobile Sidebar Toggle Button -->
-    <button id="menuToggle" class="lg:hidden fixed top-4 left-4 z-30 p-2 bg-blue-900 text-white rounded-md focus:outline-none">
+    <button id="menuToggle" class="lg:hidden fixed top-4 left-4 z-30 p-2 bg-blue-900 text-white rounded-md focus:outline-none" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
     </button>
 
