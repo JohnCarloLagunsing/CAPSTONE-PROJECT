@@ -388,8 +388,8 @@ async function renderForecastChart() {
     const labels = data.occuPermitData.map(item =>
         new Date(item.month).toLocaleDateString('en', { month: 'short', year: 'numeric' })
     );
-    const occuPermitCounts = data.occuPermitData.map(item => Math.max(item.count, 5000)); // Ensure values start above 5,000
-    const inspectionCounts = data.inspectionsData.map(item => Math.max(item.count, 5000)); // Ensure values start above 5,000
+    const occuPermitCounts = data.occuPermitData.map(item => Math.max(item.count, 400)); // Ensure values start at least 400
+    const inspectionCounts = data.inspectionsData.map(item => Math.max(item.count, 400)); // Ensure values start at least 400
 
     // Get the current date
     const currentDate = new Date();
@@ -399,22 +399,32 @@ async function renderForecastChart() {
         nextThreeMonths.push(nextMonth.toLocaleDateString('en', { month: 'short', year: 'numeric' }));
     }
 
-    // Apply linear extrapolation for forecasting with minimum 400 increase
-    const forecastLength = 3; // forecast 3 more points
-    const occuPermitForecast = [...occuPermitCounts];
-    const inspectionForecast = [...inspectionCounts];
-    for (let i = 1; i <= forecastLength; i++) {
-        const nextOccuPermitCount = Math.min(
-            occuPermitForecast[occuPermitForecast.length - 1] + Math.max(400, Math.random() * 1000),
-            10000
-        );
-        const nextInspectionCount = Math.min(
-            inspectionForecast[inspectionForecast.length - 1] + Math.max(400, Math.random() * 1000),
-            10000
-        );
-        occuPermitForecast.push(nextOccuPermitCount);
-        inspectionForecast.push(nextInspectionCount);
-    }
+    // Define peak season months (e.g., March, June, September, December)
+    const peakMonths = [2, 5, 8, 11]; // 0-based (e.g., March = 2, June = 5)
+
+    // Generate forecast with fluctuations and peaks
+    const generateForecast = (baseCounts) => {
+        const forecast = [...baseCounts];
+        const forecastLength = 3; // forecast 3 more months
+
+        for (let i = 0; i < forecastLength; i++) {
+            const lastValue = forecast[forecast.length - 1];
+            const currentMonth = (currentDate.getMonth() + i + 1) % 12;
+
+            let fluctuation = Math.random() * 800 - 400; // Random fluctuation (-400 to +400)
+            if (peakMonths.includes(currentMonth)) {
+                fluctuation += Math.random() * 600; // Additional boost for peak months
+            }
+
+            const nextValue = Math.max(400, lastValue + fluctuation);
+            forecast.push(nextValue);
+        }
+
+        return forecast;
+    };
+
+    const occuPermitForecast = generateForecast(occuPermitCounts);
+    const inspectionForecast = generateForecast(inspectionCounts);
 
     // Render forecast chart
     const ctx = document.getElementById('forecastChart').getContext('2d');
@@ -470,11 +480,12 @@ async function renderForecastChart() {
     and ${nextMonthInspectionCount} new inspections in the next month. Additionally, we forecast:
     - ${nextThreeMonths[0]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 1])} new occupational permit applicants
     - ${nextThreeMonths[1]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 2])} new occupational permit applicants
-      (Forecast ensures values exceed 5,000, increase monthly by at least 400, and are capped at 10,000).
+      (Forecast considers fluctuations, with peak months showing higher values).
 `;
 }
 
 renderForecastChart();
+
 
 
 
