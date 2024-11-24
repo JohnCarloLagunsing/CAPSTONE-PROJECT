@@ -388,8 +388,10 @@ async function renderForecastChart() {
     const labels = data.occuPermitData.map(item =>
         new Date(item.month).toLocaleDateString('en', { month: 'short', year: 'numeric' })
     );
-    const occuPermitCounts = data.occuPermitData.map(item => Math.max(item.count, 400)); // Ensure values start at least 400
-    const inspectionCounts = data.inspectionsData.map(item => Math.max(item.count, 400)); // Ensure values start at least 400
+
+    // Initial counts with a minimum of 400
+    const occuPermitCounts = data.occuPermitData.map(item => Math.min(item.count, 2500)); 
+    const inspectionCounts = data.inspectionsData.map(item => Math.min(item.count, 2500)); 
 
     // Get the current date
     const currentDate = new Date();
@@ -402,26 +404,26 @@ async function renderForecastChart() {
     // Define peak season months (e.g., March, June, September, December)
     const peakMonths = [2, 5, 8, 11]; // 0-based (e.g., March = 2, June = 5)
 
-    // Generate forecast with fluctuations and peaks
+    // Generate forecast with controlled growth
     const generateForecast = (baseCounts) => {
         const forecast = [...baseCounts];
-        const forecastLength = 3; // forecast 3 more months
+        const forecastLength = 3; // forecast 3 additional months
 
         for (let i = 0; i < forecastLength; i++) {
             const lastValue = forecast[forecast.length - 1];
             const currentMonth = (currentDate.getMonth() + i + 1) % 12;
 
-            let fluctuation = Math.random() * 500 - 250; // Random fluctuation (-250 to +250)
+            // Base fluctuation with a minimum of 400
+            let increase = 400 + Math.random() * 100; // Adds random value between 400-500
+
+            // Apply additional boost for peak months
             if (peakMonths.includes(currentMonth)) {
-                fluctuation += Math.random() * 1000; // Boost for peak months
+                increase += Math.random() * 1000; // Peak months boost (up to +1000)
             }
 
-            const nextValue = Math.min(
-                lastValue + fluctuation,
-                lastValue + 2500 // Limit maximum increase to 2500
-            );
-
-            forecast.push(Math.max(400, nextValue)); // Ensure values stay above 400
+            // Ensure the forecasted value doesn't exceed 2500
+            const nextValue = Math.min(2500, lastValue + increase);
+            forecast.push(nextValue);
         }
 
         return forecast;
@@ -469,7 +471,7 @@ async function renderForecastChart() {
                 y: {
                     beginAtZero: true,
                     title: { display: true, text: 'Applications Count' },
-                    max: 2500 // Ensure y-axis stops at 10,000
+                    max: 2500 // Keep y-axis max at 2500
                 }
             }
         }
@@ -484,7 +486,7 @@ async function renderForecastChart() {
     and ${nextMonthInspectionCount} new inspections in the next month. Additionally, we forecast:
     - ${nextThreeMonths[0]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 1])} new occupational permit applicants
     - ${nextThreeMonths[1]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 2])} new occupational permit applicants
-      (Forecast ensures fluctuations above 400 and limits increases to 2500).
+      (Forecast ensures a minimum increase of 400 per month, with higher values during peak months).
 `;
 }
 
