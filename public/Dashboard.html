@@ -411,13 +411,17 @@ async function renderForecastChart() {
             const lastValue = forecast[forecast.length - 1];
             const currentMonth = (currentDate.getMonth() + i + 1) % 12;
 
-            let fluctuation = Math.random() * 800 - 400; // Random fluctuation (-400 to +400)
+            let fluctuation = Math.random() * 500 - 250; // Random fluctuation (-250 to +250)
             if (peakMonths.includes(currentMonth)) {
-                fluctuation += Math.random() * 600; // Additional boost for peak months
+                fluctuation += Math.random() * 1000; // Boost for peak months
             }
 
-            const nextValue = Math.max(400, lastValue + fluctuation); // Ensure values stay above 400
-            forecast.push(nextValue);
+            const nextValue = Math.min(
+                lastValue + fluctuation,
+                lastValue + 2500 // Limit maximum increase to 2500
+            );
+
+            forecast.push(Math.max(400, nextValue)); // Ensure values stay above 400
         }
 
         return forecast;
@@ -480,11 +484,12 @@ async function renderForecastChart() {
     and ${nextMonthInspectionCount} new inspections in the next month. Additionally, we forecast:
     - ${nextThreeMonths[0]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 1])} new occupational permit applicants
     - ${nextThreeMonths[1]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 2])} new occupational permit applicants
-      (Forecast ensures fluctuations above 400, with peaks during peak seasons).
+      (Forecast ensures fluctuations above 400 and limits increases to 2500).
 `;
 }
 
 renderForecastChart();
+
 
 
 
