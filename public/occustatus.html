@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +11,7 @@
         .slideshow-container {
             position: relative;
             width: 100%;
-            height: 300px;
+            height: 200px;
             overflow: hidden;
             z-index: -1;
         }
@@ -36,7 +34,7 @@
         .content-overlay {
             position: relative;
             z-index: 10;
-            margin-top: -150px; /* Adjust based on slideshow height */
+            margin-top: -100px; /* Adjust based on slideshow height */
         }
 
         .loading-message, .error-message {
@@ -56,7 +54,7 @@
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
     <!-- Sidebar -->
-    <div class="w-56 h-screen bg-blue-800 text-white fixed p-5">
+    <div id="sidebar" class="w-56 h-screen bg-blue-800 text-white fixed p-5 hidden lg:block">
         <img src="assets/favicon.png" alt="Logo" class="w-12 h-12 rounded-full mx-auto mb-3">
         <h2 class="text-lg font-semibold text-center mb-5">Menu</h2>
         <ul class="space-y-3">
@@ -78,16 +76,50 @@
         </ul>
     </div>
 
+    <!-- Mobile Hamburger Menu -->
+    <div class="lg:hidden fixed top-0 left-0 bg-blue-800 w-full p-4 flex justify-between items-center text-white">
+        <span class="text-lg font-semibold">Menu</span>
+        <button id="hamburgerMenu" class="focus:outline-none">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="mobileSidebar" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden">
+        <div class="w-56 h-screen bg-blue-800 text-white p-5 z-50">
+            <button id="closeSidebar" class="focus:outline-none text-white mb-5">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <ul class="space-y-3">
+                <li>
+                    <a href="occustatus.html" class="flex items-center px-4 py-2 hover:bg-blue-600 rounded">
+                        <i class="bx bxs-dashboard mr-2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="applicantdashboard.html" id="applicantDashboardLinkMobile" class="flex items-center px-4 py-2 hover:bg-blue-600 rounded">
+                        <i class="fas fa-id-card mr-2"></i> Occupational Form
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="logoutButtonMobile" class="flex items-center px-4 py-2 bg-blue-600 rounded text-center">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <!-- Slideshow Background -->
-    <div class="slideshow-container">
+    <div class="slideshow-container ml-0 lg:ml-56">
         <img src="assets/TricyclePermit.jpg" class="slideshow-image active" alt="Slide 1">
         <img src="assets/tech 4 ed.png" class="slideshow-image" alt="Slide 2">
         <img src="assets/images.jpg" class="slideshow-image" alt="Slide 3">
     </div>
 
     <!-- Main Content Overlay -->
-    <div class="ml-64 p-10 flex flex-col items-center content-overlay">
-        <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-lg flex flex-col items-center gap-4">
+    <div id="mainContent" class="ml-0 lg:ml-64 p-4 md:p-10 flex flex-col items-center content-overlay transition-all duration-300">
+        <div class="bg-white rounded-lg p-4 md:p-8 max-w-lg w-full shadow-lg flex flex-col items-center gap-4">
             <div class="w-full">
                 <p><strong>Name:</strong> <span id="fullname">No Applicants found please submit first</span></p>
                 <p><strong>Status:</strong> <span id="status">No Applicants found please submit first</span></p>
@@ -106,90 +138,101 @@
             <button onclick="goBack()" class="mt-4 px-6 py-3 text-lg text-white bg-blue-800 rounded hover:bg-blue-700 transition duration-300">Back</button>
         </div>
     </div>
-
     <script>
+        const sidebar = document.getElementById('sidebar');
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const mainContent = document.getElementById('mainContent');
+
+        hamburgerMenu.addEventListener('click', () => {
+            mobileSidebar.classList.toggle('hidden');
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            mobileSidebar.classList.add('hidden');
+        });
+
         // JavaScript to check submission status before redirecting
         document.addEventListener("DOMContentLoaded", async function() {
-    try {
-        const response = await fetch('/status/getStatus', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include'
+            try {
+                const response = await fetch('/status/getStatus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+                document.getElementById("loadingMessage").style.display = "none";
+
+                if (response.ok) {
+                    if (!data.fullname || !data.status) {
+                        alert("No application found. Please submit your credentials first to view the status.");
+                        window.location.href = "applicantdashboard.html";
+                        return;
+                    }
+
+                    document.getElementById('fullname').innerText = data.fullname || 'No Applicants Found, please submit first';
+                    document.getElementById('status').innerText = data.status || 'No Applicants Found, please submit first';
+                    document.getElementById('process_by').innerText = data.process_by || 'Wait for the Admin to Verify your Credentials';
+
+                    const statusElement = document.getElementById('status');
+                    statusElement.classList.remove('text-orange-500', 'text-red-600', 'text-green-600');
+                    const claimMessage = document.getElementById('claimMessage');
+                    const resubmitMessage = document.getElementById('resubmitMessage');
+
+                    if (data.status === "On Process") {
+                        statusElement.style.color = "#FFA500";
+                        claimMessage.style.display = "none";
+                    } else if (data.status === "Declined") {
+                        statusElement.classList.add('text-red-600');
+                        claimMessage.style.display = "none";
+                        resubmitMessage.style.display = "block";
+                    } else if (data.status === "Approved") {
+                        statusElement.classList.add('text-green-600');
+                        claimMessage.style.display = "block";
+                    }
+                } else {
+                    document.getElementById("errorMessage").innerText = data.message || "Status not found";
+                    document.getElementById("errorMessage").style.display = "block";
+                }
+            } catch (error) {
+                console.error('Error fetching status:', error);
+                document.getElementById("loadingMessage").style.display = "none";
+                document.getElementById("errorMessage").innerText = 'An error occurred while fetching status';
+                document.getElementById("errorMessage").style.display = "block";
+            }
         });
 
-        const data = await response.json();
-        document.getElementById("loadingMessage").style.display = "none";
+        document.getElementById('applicantDashboardLink').addEventListener('click', async function (event) {
+            event.preventDefault();
 
-        if (response.ok) {
-            if (!data.fullname || !data.status) {
-                alert("No application found. Please submit your credentials first to view the status.");
-                window.location.href = "applicantdashboard.html";
-                return;
+            try {
+                const response = await fetch('/status/getStatus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.status === "Approved") {
+                        alert("Your application has been approved. You cannot resubmit.");
+                    } else if (data.status === "On Process") {
+                        alert("Your application is being processed. Please wait.");
+                    } else {
+                        window.location.href = "applicantdashboard.html";
+                    }
+                } else {
+                    alert(data.message || "Status not found. Please submit your application.");
+                    window.location.href = "applicantdashboard.html";
+                }
+            } catch (error) {
+                console.error('Error fetching status:', error);
+                alert('An error occurred while fetching status.');
             }
-
-            document.getElementById('fullname').innerText = data.fullname || 'No Applicants Found, please submit first';
-            document.getElementById('status').innerText = data.status || 'No Applicants Found, please submit first';
-            document.getElementById('process_by').innerText = data.process_by || 'Wait for the Admin to Verify your Credentials';
-
-            const statusElement = document.getElementById('status');
-            statusElement.classList.remove('text-orange-500', 'text-red-600', 'text-green-600');
-            const claimMessage = document.getElementById('claimMessage');
-            const resubmitMessage = document.getElementById('resubmitMessage');
-
-            if (data.status === "On Process") {
-                statusElement.style.color = "#FFA500";
-                claimMessage.style.display = "none";
-            } else if (data.status === "Declined") {
-                statusElement.classList.add('text-red-600');
-                claimMessage.style.display = "none";
-                resubmitMessage.style.display = "block";
-            } else if (data.status === "Approved") {
-                statusElement.classList.add('text-green-600');
-                claimMessage.style.display = "block";
-            }
-        } else {
-            document.getElementById("errorMessage").innerText = data.message || "Status not found";
-            document.getElementById("errorMessage").style.display = "block";
-        }
-    } catch (error) {
-        console.error('Error fetching status:', error);
-        document.getElementById("loadingMessage").style.display = "none";
-        document.getElementById("errorMessage").innerText = 'An error occurred while fetching status';
-        document.getElementById("errorMessage").style.display = "block";
-    }
-});
-
-document.getElementById('applicantDashboardLink').addEventListener('click', async function (event) {
-    event.preventDefault();
-
-    try {
-        const response = await fetch('/status/getStatus', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include'
         });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            if (data.status === "Approved") {
-                alert("Your application has been approved. You cannot resubmit.");
-            } else if (data.status === "On Process") {
-                alert("Your application is being processed. Please wait.");
-            } else {
-                window.location.href = "applicantdashboard.html";
-            }
-        } else {
-            alert(data.message || "Status not found. Please submit your application.");
-            window.location.href = "applicantdashboard.html";
-        }
-    } catch (error) {
-        console.error('Error fetching status:', error);
-        alert('An error occurred while fetching status.');
-    }
-});
-
-
 
         // Slideshow functionality
         const images = document.querySelectorAll('.slideshow-image');
@@ -217,6 +260,14 @@ document.getElementById('applicantDashboardLink').addEventListener('click', asyn
         }
 
         document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            var confirmation = confirm("Are you sure you want to log out?");
+            if (confirmation) {
+                window.location.href = 'applicant.html';
+            }
+        });
+
+        document.getElementById('logoutButtonMobile').addEventListener('click', function(event) {
             event.preventDefault();
             var confirmation = confirm("Are you sure you want to log out?");
             if (confirmation) {
