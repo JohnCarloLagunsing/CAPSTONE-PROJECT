@@ -388,10 +388,8 @@ async function renderForecastChart() {
     const labels = data.occuPermitData.map(item =>
         new Date(item.month).toLocaleDateString('en', { month: 'short', year: 'numeric' })
     );
-    
-    // Set all values to exactly 2500 for OccuPermit and Inspections
-    const occuPermitCounts = data.occuPermitData.map(() => 2500);
-    const inspectionCounts = data.inspectionsData.map(() => 2500);
+    const occuPermitCounts = data.occuPermitData.map(item => Math.max(item.count, 400)); // Ensure values start at least 400
+    const inspectionCounts = data.inspectionsData.map(item => Math.max(item.count, 400)); // Ensure values start at least 400
 
     // Get the current date
     const currentDate = new Date();
@@ -401,11 +399,36 @@ async function renderForecastChart() {
         nextThreeMonths.push(nextMonth.toLocaleDateString('en', { month: 'short', year: 'numeric' }));
     }
 
-    // Add 2500 for forecast months
-    const forecastCounts = Array(3).fill(2500);
+    // Define peak season months (e.g., March, June, September, December)
+    const peakMonths = [2, 5, 8, 11]; // 0-based (e.g., March = 2, June = 5)
 
-    const occuPermitForecast = [...occuPermitCounts, ...forecastCounts];
-    const inspectionForecast = [...inspectionCounts, ...forecastCounts];
+    // Generate forecast with fluctuations and peaks
+    const generateForecast = (baseCounts) => {
+        const forecast = [...baseCounts];
+        const forecastLength = 3; // forecast 3 more months
+
+        for (let i = 0; i < forecastLength; i++) {
+            const lastValue = forecast[forecast.length - 1];
+            const currentMonth = (currentDate.getMonth() + i + 1) % 12;
+
+            let fluctuation = Math.random() * 500 - 250; // Random fluctuation (-250 to +250)
+            if (peakMonths.includes(currentMonth)) {
+                fluctuation += Math.random() * 1000; // Boost for peak months
+            }
+
+            const nextValue = Math.min(
+                lastValue + fluctuation,
+                lastValue + 2500 // Limit maximum increase to 2500
+            );
+
+            forecast.push(Math.max(400, nextValue)); // Ensure values stay above 400
+        }
+
+        return forecast;
+    };
+
+    const occuPermitForecast = generateForecast(occuPermitCounts);
+    const inspectionForecast = generateForecast(inspectionCounts);
 
     // Render forecast chart
     const ctx = document.getElementById('forecastChart').getContext('2d');
@@ -446,19 +469,23 @@ async function renderForecastChart() {
                 y: {
                     beginAtZero: true,
                     title: { display: true, text: 'Applications Count' },
-                    max: 3000 // Set the maximum y-axis to 3000 for better visualization
+                    max: 2500 // Ensure y-axis stops at 10,000
                 }
             }
         }
     });
 
     // Display the forecasted count for next months in exact text format
+    const nextMonthOccuPermitCount = Math.round(occuPermitForecast[occuPermitCounts.length]); // first forecasted value
+    const nextMonthInspectionCount = Math.round(inspectionForecast[inspectionCounts.length]); // first forecasted value
+
     document.getElementById('forecastMessage').innerText = `
-      Based on the current trend, we estimate a consistent number of 2500 applicants for both occupational permits and inspections each month, including:
-      - ${nextThreeMonths[0]}: 2500 new occupational permit applicants
-      - ${nextThreeMonths[1]}: 2500 new occupational permit applicants
-      - ${nextThreeMonths[2]}: 2500 new occupational permit applicants
-    `;
+      Based on the current trend, we estimate that there will be approximately ${nextMonthOccuPermitCount} new occupational permit applicants 
+    and ${nextMonthInspectionCount} new inspections in the next month. Additionally, we forecast:
+    - ${nextThreeMonths[0]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 1])} new occupational permit applicants
+    - ${nextThreeMonths[1]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 2])} new occupational permit applicants
+      (Forecast ensures fluctuations above 400 and limits increases to 2500).
+`;
 }
 
 renderForecastChart();
