@@ -65,9 +65,9 @@ router.get('/forecast-data', async (req, res) => {
             ORDER BY month;
         `);
 
-        const inspectionsMonthlyData = await pool.query(`
+        const MTOPMonthlyData = await pool.query(`
             SELECT DATE_TRUNC('month', created_at) AS month, COUNT(*) AS count
-            FROM "inspections"
+            FROM "mtopapplication"
             WHERE created_at >= NOW() - INTERVAL '1 year'
             GROUP BY month
             ORDER BY month;
@@ -75,7 +75,7 @@ router.get('/forecast-data', async (req, res) => {
 
         res.json({
             occuPermitData: occuPermitMonthlyData.rows,
-            inspectionsData: inspectionsMonthlyData.rows
+            inspectionsData: MTOPMonthlyData.rows
         });
     } catch (error) {
         console.error('Error fetching forecast data:', error);

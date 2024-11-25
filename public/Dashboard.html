@@ -101,7 +101,7 @@
                 <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
                     <canvas id="forecastChart" class="w-11/12 h-5/6"></canvas>
                     <div id="forecastMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
-                        Based on the trend, expect 65 new permits and 123 inspections next month.<br>
+                        Based on the trend, expect 65 new permits and 123 mtop next month.<br>
                         Forecast:<br>
                         - Dec 2024: 655 permits<br>
                         - Jan 2025: 6555 permits
@@ -454,8 +454,8 @@ async function renderForecastChart() {
                     tension: 0.1
                 },
                 {
-                    label: 'Inspections',
-                    data: inspectionForecast,
+                    label: 'MTOP Application',
+                    data: MTOPApplicationForecast,
                     fill: false,
                     borderColor: 'green',
                     tension: 0.1
@@ -486,11 +486,11 @@ async function renderForecastChart() {
 
     // Display the forecasted count for next months in exact text format
     const nextMonthOccuPermitCount = Math.round(occuPermitForecast[occuPermitCounts.length]); // first forecasted value
-    const nextMonthInspectionCount = Math.round(inspectionForecast[inspectionCounts.length]); // first forecasted value
+    const MTOPCountMonthPermitCount = Math.round(MTOPApplicationForecast[inspectionCounts.length]); // first forecasted value
 
     document.getElementById('forecastMessage').innerText = `
-      Based on the current trend, we estimate that there will be approximately ${nextMonthOccuPermitCount} new occupational permit applicants 
-    and ${nextMonthInspectionCount} new inspections in the next month. Additionally, we forecast:
+      Based on the current trend, we estimate that there will be approximately ${MTOPCountMonthPermitCount} new occupational permit and MTOP applicants 
+    and ${MTOPCountMonthPermitCount} new MTOP applicants in the next month. Additionally, we forecast:
     - ${nextThreeMonths[0]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 1])} new occupational permit applicants
     - ${nextThreeMonths[1]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 2])} new occupational permit applicants
       (Forecast ensures a minimum increase of 400 per month, with higher values during peak months).
