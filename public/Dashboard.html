@@ -127,47 +127,42 @@
                 </div>
         
                 <!-- Applicant Table -->
-                <div id="applicantTable" class="overflow-hidden border rounded-lg shadow-lg w-full max-w-3xl mx-auto mt-8">
-                    <table class="min-w-full border-collapse">
-                        <thead class="bg-blue-700 text-white">
-                            <tr>
+                <div id="applicantTable" class="overflow-y-auto max-h-48">
+                    <table class="min-w-full border-collapse rounded-lg overflow-hidden shadow-lg">
+                        <thead>
+                            <tr class="bg-blue-700 text-white">
                                 <th class="py-3 px-5 font-semibold text-left">Occuid</th>
                                 <th class="py-3 px-5 font-semibold text-left">Name</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            <tr class="bg-gray-50 hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">001-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Carl Jonel M. Hawak</td>
+                            </tr>
+                            <tr class="bg-white hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">002-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">John Carlo M. Lagunsing</td>
+                            </tr>
+                            <tr class="bg-gray-50 hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">003-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Pinky M. Lagunsing</td>
+                            </tr>
+                            <tr class="bg-white hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">004-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Pinkie Klein M. Lagunsing</td>
+                            </tr>
+                            <tr class="bg-gray-50 hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">005-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Another Applicant</td>
+                            </tr>
+                            <tr class="bg-white hover:bg-blue-100">
+                                <td class="py-3 px-5 border-b border-gray-200">006-2024</td>
+                                <td class="py-3 px-5 border-b border-gray-200">Yet Another Applicant</td>
+                            </tr>
+                        </tbody>
                     </table>
-                    <div class="overflow-y-auto max-h-48">
-                        <table class="min-w-full border-collapse">
-                            <tbody>
-                                <tr class="bg-gray-50 hover:bg-blue-100">
-                                    <td class="py-3 px-5 border-b border-gray-200">001-2024</td>
-                                    <td class="py-3 px-5 border-b border-gray-200">Carl Jonel M. Hawak</td>
-                                </tr>
-                                <tr class="bg-white hover:bg-blue-100">
-                                    <td class="py-3 px-5 border-b border-gray-200">002-2024</td>
-                                    <td class="py-3 px-5 border-b border-gray-200">John Carlo M. Lagunsing</td>
-                                </tr>
-                                <tr class="bg-gray-50 hover:bg-blue-100">
-                                    <td class="py-3 px-5 border-b border-gray-200">003-2024</td>
-                                    <td class="py-3 px-5 border-b border-gray-200">Pinky M. Lagunsing</td>
-                                </tr>
-                                <tr class="bg-white hover:bg-blue-100">
-                                    <td class="py-3 px-5 border-b border-gray-200">004-2024</td>
-                                    <td class="py-3 px-5 border-b border-gray-200">Pinkie Klein M. Lagunsing</td>
-                                </tr>
-                                <tr class="bg-gray-50 hover:bg-blue-100">
-                                    <td class="py-3 px-5 border-b border-gray-200">005-2024</td>
-                                    <td class="py-3 px-5 border-b border-gray-200">Another Applicant</td>
-                                </tr>
-                                <tr class="bg-white hover:bg-blue-100">
-                                    <td class="py-3 px-5 border-b border-gray-200">006-2024</td>
-                                    <td class="py-3 px-5 border-b border-gray-200">Yet Another Applicant</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
-                
                 
     <script >
          function toggleSidebar() {
