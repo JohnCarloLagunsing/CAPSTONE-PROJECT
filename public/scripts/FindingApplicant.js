@@ -268,9 +268,26 @@ function fetchAndDisplayReceipt() {
 }
 
 // Function to generate the receipt
+// Function to generate the receipt
 function generateReceipt(data) {
     const receiptWindow = window.open('', '_blank', 'width=300,height=500');
-    const feesHTML = Object.entries(data.fees)
+
+    // Calculate fees that depend on units
+    const adjustedFees = {
+        filling_fee: data.fees.filling_fee,
+        business_permit_fee: data.fees.business_permit_fee * data.units,
+        mtop_fee: data.fees.mtop_fee * data.units,
+        pol_med_mayor_fee: data.fees.pol_med_mayor_fee,
+        plate_number_fee: data.fees.plate_number_fee * data.units,
+        inspection_fee: data.fees.inspection_fee * data.units,
+        id_card_fee: data.fees.id_card_fee,
+        sec_fee: data.fees.sec_fee,
+        dst_fee: data.fees.dst_fee,
+        supervision_fee: data.fees.supervision_fee * data.units,
+        penalty_fee: data.fees.penalty_fee,
+    };
+
+    const feesHTML = Object.entries(adjustedFees)
         .map(([key, value]) => `
             <tr>
                 <td>${key.replace(/_/g, ' ').toUpperCase()}:</td>
@@ -321,6 +338,10 @@ function generateReceipt(data) {
                 <div class="receipt-details">
                     <table>
                         <tr>
+                            <td>Date:</td>
+                            <td>${new Date().toLocaleDateString()}</td>
+                        </tr>
+                        <tr>
                             <td>Applicant No:</td>
                             <td>${data.applicant_no}</td>
                         </tr>
@@ -340,22 +361,22 @@ function generateReceipt(data) {
                             <td>Units:</td>
                             <td>${data.units}</td>
                         </tr>
-                        <tr>
-                            <td>Total Amount:</td>
-                            <td>₱${data.total.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td>Amount Paid:</td>
-                            <td>₱${data.amount_paid.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td>Change Due:</td>
-                            <td>₱${data.change_due.toFixed(2)}</td>
-                        </tr>
                     </table>
                     <br>
                     <table>
                         ${feesHTML}
+                        <tr>
+                            <td>TOTAL AMOUNT:</td>
+                            <td>₱${data.total.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>AMOUNT PAID:</td>
+                            <td>₱${data.amount_paid.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>CHANGE DUE:</td>
+                            <td>₱${data.change_due.toFixed(2)}</td>
+                        </tr>
                     </table>
                 </div>
                 <div class="receipt-footer">
@@ -371,6 +392,7 @@ function generateReceipt(data) {
     receiptWindow.focus();
     receiptWindow.print();
 }
+
 
 // Function to fetch and display past 5 receipts
 async function fetchAndDisplayPastReceipts() {
