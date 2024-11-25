@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(session({
     store: new pgSession({
         pool: pool,
-        tableName: 'permit_session', // Use this table for all session data
+        tableName: 'session', // Use this table for all session data
     }),
     secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
     resave: false,
