@@ -5,7 +5,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
   try {
     loadingOverlay.style.display = 'flex';
-    const response = await fetch("/auth/login", {
+    const response = await fetch("https://ecentersanluis.com/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(jsonData)
