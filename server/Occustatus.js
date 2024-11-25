@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require('../public/scripts/db');
 
-router.post("/getStatus", async (req, res) => {
+router.post("status/getStatus", async (req, res) => {
     const userId = req.session?.user_id;
 
     if (!userId) {
