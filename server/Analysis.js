@@ -4,13 +4,13 @@ const pool = require('../public/scripts/db');
 
 router.get('/comparison', async (req, res) => {
     try {
-        const inspectionsResult = await pool.query('SELECT COUNT(*) FROM "inspections"');
+        const mtopapplication = await pool.query('SELECT COUNT(*) FROM "mtopapplication"');
         const occuPermitResult = await pool.query('SELECT COUNT(*) FROM  "OccuPermit"');
 
-        const inspectionsCount = parseInt(inspectionsResult.rows[0].count, 10);
+        const mtopcounts = parseInt(mtopapplication.rows[0].count, 10);
         const occuPermitCount = parseInt(occuPermitResult.rows[0].count, 10);
 
-        res.json({ inspectionsCount, occuPermitCount });
+        res.json({ mtopcounts, occuPermitCount });
     } catch (error) {
         console.error('Error fetching data:', error);
         res.status(500).json({ error: 'Error fetching data' });

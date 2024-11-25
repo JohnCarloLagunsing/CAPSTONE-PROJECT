@@ -32,7 +32,7 @@
             <span id="alert-message"></span>
         </div>
 
-        <form action="http://localhost:8000/submit" method="POST" enctype="multipart/form-data">
+        <form action="https://ecentersanluis.com/submit" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <div class="form-field">
                     <label for="applicationType" class="application-type-label">Application Type:</label>
@@ -286,7 +286,7 @@ async function checkRenewalEligibility() {
 
         if (tfid) {
             try {
-                const response = await fetch(`http://localhost:8000/check-renewal?tfid=${encodeURIComponent(tfid)}`);
+                const response = await fetch(`https://ecentersanluis.com/check-renewal?tfid=${encodeURIComponent(tfid)}`);
                 const data = await response.json();
 
                 if (data.exists) {
@@ -319,7 +319,7 @@ async function checkRenewalEligibility() {
 // Fetch existing record based on TFID
 async function fetchExistingRecordByTFID(tfid) {
     try {
-        const response = await fetch(`http://localhost:8000/fetch-record?tfid=${encodeURIComponent(tfid)}`);
+        const response = await fetch(`https://ecentersanluis.com/fetch-record?tfid=${encodeURIComponent(tfid)}`);
         const data = await response.json();
 
         if (data.success) {

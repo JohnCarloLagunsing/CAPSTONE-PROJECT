@@ -225,9 +225,9 @@ async function fetchData() {
 // Render Donut Chart
 async function renderChart() {
     const data = await fetchData();
-    const counts = [data.inspectionsCount, data.occuPermitCount];
+    const counts = [data.mtopcounts, data.occuPermitCount];
     const colors = counts.map(count => count === Math.min(...counts) ? 'red' : 'blue');
-    const labels = ['Inspections', 'Occupational Permits'];
+    const labels = ['MTOP Application', 'Occupational Permits'];
     const maxCountIndex = counts.indexOf(Math.max(...counts));
     const highestLabel = labels[maxCountIndex];
     const highestCount = counts[maxCountIndex];
