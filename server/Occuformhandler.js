@@ -137,10 +137,23 @@ router.post(
       const result = await pool.query(query, values);
       const occuid = result.rows[0].Occuid.toString(); // Convert occuid to string to match VARCHAR type
 
-      // Update permit_session to set has_submitted to TRUE and store occuid as VARCHAR
+      // Update session to set has_submitted to TRUE and store occuid as VARCHAR
       await pool.query(
-        'UPDATE permit_session SET has_submitted = TRUE, occuid = $1 WHERE sid = $2',
-        [occuid, req.session.user_id]
+        'UPDATE session SET sess = jsonb_set(sess, $2, $3::jsonb) WHERE sess ->> \'user_id\' = $1',
+        [
+          req.session.user_id,
+          '{has_submitted}',
+          'true'
+        ]
+      );
+      
+      await pool.query(
+        'UPDATE session SET sess = jsonb_set(sess, $2, $3::jsonb) WHERE sess ->> \'user_id\' = $1',
+        [
+          req.session.user_id,
+          '{occuid}',
+          JSON.stringify(occuid)
+        ]
       );
 
       // Set occuid in the session

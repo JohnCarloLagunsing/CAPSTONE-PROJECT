@@ -16,15 +16,17 @@ router.post("/getStatus", async (req, res) => {
     try {
         console.log("Session User ID:", userId);
 
-        // Query the permit_session table
-        const sessionResult = await pool.query(
-            "SELECT occuid FROM permit_session WHERE sid = $1 AND has_submitted = TRUE",
-            [userId]
-        );
+        // Query the session table
+        const sessionQuery = `
+            SELECT sess ->> 'occuid' AS occuid
+            FROM session
+            WHERE sess ->> 'user_id' = $1 AND sess ->> 'has_submitted' = 'true'
+        `;
+        const sessionResult = await pool.query(sessionQuery, [userId]);
 
-        console.log("Permit Session Query Result:", sessionResult.rows);
+        console.log("Session Query Result:", sessionResult.rows);
 
-        // If no entry is found in permit_session
+        // If no entry is found in session
         if (sessionResult.rows.length === 0) {
             console.warn(`No submitted application found for user ID ${userId}.`);
             return res.status(404).json({ 
@@ -37,14 +39,14 @@ router.post("/getStatus", async (req, res) => {
 
         // Check if occuid is valid
         if (!occuid) {
-            console.error(`Occuid is missing for user ID ${userId} in permit_session.`);
+            console.error(`Occuid is missing for user ID ${userId} in session.`);
             return res.status(404).json({ 
                 message: "Occuid is missing. Please contact support.", 
                 redirect: true 
             });
         }
 
-        console.log("Occuid from permit_session:", occuid);
+        console.log("Occuid from session:", occuid);
 
         // Query the Occustatus table
         const statusResult = await pool.query(

@@ -115,21 +115,33 @@ router.post("/login", async (req, res) => {
     if (role === "applicant") {
       req.session.occuid = null; // Clear any stale occuid
 
-      console.log(`Checking permit_session for user ID: ${user.id}`);
-      const sessionResult = await pool.query(
-        "SELECT * FROM permit_session WHERE sid = $1",
-        [user.id]
-      );
+      console.log(`Checking session for user ID: ${user.id}`);
+      const sessionQuery = `
+        SELECT * 
+        FROM session
+        WHERE sess ->> 'user_id' = $1
+      `;
+      const sessionResult = await pool.query(sessionQuery, [user.id]);
 
       if (sessionResult.rows.length === 0) {
-        // Create a new session in permit_session
+        // Create a new session in session table
         const expiresAt = new Date();
         expiresAt.setHours(expiresAt.getHours() + 1); // Session expires in 1 hour
 
-        console.log("Creating new permit_session for applicant...");
+        console.log("Creating new session for applicant...");
         await pool.query(
-          "INSERT INTO permit_session (sid, sess, expire, has_submitted) VALUES ($1, $2, $3, FALSE)",
-          [user.id, JSON.stringify({}), expiresAt]
+          "INSERT INTO session (sid, sess, expire) VALUES ($1, $2, $3)",
+          [
+            req.sessionID,
+            JSON.stringify({
+              user_id: user.id,
+              firstname: user.firstname,
+              lastname: user.lastname,
+              role: role,
+              has_submitted: false,
+            }),
+            expiresAt,
+          ]
         );
 
         console.log("Applicant login successful (first-time):", user.email);
@@ -139,6 +151,13 @@ router.post("/login", async (req, res) => {
           isFirstTime: true,
         });
       } else {
+        const existingSession = sessionResult.rows[0];
+        const sessionData = JSON.parse(existingSession.sess);
+
+        if (sessionData.has_submitted) {
+          req.session.occuid = sessionData.occuid; // Set occuid if already submitted
+        }
+
         console.log("Applicant login successful (existing session):", user.email);
         return res.status(200).json({
           message: "Login successful",
