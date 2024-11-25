@@ -370,6 +370,7 @@ function generateReceipt(data) {
     receiptWindow.document.write(receiptContent);
     receiptWindow.document.close();
     receiptWindow.focus();
+    receiptWindow.print();
 }
 
 // Function to fetch and display past 5 receipts
