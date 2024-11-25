@@ -30,11 +30,11 @@ app.use(cookieParser());
 app.use(session({
     store: new pgSession({
         pool: pool,
-        tableName: 'permit_session', // Use this table for all session data
+        tableName: 'session', // Use this table for all session data
     }),
     secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
-    resave: false,
-    saveUninitialized: false,
+    resave: true, // Always save session, even if not modified
+    saveUninitialized: false, // Don't create sessions until something is stored
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         secure: process.env.NODE_ENV === 'production', // Set to true in production with HTTPS
