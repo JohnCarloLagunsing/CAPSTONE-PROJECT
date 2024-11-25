@@ -362,7 +362,6 @@ function generateReceipt(data) {
                     <p>Thank you for your payment!</p>
                     <p>Powered by Payment System</p>
                 </div>
-                <button onclick="window.print();">Print Receipt</button>
             </div>
         </body>
         </html>
