@@ -39,11 +39,15 @@ router.get('/getOccupationalDetails/:id', async (req, res) => {
                 "OccuPermit"."Email" AS email,
                 "OccuPermit"."Gender" AS gender,
                 "OccuPermit"."CivilStatus" AS civilstatus,
-                "OccuPermit"."PlaceofBirth" AS placeofbirth, -- Fixed case for column
-                "OccuPermit"."DateofBirth" AS dateofbirth, -- Fixed case for column
+                "OccuPermit"."PlaceofBirth" AS placeofbirth,
+                "OccuPermit"."DateofBirth" AS dateofbirth,
                 "OccuPermit"."JobPosition" AS jobposition,
                 "OccuPermit"."CompanyName" AS companyname,
-                "OccuPermit"."CTCNumber" AS ctcnumber
+                "OccuPermit"."CTCNumber" AS ctcnumber,
+                "OccuPermit"."COE" AS coe,
+                "OccuPermit"."HealthCard" AS healthcard,
+                "OccuPermit"."BirthCertificate" AS birthcertificate,
+                "OccuPermit"."OfficialReceipt" AS officialreceipt
             FROM "OccuPermit"
             WHERE "OccuPermit"."Occuid" = $1
             `,
@@ -51,7 +55,15 @@ router.get('/getOccupationalDetails/:id', async (req, res) => {
         );
 
         if (result.rows.length > 0) {
-            res.json(result.rows[0]);
+            const data = result.rows[0];
+
+            // Convert binary data to base64 strings
+            data.coe = data.coe ? data.coe.toString('base64') : null;
+            data.healthcard = data.healthcard ? data.healthcard.toString('base64') : null;
+            data.birthcertificate = data.birthcertificate ? data.birthcertificate.toString('base64') : null;
+            data.officialreceipt = data.officialreceipt ? data.officialreceipt.toString('base64') : null;
+
+            res.json(data);
         } else {
             res.status(404).json({ error: 'Record not found' });
         }
