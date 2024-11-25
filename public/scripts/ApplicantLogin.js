@@ -4,38 +4,30 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   const jsonData = Object.fromEntries(formData.entries());
 
   try {
-    // Display loading overlay
     loadingOverlay.style.display = 'flex';
-    
-    const response = await fetch("https://ecentersanluis.com/auth/login", {
+    const response = await fetch("/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(jsonData)
     });
 
-    // Hide loading overlay
     loadingOverlay.style.display = 'none';
 
-    // Log the raw response for debugging
-    console.log(response);
+    const result = await response.json();
 
     if (response.ok) {
-      const result = await response.json();
       // Redirect on success
       window.location.href = result.redirectUrl;
     } else {
-      const errorText = await response.text(); // Log response text if JSON parsing fails
-      console.error("Error response:", errorText);
-      showAlert("An error occurred: " + errorText, "error");
+      // Show error message
+      showAlert(result.message, "error");
     }
   } catch (error) {
-    // Log the error for debugging
-    console.error("Fetch error:", error);
     showAlert("An error occurred. Please try again.", "error");
-    // Hide loading overlay
     loadingOverlay.style.display = 'none';
   }
 });
+
 
 // Function to display alert messages
 function showAlert(message, type) {
