@@ -238,6 +238,20 @@ function fetchAndDisplayReceipt() {
     const amountPaid = parseFloat(document.getElementById('amount').value) || 0;
     const changeDue = parseFloat(document.getElementById('change').value.replace('₱', '')) || 0;
 
+    const fees = {
+        filling_fee: parseFloat(document.getElementById('filling-fee').value) || 0,
+        business_permit_fee: parseFloat(document.getElementById('business-permit-fee').value) || 0,
+        mtop_fee: parseFloat(document.getElementById('mtop-fee').value) || 0,
+        pol_med_mayor_fee: parseFloat(document.getElementById('pol-med-mayor-fee').value) || 0,
+        plate_number_fee: parseFloat(document.getElementById('plate-number-fee').value) || 0,
+        inspection_fee: parseFloat(document.getElementById('inspection-fee').value) || 0,
+        id_card_fee: parseFloat(document.getElementById('id-card-fee').value) || 0,
+        sec_fee: parseFloat(document.getElementById('sec-fee').value) || 0,
+        dst_fee: parseFloat(document.getElementById('dst-fee').value) || 0,
+        supervision_fee: parseFloat(document.getElementById('supervision-fee').value) || 0,
+        penalty_fee: parseFloat(document.getElementById('penalty-fee').value) || 0,
+    };
+
     const receiptData = {
         applicant_no: applicantNo,
         operator_name: operatorName,
@@ -247,6 +261,7 @@ function fetchAndDisplayReceipt() {
         total: total,
         amount_paid: amountPaid,
         change_due: changeDue,
+        fees: fees,
     };
 
     generateReceipt(receiptData);
@@ -255,6 +270,15 @@ function fetchAndDisplayReceipt() {
 // Function to generate the receipt
 function generateReceipt(data) {
     const receiptWindow = window.open('', '_blank', 'width=300,height=500');
+    const feesHTML = Object.entries(data.fees)
+        .map(([key, value]) => `
+            <tr>
+                <td>${key.replace(/_/g, ' ').toUpperCase()}:</td>
+                <td>₱${value.toFixed(2)}</td>
+            </tr>
+        `)
+        .join('');
+
     const receiptContent = `
         <html>
         <head>
@@ -328,6 +352,10 @@ function generateReceipt(data) {
                             <td>Change Due:</td>
                             <td>₱${data.change_due.toFixed(2)}</td>
                         </tr>
+                    </table>
+                    <br>
+                    <table>
+                        ${feesHTML}
                     </table>
                 </div>
                 <div class="receipt-footer">
