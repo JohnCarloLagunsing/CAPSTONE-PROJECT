@@ -30,22 +30,17 @@ app.use(cookieParser());
 app.use(session({
     store: new pgSession({
         pool: pool,
-        tableName: 'session',
+        tableName: 'permit_session', // Use this table for all session data
     }),
     secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
     resave: false,
-    saveUninitialized: true, // Set to true temporarily for debugging
-    rolling: true, // Refresh the cookie's expiration
+    saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: false, // Set to false for local testing
+        secure: false, // Set to true in production with HTTPS
         httpOnly: true,
-        sameSite: 'none', // Adjust based on cross-site behavior
     },
 }));
-
-
-
 
 // Debugging middleware for session logging
 app.use((req, res, next) => {
