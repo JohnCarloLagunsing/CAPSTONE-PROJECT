@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying Occupational Permit</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <style>
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        background-color: white;
+    }
+
+    #occupationalModal {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: auto;
+        page-break-inside: avoid;
+    }
+
+    .modal-content {
+        width: 60%; /* Adjust modal width */
+        max-width: 600px;
+        height: auto; /* Ensure dynamic height adjustment */
+        padding: 10px;
+        margin: auto; /* Center modal on the page */
+        border: 1px solid #ccc;
+        background: white;
+        box-shadow: none;
+        overflow: hidden; /* Prevent overflow */
+    }
+
+    /* Hide everything else */
+    body * {
+        visibility: hidden;
+    }
+
+    #occupationalModal,
+    #occupationalModal * {
+        visibility: visible;
+    }
+
+    /* Hide print-related buttons */
+    #printModal,
+    #closeModal {
+        display: none !important;
+    }
+
+    @page {
+        size: A4;
+        margin: 0;
+    }
+}
+
+</style>
+       
+</head>
+<body class="flex bg-gray-100 min-h-screen">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar w-56 h-full bg-blue-700 text-white flex flex-col p-5 fixed z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+        <img src="assets/favicon.png" alt="Profile Picture" class="w-20 h-20 rounded-full mx-auto mb-5">
+        <h2 class="text-lg text-center mb-5">Admin Panel</h2>
+        <ul class="flex-1 space-y-4">
+            <li class="mb-4">
+                <a href="HeadDashboard.html" class="hover:bg-blue-600 block py-2 px-4 rounded flex items-center">
+                    <i class="bx bxs-dashboard mr-2"></i> Dashboard
+                </a>
+            </li>
+            <li class="mb-4">
+                <a href="HeadadminAccount.html" class="hover:bg-blue-600 block py-2 px-4 rounded flex items-center">
+                    <i class="fas fa-user mr-2"></i> Account
+                </a>
+            </li>
+            <li class="mb-4">
+                <a href="HeadVerifyMTOP.html" class="hover:bg-blue-600 block py-2 px-4 rounded flex items-center">
+                    <i class="bx bxs-file-find mr-2"></i> Verify MTOP
+                </a>
+            </li>
+            <li class="mb-4">
+                <a href="HeadVerifyOccuPermit.html" class="hover:bg-blue-600 block py-2 px-4 rounded flex items-center">
+                    <i class="bx bxs-file-find mr-2"></i> Verify OccuPermit
+                </a>
+            </li>
+        </ul>
+        <a href="#" id="logoutButton" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600">
+            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+        </a>
+    </div>
+
+
+    <!-- Mobile Sidebar Toggle Button -->
+    <button id="menuToggle" class="lg:hidden fixed top-4 left-4 z-30 p-2 bg-blue-900 text-white rounded-md focus:outline-none" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+
+    <!-- Main Content -->
+    <div class="flex-1 ml-56 p-6">
+        <h1 class="text-3xl font-bold mb-6">Verifying Occupational Permit</h1>
+
+        <!-- Table -->
+        <div class="container mx-auto px-4">
+            <table class="table-auto w-full bg-white shadow-md rounded-lg">
+                <thead class="bg-blue-900 text-white">
+                    <tr>
+                        <th class="px-4 py-2">ID</th>
+                        <th class="px-4 py-2">Fullname</th>
+                        <th class="px-4 py-2">Document</th>
+                        <th class="px-4 py-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="occupationalTableBody" class="text-center">
+                    <!-- Rows will be dynamically populated -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="occupationalModal" class="fixed inset-0 hidden bg-gray-800 bg-opacity-50 items-center justify-center z-50">
+        <div class="modal-content bg-white border-2 border-gray-500 rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+            <div class="text-center mb-6">
+                <img src="assets/favicon.png" alt="Logo" class="w-16 h-16 mx-auto">
+                <h1 class="text-2xl font-bold mt-2">Occupational Permit</h1>
+                <p class="text-sm italic">Issued by the Local Government Unit</p>
+            </div>
+            <hr class="my-4">
+            <div id="modalContent">
+                <!-- Content dynamically populated -->
+            </div>
+            <hr class="my-4">
+            <div class="text-center mt-4">
+                <button id="printModal" class="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 font-semibold">Print</button>
+                <button id="closeModal" class="px-6 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 font-semibold">Close</button>
+            </div>
+        </div>
+    </div>    
+
+    <script>
+        const currentAdmin = sessionStorage.getItem('currentAdmin') || 'Unknown Admin'; // Replace this with your logic
+        // Replace with dynamic fetching of the current admin's name.
+        const tableBody = document.getElementById('occupationalTableBody');
+        const modal = document.getElementById('occupationalModal');
+        const modalContent = document.getElementById('modalContent');
+        const closeModal = document.getElementById('closeModal');
+        let selectedRecord = null; // To track the currently selected record
+    
+        // Fetch records and populate the table
+        fetch('https://ecentersanluis.com/getOccupationalRecords')
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                data.forEach((record) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-4 py-2">${record.id}</td>
+                        <td class="px-4 py-2">${record.fullname}</td>
+                        <td class="px-4 py-2">
+                           <button class="text-blue-500 hover:text-blue-700" onclick="openPermitModal('${record.id}')">
+                                <i class="fas fa-file-alt"></i>
+                            </button>
+                        </td>
+                        <td class="px-4 py-2">
+                    <select class="status-dropdown border rounded px-2 py-1" data-id="${record.id}">
+                        <option value="On Process" ${record.status === "On Process" ? "selected" : ""}>On Process</option>
+                        <option value="Approved" ${record.status === "Approved" ? "selected" : ""}>Approved</option>
+                        <option value="Declined" ${record.status === "Declined" ? "selected" : ""}>Declined</option>
+                    </select>
+                </td>
+
+                    `;
+                    tableBody.appendChild(row);
+                });
+    
+                // Attach event listeners to dropdowns
+                document.body.addEventListener('change', (event) => {
+                if (event.target.classList.contains('status-dropdown')) {
+                    const id = event.target.getAttribute('data-id');
+                    const newStatus = event.target.value;
+                    updateStatus(id, newStatus);
+                }
+            });
+
+            })
+            .catch((error) => console.error('Error fetching data:', error));
+    
+        // Open modal and populate details
+        function openPermitModal(id) {
+    fetch(`https://ecentersanluis.com/getOccupationalDetails/${id}`)
+        .then((response) => response.json())
+        .then((record) => {
+            const formattedDate = record.dateofbirth
+                ? new Date(record.dateofbirth).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                  })
+                : 'N/A';
+
+            const formattedGender = record.gender
+                ? record.gender.charAt(0).toUpperCase() + record.gender.slice(1).toLowerCase()
+                : 'N/A';
+
+            const formattedCivilStatus = record.civilstatus
+                ? record.civilstatus.charAt(0).toUpperCase() + record.civilstatus.slice(1).toLowerCase()
+                : 'N/A';
+
+                modalContent.innerHTML = `
+    <div class="grid grid-cols-2 gap-6 text-sm">
+        <p><strong>ID:</strong> ${record.id || 'N/A'}</p>
+        <p><strong>Name:</strong> ${record.fullname || 'N/A'}</p>
+        <p><strong>Address:</strong> ${record.address || 'N/A'}</p>
+        <p><strong>Date of Birth:</strong> ${formattedDate}</p>
+        <p><strong>Age:</strong> ${record.age ? `${record.age} years old` : 'N/A'}</p>
+        <p><strong>Place of Birth:</strong> ${record.placeofbirth || 'N/A'}</p>
+        <p><strong>Contact No:</strong> ${record.contactno || 'N/A'}</p>
+        <p><strong>Email:</strong> ${record.email || 'N/A'}</p>
+        <p><strong>Gender:</strong> ${formattedGender}</p>
+        <p><strong>Civil Status:</strong> ${formattedCivilStatus}</p>
+        <p><strong>Company Name:</strong> ${record.companyname || 'N/A'}</p>
+        <p><strong>Job Position:</strong> ${record.jobposition || 'N/A'}</p>
+        <p><strong>CTC Number:</strong> ${record.ctcnumber || 'N/A'}</p>
+    </div>
+`;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        })
+        .catch((error) => console.error('Error fetching details:', error));
+}
+
+
+
+
+    // Close modal
+    closeModal.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    });
+    
+        // Update status
+    // Update status for a record
+    function updateStatus(id, newStatus) {
+    console.log('Updating Status:', { occuid: id, status: newStatus, approvedBy: currentAdmin });
+
+    fetch('https://ecentersanluis.com/updateStatus', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            occuid: id, // Use 'occuid' to match backend expectation
+            status: newStatus, // New status
+            approvedBy: currentAdmin, // Admin's name
+        }),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                return response.text().then((text) => {
+                    throw new Error(`Server Error: ${text}`);
+                });
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log('Server Response:', data); // Optional: Keep this for debugging
+            // No alert, just log the success if needed
+        })
+        .catch((error) => console.error('Error updating status:', error));
+}
+
+
+
+// Add event listener for status dropdowns
+document.body.addEventListener('change', (event) => {
+    if (event.target.classList.contains('status-dropdown')) {
+        const id = event.target.getAttribute('data-id'); // Retrieve the record ID
+        const newStatus = event.target.value; // Retrieve the new status
+        updateStatus(id, newStatus); // Pass the correct ID
+    }
+});
+
+
+function scaleModalForPrint() {
+    const modalContent = document.querySelector('.modal-content');
+    const modalHeight = modalContent.offsetHeight;
+    const windowHeight = window.innerHeight;
+
+    // Scale down content if it exceeds the window's height
+    if (modalHeight > windowHeight) {
+        const scaleFactor = windowHeight / modalHeight;
+        modalContent.style.transform = `scale(${scaleFactor})`;
+        modalContent.style.transformOrigin = 'top left';
+    } else {
+        modalContent.style.transform = 'scale(1)'; // Reset scale
+    }
+}
+
+// Attach scaling before print
+document.getElementById('printModal').addEventListener('click', () => {
+    scaleModalForPrint();
+    setTimeout(() => {
+        window.print(); // Trigger print
+        // Reset after print
+        const modalContent = document.querySelector('.modal-content');
+        modalContent.style.transform = 'scale(1)';
+        modalContent.style.transformOrigin = ''; // Remove origin
+    }, 500); // Allow time for scaling
+});
+
+    </script>
+</body>
+</html>
