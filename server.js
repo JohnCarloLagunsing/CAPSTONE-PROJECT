@@ -37,10 +37,12 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: false, // Set to true in production with HTTPS
+        secure: process.env.NODE_ENV === 'production', // Set to true in production with HTTPS
         httpOnly: true,
+        sameSite: 'strict', // Protect against CSRF
     },
 }));
+
 
 // Debugging middleware for session logging
 app.use((req, res, next) => {
