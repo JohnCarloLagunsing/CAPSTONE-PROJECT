@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Occupational Status</title>
@@ -124,9 +123,9 @@
     <div id="mainContent" class="ml-0 lg:ml-64 p-4 md:p-10 flex flex-col items-center content-overlay transition-all duration-300">
         <div class="bg-white rounded-lg p-4 md:p-8 max-w-lg w-full shadow-lg flex flex-col items-center gap-4">
             <div class="w-full">
-                <p><strong>Name:</strong> <span id="fullname">No Applicants found please submit first</span></p>
-                <p><strong>Status:</strong> <span id="status">No Applicants found please submit first</span></p>
-                <p><strong>Processed By:</strong> <span id="process_by">No Applicants found please submit first</span></p>
+                <p><strong>Name:</strong> <span id="fullname">No Applicants found, please submit first</span></p>
+                <p><strong>Status:</strong> <span id="status">No Applicants found, please submit first</span></p>
+                <p><strong>Processed By:</strong> <span id="process_by">No Applicants found, please submit first</span></p>
                 <!-- Additional message for claiming permit -->
                 <p id="claimMessage" class="claim-message" style="display: none;">
                     You can claim your permit at the Municipality of San Luis from 8:00 AM to 5:00 PM.
@@ -142,11 +141,9 @@
         </div>
     </div>
     <script>
-        const sidebar = document.getElementById('sidebar');
         const hamburgerMenu = document.getElementById('hamburgerMenu');
         const mobileSidebar = document.getElementById('mobileSidebar');
         const closeSidebar = document.getElementById('closeSidebar');
-        const mainContent = document.getElementById('mainContent');
 
         hamburgerMenu.addEventListener('click', () => {
             mobileSidebar.classList.toggle('hidden');
@@ -156,7 +153,7 @@
             mobileSidebar.classList.add('hidden');
         });
 
-        // JavaScript to check submission status before redirecting
+        // Fetch the current user's submission status
         document.addEventListener("DOMContentLoaded", async function() {
             try {
                 const response = await fetch('/status/getStatus', {
@@ -180,7 +177,6 @@
                     document.getElementById('process_by').innerText = data.process_by || 'Wait for the Admin to Verify your Credentials';
 
                     const statusElement = document.getElementById('status');
-                    statusElement.classList.remove('text-orange-500', 'text-red-600', 'text-green-600');
                     const claimMessage = document.getElementById('claimMessage');
                     const resubmitMessage = document.getElementById('resubmitMessage');
 
@@ -188,14 +184,15 @@
                         statusElement.style.color = "#FFA500";
                         claimMessage.style.display = "none";
                     } else if (data.status === "Declined") {
-                        statusElement.classList.add('text-red-600');
+                        statusElement.style.color = "#e53e3e";
                         claimMessage.style.display = "none";
                         resubmitMessage.style.display = "block";
                     } else if (data.status === "Approved") {
-                        statusElement.classList.add('text-green-600');
+                        statusElement.style.color = "#16a34a";
                         claimMessage.style.display = "block";
                     }
                 } else {
+                    console.error('Error fetching status:', response.status, data.message);
                     document.getElementById("errorMessage").innerText = data.message || "Status not found";
                     document.getElementById("errorMessage").style.display = "block";
                 }
@@ -207,6 +204,7 @@
             }
         });
 
+        // Redirect users to the appropriate page based on their submission status
         document.getElementById('applicantDashboardLink').addEventListener('click', async function (event) {
             event.preventDefault();
 
@@ -228,6 +226,7 @@
                         window.location.href = "applicantdashboard.html";
                     }
                 } else {
+                    console.error('Error fetching status:', response.status, data.message);
                     alert(data.message || "Status not found. Please submit your application.");
                     window.location.href = "applicantdashboard.html";
                 }
@@ -258,13 +257,15 @@
         // Auto-slide every 3 seconds
         setInterval(nextSlide, 3000);
 
+        // Go back to the previous page
         function goBack() {
             window.history.back();
         }
 
+        // Logout event listeners for desktop and mobile buttons
         document.getElementById('logoutButton').addEventListener('click', function(event) {
             event.preventDefault();
-            var confirmation = confirm("Are you sure you want to log out?");
+            const confirmation = confirm("Are you sure you want to log out?");
             if (confirmation) {
                 window.location.href = 'applicant.html';
             }
@@ -272,7 +273,7 @@
 
         document.getElementById('logoutButtonMobile').addEventListener('click', function(event) {
             event.preventDefault();
-            var confirmation = confirm("Are you sure you want to log out?");
+            const confirmation = confirm("Are you sure you want to log out?");
             if (confirmation) {
                 window.location.href = 'applicant.html';
             }
