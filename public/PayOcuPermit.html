@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,31 +13,31 @@
   <style>
    @media print {
     @page {
-        size: 8cm auto; /* Statement size: 5.5 x 8.5 inches */
-        margin: 0; /* Optional: Adjust to control margins */
+        size: A5 portrait;
+        margin: 1cm;
     }
 
     body {
         margin: 0;
         padding: 0;
+        background-color: white;
         overflow: hidden;
     }
 
     #receiptModal {
         position: static;
-        max-width: 5.5in; /* Match statement size width */
-        height: 8.5in; /* Match statement size height */
-        margin: auto; /* Center modal on the page */
+        width: 100%;
+        height: auto;
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
-        padding: 1in; /* Optional: Add padding */
-        background-color: white; /* Ensure a white background for printing */
-        overflow: visible;
+        background-color: white;
     }
 
     #receiptContent {
         width: 100%;
-        height: 100%;
-        overflow: visible;
+        height: auto;
+        padding: 1cm;
     }
 
     /* Hide unnecessary UI elements */
@@ -44,11 +45,7 @@
         display: none;
     }
 }
-
 </style>
-
-    </style>
-    
 </head>
 <body class="font-sans overflow-x-hidden bg-gray-50">
     <!-- Sidebar -->
@@ -72,10 +69,11 @@
         <i class="fas fa-bars"></i>
     </button>
 
+    <!-- Receipt Modal -->
     <div id="receiptModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden z-50">
         <div class="bg-white rounded-lg p-8 max-w-lg w-full shadow-lg">
             <h2 class="text-2xl font-bold text-center mb-6">Receipt</h2>
-            <div id="receiptContent" class="text-base text-gray-700 space-y-4 max-h-96 overflow-y-auto">
+            <div id="receiptContent" class="text-base text-gray-700 space-y-4">
                 <!-- Title -->
                 <p class="font-semibold text-center border-t border-gray-300 pt-4">
                     Receipt for Occupational Payment
@@ -107,7 +105,7 @@
             </div>
     
             <!-- Close Button -->
-            <div class="flex justify-center mt-6 space-x-4">
+            <div class="flex justify-center mt-6 space-x-4 not-for-print">
                 <button onclick="printReceipt()" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">
                     Print Receipt
                 </button>                
@@ -117,14 +115,6 @@
             </div>
         </div>
     </div>
-    
-    
-    
-    
-
-    
-    
-    
 
     <!-- Main Content -->
     <div class="lg:ml-60 p-5 md:p-10 space-y-10">
