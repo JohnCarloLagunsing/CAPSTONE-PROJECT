@@ -56,7 +56,7 @@ router.get('/inspection-status', async (req, res) => {
 // In your server.js or API router file
 router.get('/forecast-data', async (req, res) => {
     try {
-        // Fetch monthly counts for OccuPermit and Inspections for the last year
+        // Fetch monthly counts for OccuPermit and MTOP Applications for the last year
         const occuPermitMonthlyData = await pool.query(`
             SELECT DATE_TRUNC('month', created_at) AS month, COUNT(*) AS count
             FROM "OccuPermit"
@@ -73,9 +73,17 @@ router.get('/forecast-data', async (req, res) => {
             ORDER BY month;
         `);
 
+        // Fetch AdminStaff count for forecasting staffing needs
+        const adminStaffCount = await pool.query(`
+            SELECT COUNT(*) AS count FROM "AdminStaff";
+        `);
+
+        const adminStaffMinimum = Math.max(10, parseInt(adminStaffCount.rows[0].count)); // Minimum staff must be at least 10
+
         res.json({
             occuPermitData: occuPermitMonthlyData.rows,
-            inspectionsData: MTOPMonthlyData.rows
+            inspectionsData: MTOPMonthlyData.rows,
+            adminStaffForecast: adminStaffMinimum
         });
     } catch (error) {
         console.error('Error fetching forecast data:', error);
