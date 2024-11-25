@@ -34,14 +34,15 @@ app.use(session({
     }),
     secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Set to true temporarily to debug session initialization
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: process.env.NODE_ENV === 'production', // Use true in production with HTTPS
+        secure: false, // Set to false for local testing
         httpOnly: true,
-        sameSite: 'lax', // Can change to 'lax' to help resolve cross-site issues
+        sameSite: 'none', // Change to 'none' if cross-site issues are suspected
     },
 }));
+
 
 
 
