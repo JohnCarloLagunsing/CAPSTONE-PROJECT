@@ -138,6 +138,6 @@ document.getElementById('logoutButton').addEventListener('click', function(event
 
     // Add event listener for confirm logout button
     document.getElementById('confirmLogout').addEventListener('click', function() {
-        window.location.href = 'login.html'; // Redirect to login.html on confirm
+        window.location.href = 'applicant.html'; // Redirect to applicant.html on confirm
     });
 });

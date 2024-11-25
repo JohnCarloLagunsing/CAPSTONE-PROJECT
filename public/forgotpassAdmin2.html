@@ -75,7 +75,7 @@
         if (response.ok) {
           alertContainer.innerHTML = '<p class="text-green-500">Password changed successfully. Redirecting to login...</p>';
           setTimeout(() => {
-            window.location.href = "login.html";
+            window.location.href = "applicant.html";
           }, 2000);
         } else {
           alertContainer.innerHTML = `<p class="text-red-500">${data.message}</p>`;

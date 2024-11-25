@@ -107,5 +107,5 @@ cancelLogout.addEventListener('click', () => {
 });
 
 confirmLogout.addEventListener('click', () => {
-    window.location.href = 'login.html';
+    window.location.href = 'applicant.html';
 });
