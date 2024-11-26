@@ -141,24 +141,43 @@
             <a href="#" id="logoutButtonMobile" class="block py-2 mt-8 text-center bg-blue-700 rounded-md hover:bg-blue-600"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
         </ul>
     </div>
-    <div class="flex-grow flex flex-col justify-start items-center p-6">
-        <h1 class="text-3xl font-bold mb-6 text-center" style="margin-left: 150px;">Motorized Operator Application</h1>
-        <div class="w-3/4 overflow-x-auto bg-white shadow-md rounded-lg" style="margin-left: 150px;">
-            <table class="table-auto w-full border-collapse border border-gray-200">
-                <thead>
-                    <tr class="bg-blue-900 text-white">
-                        <th class="px-6 py-3 border border-gray-200">Application Type</th>
-                        <th class="px-6 py-3 border border-gray-200">Name</th>
-                        <th class="px-6 py-3 border border-gray-200">Print</th>
-                    </tr>
-                </thead>
-                <tbody id="mtopTableBody">
-                    <!-- Dynamic rows will be inserted here by JavaScript -->
-                </tbody>
-            </table>
+    <body class="flex h-screen font-sans text-gray-800 bg-gray-100">
+        <div class="flex-grow flex flex-col justify-start items-center p-6">
+            <div class="w-full flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-center"></h1>
+                <!-- Dropdown Button -->
+                <div class="relative inline-block text-left">
+                    <button id="dropdownButton" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                        Filter Applicants
+                        <svg class="w-5 h-5 ml-2 -mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="dropdownMenu" class="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg hidden">
+                        <button data-filter="New" class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left">New</button>
+                        <button data-filter="Renewal" class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left">Renewal</button>
+                    </div>
+                </div>
+                
+            </div>
+    
+            <div class="w-3/4 overflow-x-auto bg-white shadow-md rounded-lg pl-24">
+                <table class="table-auto w-full border-collapse border border-gray-200">
+                    <thead>
+                        <tr class="bg-blue-900 text-white">
+                            <th class="px-6 py-3 border border-gray-200">Application Type</th>
+                            <th class="px-6 py-3 border border-gray-200">Name</th>
+                            <th class="px-6 py-3 border border-gray-200">Print</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mtopTableBody">
+                        <!-- Dynamic rows will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
         </div>
-    </div>
-
+    
 
     <div id="infoModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden z-50">
         <div id="modalContentToPrint" class="bg-white rounded-lg shadow-lg p-8 w-[700px]">
@@ -220,6 +239,53 @@
     
     <!-- Mobile Sidebar Script -->
     <script>
+
+async function fetchMtopData(filter = "All") {
+    try {
+        const response = await fetch('https://ecentersanluis.com/mtopdata'); // Backend route to fetch data
+        const data = await response.json();
+
+        const tableBody = document.getElementById('mtopTableBody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        // Filter data based on application type
+        const filteredData = filter === "All" ? data : data.filter(row => row.application_type === filter);
+
+        // Populate table rows dynamically
+        filteredData.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-100';
+
+            const documentIcon = row.id
+                ? `<i class="fas fa-file-alt text-blue-500 cursor-pointer" onclick="showDetails(${row.id})"></i>`
+                : `<i class="fas fa-file-alt text-gray-400 cursor-not-allowed"></i>`;
+
+            tr.innerHTML = `
+                <td class="px-6 py-3 border border-gray-200 text-center">${row.application_type}</td>
+                <td class="px-6 py-3 border border-gray-200 text-center">${row.name}</td>
+                <td class="px-6 py-3 border border-gray-200 text-center">${documentIcon}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Error fetching MTOP data:', error);
+    }
+}
+
+// Filter event listener
+document.querySelectorAll('[data-filter]').forEach(button => {
+    button.addEventListener('click', () => {
+        const filterType = button.getAttribute('data-filter');
+        fetchMtopData(filterType);
+        document.getElementById('dropdownMenu').classList.add('hidden'); // Close the dropdown
+    });
+});
+
+// Show/Hide dropdown menu
+document.getElementById('dropdownButton').addEventListener('click', () => {
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    dropdownMenu.classList.toggle('hidden');
+});
 
 
 async function fetchMtopData() {
