@@ -13,22 +13,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Unified Middleware configuration for CORS
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", req.headers.origin); // Allow the requesting origin
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept");
-    res.header("Access-Control-Allow-Credentials", "true");
-    
-    // Handle preflight `OPTIONS` requests
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
-    next();
-});
-
-// Parse request bodies and cookies
+// Middleware configuration
+app.use(
+    cors({
+      origin: 'https://ecentersanluis.com', // Replace with your actual domain
+      methods: '*', // Allows all HTTP methods
+      credentials: true, // Include credentials (cookies, authorization headers, etc.)
+    })
+  );
+  
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -79,7 +72,7 @@ const Occustatus = require('./server/Occustatus');
 const SubmissionOccu = require('./server/SubmissionOccu');
 const MtopForm = require('./server/MtopForm');
 const Occupayment = require('./server/Occupayment');
-const SearchingApplicant = require('./server/SearchingApplicant.js');
+const SearchingApplicant = require('./server/SearchingApplicant.js'); // Correct capitalization
 const MTOPpayment = require('./server/MTOPpayment');
 const VerifyingMTOP = require('./server/VerifyingMTOP.js');
 const Occuverify = require('./server/Occuverify.js');
