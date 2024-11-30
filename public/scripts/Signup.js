@@ -25,6 +25,13 @@ function showAlert(message, isSuccess) {
 
 function submitForm(event) {
   event.preventDefault(); // Prevent default form submission
+  const password = document.getElementById('password').value;
+
+  if (!isPasswordStrong(password)) {
+    showAlert('Password is not strong enough. Please follow the password guidelines.', false);
+    return;
+  }
+
   const formData = new FormData(event.target);
 
   fetch('https://www.ecentersanluis.com/signup_process', { // Replace with your Node.js endpoint
@@ -53,6 +60,20 @@ function submitForm(event) {
     console.error('Error:', error);
     showAlert('Signup failed: ' + error.message, false); // Show error alert
   });
+}
+
+// Password strength validation
+function isPasswordStrong(password) {
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#+^_])[A-Za-z\d@$!%*?&#+^_]{8,}$/;
+  const passwordHelp = document.getElementById('passwordHelp');
+
+  if (strongPasswordRegex.test(password)) {
+    passwordHelp.classList.add('hidden');
+    return true;
+  } else {
+    passwordHelp.classList.remove('hidden');
+    return false;
+  }
 }
 
 // Password visibility toggle
