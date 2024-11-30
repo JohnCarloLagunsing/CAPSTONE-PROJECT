@@ -13,21 +13,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Middleware configuration
+// Unified Middleware configuration for CORS
 app.use(cors({
     origin: ['https://ecentersanluis.com', 'https://www.ecentersanluis.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
     credentials: true,
-  }));
-  
-  // Handle preflight requests explicitly (optional, for improved preflight handling)
-  app.options('*', cors({
-    origin: ['https://ecentersanluis.com', 'https://www.ecentersanluis.com'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  }));
-  
-  
+}));
+
+// Remove redundant preflight request handler
+// Remove the custom CORS header middleware
+
+// Parse request bodies and cookies
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
