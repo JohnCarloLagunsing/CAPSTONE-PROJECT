@@ -13,20 +13,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-
-// CORS configuration
-app.use(cors({
-    origin: ['https://www.ecentersanluis.com', 'https://ecentersanluis.com'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-}));
-
-// Handle OPTIONS requests explicitly for preflight checks
-app.options('*', cors());
-
-
-
+// Middleware configuration
+app.use(
+    cors({
+      origin: 'https://ecentersanluis.com', // Replace with your actual domain
+      methods: '*', // Allows all HTTP methods
+      credentials: true, // Include credentials (cookies, authorization headers, etc.)
+    })
+  );
   
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -43,7 +37,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: process.env.NODE_ENV === 'production', 
+        secure: process.env.NODE_ENV === 'production',  // Set to true in production with HTTPS
         httpOnly: true,
     },
 }));
