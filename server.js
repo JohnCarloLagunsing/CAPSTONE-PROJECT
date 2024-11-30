@@ -18,7 +18,7 @@ app.use(
     cors({
         origin: ['https://ecentersanluis.com', 'http://localhost:8000'], // Your client origins
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow methods
-        allowedHeaders: ['Content-Type', 'Authorization'], // Explicitly allow headers
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],// Explicitly allow headers
         credentials: true, // Include cookies in cross-origin requests
     })
 );
@@ -39,7 +39,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: false, // Set to true in production with HTTPS
+        secure: process.env.NODE_ENV === 'production', 
         httpOnly: true,
     },
 }));
