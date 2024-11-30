@@ -25,14 +25,17 @@
       <p id="error-message" class="text-red-500 mb-2"></p>
 
       <form id="passwordChangeForm">
-        <div class="mb-8">
+        <div class="mb-8 relative">
           <label for="password" class="block text-lg mb-2">Password</label>
-          <input type="password" name="password" id="password" required class="w-full h-10 px-3 text-lg border-2 border-gray-300 rounded-lg shadow-sm focus:border-blue-500 transition"/>
+          <input type="password" name="password" id="password" required class="w-full h-10 px-3 text-lg border-2 border-gray-300 rounded-lg shadow-sm focus:border-blue-500 transition pr-10"/>
+          <i class="fas fa-eye absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-gray-400 hidden" id="togglePassword" style="top: 3.5rem;"></i>
+          <p id="passwordMessage" class="text-xs text-red-600 mt-1 hidden">Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.</p>
         </div>
         
-        <div class="mb-8">
+        <div class="mb-8 relative">
           <label for="Confirmpassword" class="block text-lg mb-2">Confirm Password</label>
-          <input type="password" name="Confirmpassword" id="Confirmpassword" required class="w-full h-10 px-3 text-lg border-2 border-gray-300 rounded-lg shadow-sm focus:border-blue-500 transition"/>
+          <input type="password" name="Confirmpassword" id="Confirmpassword" required class="w-full h-10 px-3 text-lg border-2 border-gray-300 rounded-lg shadow-sm focus:border-blue-500 transition pr-10"/>
+          <i class="fas fa-eye absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-gray-400 hidden" id="toggleConfirmPassword" style="top: 3.5rem;"></i>
         </div>
         
         <div class="text-center text-sm text-gray-600 mb-6">
@@ -49,11 +52,66 @@
   </div>
 
   <script>
+    function validatePassword(password) {
+      const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~])[A-Za-z\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]{8,}$/;
+      return strongPasswordPattern.test(password);
+    }
+
+    document.getElementById('password').addEventListener('input', () => {
+      const password = document.getElementById('password').value;
+      const passwordMessage = document.getElementById('passwordMessage');
+      const togglePasswordIcon = document.getElementById('togglePassword');
+
+      if (!validatePassword(password)) {
+        passwordMessage.classList.remove('hidden');
+      } else {
+        passwordMessage.classList.add('hidden');
+      }
+
+      togglePasswordIcon.style.display = password ? 'inline' : 'none';
+    });
+
+    // Password visibility toggle
+    const togglePasswordIcon = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePasswordIcon.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePasswordIcon.classList.toggle('fa-eye');
+      togglePasswordIcon.classList.toggle('fa-eye-slash');
+    });
+
+    // Confirm password visibility toggle
+    const toggleConfirmPasswordIcon = document.getElementById('toggleConfirmPassword');
+    const confirmPasswordInput = document.getElementById('Confirmpassword');
+
+    confirmPasswordInput.addEventListener('input', () => {
+      toggleConfirmPasswordIcon.style.display = confirmPasswordInput.value ? 'inline' : 'none';
+    });
+
+    toggleConfirmPasswordIcon.addEventListener('click', () => {
+      const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      confirmPasswordInput.setAttribute('type', type);
+      toggleConfirmPasswordIcon.classList.toggle('fa-eye');
+      toggleConfirmPasswordIcon.classList.toggle('fa-eye-slash');
+    });
+
     document.getElementById('passwordChangeForm').addEventListener('submit', async (event) => {
       event.preventDefault();
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('Confirmpassword').value;
       const email = localStorage.getItem('email'); // Retrieve email from localStorage
+
+      if (!validatePassword(password)) {
+        document.getElementById('error-message').textContent = 'Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        document.getElementById('error-message').textContent = 'Passwords do not match.';
+        return;
+      }
 
       try {
         const response = await fetch('/changePassword', {

@@ -28,6 +28,7 @@
         <label for="password" class="block text-sm font-medium">Password</label>
         <input type="password" name="password" id="password" required class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition ease-in-out duration-300 pr-10" />
         <i class="fas fa-eye absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer text-gray-400" id="togglePassword" style="top: 2.7rem;"></i>
+        <p id="passwordMessage" class="text-xs text-red-600 mt-1 hidden">Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.</p>
       </div>
       <div class="text-sm text-center text-black-600 mb-6">Only HeadAdmin can Access this part. Authorized Personnel is Strictly Prohibited.</div>
       <div>
@@ -51,7 +52,9 @@
   <script>
     const passwordInput = document.getElementById('password');
     const togglePasswordIcon = document.getElementById('togglePassword');
+    const passwordMessage = document.getElementById('passwordMessage');
 
+    // Password visibility toggle
     passwordInput.addEventListener('input', () => {
       togglePasswordIcon.style.display = passwordInput.value ? 'inline' : 'none';
     });
@@ -63,6 +66,21 @@
       togglePasswordIcon.classList.toggle('fa-eye-slash');
     });
 
+    // Password strength validation
+    function validatePassword(password) {
+      const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~])[A-Za-z\d!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]{8,}$/;
+      return strongPasswordPattern.test(password);
+    }
+
+    passwordInput.addEventListener('input', () => {
+      if (!validatePassword(passwordInput.value)) {
+        passwordMessage.classList.remove('hidden');
+      } else {
+        passwordMessage.classList.add('hidden');
+      }
+    });
+
+    // Show success alert
     function showAlert() {
       const alertBox = document.getElementById('alert');
       alertBox.style.display = 'flex';
@@ -74,6 +92,7 @@
       }, 3000);
     }
 
+    // Show error alert
     function showErrorAlert(message) {
       const errorAlertBox = document.getElementById('errorAlert');
       const errorMessage = document.getElementById('errorMessage');
@@ -85,11 +104,17 @@
       }, 3000);
     }
 
+    // Handle form submission
     document.getElementById('signupForm').addEventListener('submit', async function (event) {
       event.preventDefault();
 
       const formData = new FormData(this);
       const data = Object.fromEntries(formData.entries());
+
+      if (!validatePassword(data.password)) {
+        showErrorAlert('Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.');
+        return;
+      }
 
       try {
         const response = await fetch('https://www.ecentersanluis.com/signupInspector', {
@@ -106,6 +131,7 @@
         }
       } catch (error) {
         console.error('Error:', error);
+        showErrorAlert('An error occurred. Please try again later.');
       }
     });
   </script>
