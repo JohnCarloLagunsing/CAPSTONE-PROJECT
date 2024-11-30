@@ -16,11 +16,12 @@ const PORT = process.env.PORT || 8000;
 // Middleware configuration
 app.use(
     cors({
-      origin: 'https://ecentersanluis.com', // Replace with your actual domain
-      methods: '*', // Allows all HTTP methods
-      credentials: true, // Include credentials (cookies, authorization headers, etc.)
+      origin: ['https://ecentersanluis.com', 'https://www.ecentersanluis.com'], // Allow both without and with www
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // List allowed methods explicitly
+      credentials: true,
     })
   );
+  
   
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
