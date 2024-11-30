@@ -13,15 +13,19 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Middleware configuration
-app.use(
-    cors({
-        origin: ['https://ecentersanluis.com', 'http://localhost:8000'], // Your client origins
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow methods
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],// Explicitly allow headers
-        credentials: true, // Include cookies in cross-origin requests
-    })
-);
+
+// CORS configuration
+app.use(cors({
+    origin: ['https://www.ecentersanluis.com', 'https://ecentersanluis.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+}));
+
+// Handle OPTIONS requests explicitly for preflight checks
+app.options('*', cors());
+
+
 
   
 app.use(bodyParser.urlencoded({ extended: true }));
