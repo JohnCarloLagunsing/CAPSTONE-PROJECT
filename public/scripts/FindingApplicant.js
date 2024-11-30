@@ -100,7 +100,7 @@ async function fetchApplicantDetails() {
 
     try {
         // Fetch data from the backend
-        const response = await fetch(`https://ecentersanluis.com/applicant/getApplicantByNo/${applicantNo}`);
+        const response = await fetch(`https://www.ecentersanluis.com/applicant/getApplicantByNo/${applicantNo}`);
 
         if (response.ok) {
             const data = await response.json(); // Parse the JSON response
@@ -181,7 +181,7 @@ async function submitPayment() {
     };
 
     try {
-        const response = await fetch('https://ecentersanluis.com/payment/submitPayment', {
+        const response = await fetch('https://www.ecentersanluis.com/payment/submitPayment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(paymentDetails),
@@ -212,7 +212,7 @@ async function fetchAndDisplayReceipt() {
 
     try {
         // Fetch receipt details from the backend
-        const response = await fetch(`https://ecentersanluis.com/payment/getReceipt/${applicantNo}`);
+        const response = await fetch(`https://www.ecentersanluis.com/payment/getReceipt/${applicantNo}`);
 
         if (response.ok) {
             const receiptData = await response.json();
@@ -398,7 +398,7 @@ function generateReceipt(data) {
 async function fetchAndDisplayPastReceipts() {
     try {
         // Fetch the last 5 receipts from the backend
-        const response = await fetch('https://ecentersanluis.com/payment/getPastReceipts');
+        const response = await fetch('https://www.ecentersanluis.com/payment/getPastReceipts');
 
         if (response.ok) {
             const receipts = await response.json();

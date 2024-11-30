@@ -27,7 +27,7 @@ function submitForm(event) {
   event.preventDefault(); // Prevent default form submission
   const formData = new FormData(event.target);
 
-  fetch('https://ecentersanluis.com/signup_process', { // Replace with your Node.js endpoint
+  fetch('https://www.ecentersanluis.com/signup_process', { // Replace with your Node.js endpoint
     method: 'POST',
     body: new URLSearchParams(formData).toString(),
     headers: {

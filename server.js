@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 8000;
 // Middleware configuration
 app.use(
     cors({
-        origin: ['https://ecentersanluis.com', 'https://www.ecentersanluis.com'], // Replace with your actual domain
+        origin: ['https://www.ecentersanluis.com', 'https://www.ecentersanluis.com'], // Replace with your actual domain
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Allow specific methods
         allowedHeaders: ['Content-Type', 'Authorization'], // Allow required headers
         credentials: true, // Include credentials (cookies, authorization headers, etc.)
@@ -25,7 +25,7 @@ app.use(
 
 // Enable CORS preflight handling
 app.options('*', cors({
-    origin: 'https://ecentersanluis.com',
+    origin: 'https://www.ecentersanluis.com',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

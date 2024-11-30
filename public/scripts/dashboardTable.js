@@ -16,7 +16,7 @@ function toggleTable() {
 }
 
 async function displayOccuPermitApplicants() {
-    const occuPermitApplicants = await fetchData(`https://ecentersanluis.com/data/occupermit-applicants`);
+    const occuPermitApplicants = await fetchData(`https://www.ecentersanluis.com/data/occupermit-applicants`);
     const applicantTable = document.getElementById('applicantTable');
     applicantTable.innerHTML = ''; 
 
@@ -25,7 +25,7 @@ async function displayOccuPermitApplicants() {
 }
 
 async function displayInspectionsApplicants() {
-    const inspectionsApplicants = await fetchData(`https://ecentersanluis.com/data/inspections-applicants`);
+    const inspectionsApplicants = await fetchData(`https://www.ecentersanluis.com/data/inspections-applicants`);
     const applicantTable = document.getElementById('applicantTable');
     applicantTable.innerHTML = ''; 
 

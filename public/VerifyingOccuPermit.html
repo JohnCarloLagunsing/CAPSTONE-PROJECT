@@ -159,7 +159,7 @@
         let selectedRecord = null; // To track the currently selected record
     
         // Fetch records and populate the table
-        fetch('https://ecentersanluis.com/getOccupationalRecords')
+        fetch('https://www.ecentersanluis.com/getOccupationalRecords')
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -206,7 +206,7 @@
     
         // Open modal and populate details
         function openPermitModal(id) {
-    fetch(`https://ecentersanluis.com/getOccupationalDetails/${id}`)
+    fetch(`https://www.ecentersanluis.com/getOccupationalDetails/${id}`)
         .then((response) => response.json())
         .then((record) => {
             const formattedDate = record.dateofbirth
@@ -263,7 +263,7 @@
     function updateStatus(id, newStatus) {
     console.log('Updating Status:', { occuid: id, status: newStatus, approvedBy: currentAdmin });
 
-    fetch('https://ecentersanluis.com/updateStatus', {
+    fetch('https://www.ecentersanluis.com/updateStatus', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -328,7 +328,7 @@ document.getElementById('printModal').addEventListener('click', () => {
 
 //for modal Image functionlity
 function viewImages(id) {
-    fetch(`https://ecentersanluis.com/getOccupationalDetails/${id}`)
+    fetch(`https://www.ecentersanluis.com/getOccupationalDetails/${id}`)
         .then((response) => response.json())
         .then((record) => {
             const imageModalContent = document.getElementById('imageModalContent');

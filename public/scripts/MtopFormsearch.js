@@ -29,7 +29,7 @@ function searchApplicant() {
         return;
     }
 
-    fetch(`https://ecentersanluis.com/searchApplicant/${applicantNo}`)
+    fetch(`https://www.ecentersanluis.com/searchApplicant/${applicantNo}`)
         .then(response => {
             if (!response.ok) {
                 return response.json().then(errorData => { throw new Error(errorData.message); });
@@ -64,7 +64,7 @@ document.querySelector("form").addEventListener("submit", function(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    fetch("https://ecentersanluis.com/submitMtopForm", {
+    fetch("https://www.ecentersanluis.com/submitMtopForm", {
         method: "POST",
         body: new URLSearchParams(formData),
     })

@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       const selectedStatus = this.value;
                       const tfid = this.getAttribute('data-id');
                       const occuid = this.getAttribute('data-occuid');
-      fetch('https://ecentersanluis.com/updateStatus', {
+      fetch('https://www.ecentersanluis.com/updateStatus', {
        method: 'POST',
 credentials: 'include',
 headers: {
@@ -199,7 +199,7 @@ body: JSON.stringify({ tfid, occuid, status: selectedStatus })  // Ensure occuid
           filterTypeDropdown.style.display = 'none';
   
           // Fetch and display Motor Operator Applicants
-          fetch('https://ecentersanluis.com/getMotorOperatorApplicants')
+          fetch('https://www.ecentersanluis.com/getMotorOperatorApplicants')
               .then((response) => response.json())
               .then((data) => {
                   displayMotorOperatorApplicants(data);
@@ -278,7 +278,7 @@ document.querySelectorAll('.status-dropdown').forEach(select => {
       const occuid = this.getAttribute('data-occuid');
 
       // Call the backend to update status
-      fetch('https://ecentersanluis.com/updateStatus', {
+      fetch('https://www.ecentersanluis.com/updateStatus', {
           method: 'POST',
           credentials: 'include',
           headers: {
@@ -306,7 +306,7 @@ document.querySelectorAll('.custom-icon-occPermit').forEach(icon => {
       const occuid = this.getAttribute('data-occuid');  // Fetch occuid
       
       // Fetch the documents for the specific OccuPermit
-      fetch(`https://ecentersanluis.com/getOccuPermitDocuments/${occuid}`)
+      fetch(`https://www.ecentersanluis.com/getOccuPermitDocuments/${occuid}`)
       .then(response => {
           if (!response.ok) {
               throw new Error('Network response was not ok');
@@ -473,7 +473,7 @@ document.getElementById('filter-dropdown').addEventListener('change', function (
         otherTables.forEach(table => (table.style.display = 'none'));
 
         // Fetch and display MTOP Status Table
-        fetch('https://ecentersanluis.com/getMtopStatus') // Adjust endpoint accordingly
+        fetch('https://www.ecentersanluis.com/getMtopStatus') // Adjust endpoint accordingly
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.getElementById('mtop-status-body');
@@ -507,7 +507,7 @@ document.querySelectorAll('.custom-icon').forEach(icon => {
     icon.addEventListener('click', function () {
         const id = this.getAttribute('data-id'); // MTOP Application ID
 
-        fetch(`https://ecentersanluis.com/getMtopApplication/${id}`) // Adjust endpoint
+        fetch(`https://www.ecentersanluis.com/getMtopApplication/${id}`) // Adjust endpoint
             .then(response => response.json())
             .then(data => {
                 document.getElementById('mtop-modal-id').textContent = data.id || 'N/A';

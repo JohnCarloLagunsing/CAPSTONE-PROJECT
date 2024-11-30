@@ -78,7 +78,7 @@
 
     async function fetchScandocuments(page = 1) {
         try {
-            const response = await fetch(`https://ecentersanluis.com/api/fetchMTOPDetails?page=${page}&limit=10`); // Paginated request
+            const response = await fetch(`https://www.ecentersanluis.com/api/fetchMTOPDetails?page=${page}&limit=10`); // Paginated request
             const responseData = await response.json();
 
             if (responseData.status === 'success') {
