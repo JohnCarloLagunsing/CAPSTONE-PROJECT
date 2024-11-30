@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 8000;
 // Middleware configuration
 app.use(
     cors({
-      origin: 'https://ecentersanluis.com', // Replace with your actual domain
+      origin: ['https://ecentersanluis.com','http://localhost:8000'], // Replace with your actual domain
       methods: '*', // Allows all HTTP methods
       credentials: true, // Include credentials (cookies, authorization headers, etc.)
     })

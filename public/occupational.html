@@ -13,7 +13,7 @@
   <div class="center">
     <div class="container">
       <a href="applicant.html" class="back-btn">Back</a>
-      <div class="text">Occupational Permit Form</div>
+      <div class="text">Occupational Permit <br> Sign up Form</div>
       
       <!-- Alert Messages -->
       <div id="alert-success" style="display: none; color: green;">
@@ -21,6 +21,9 @@
       </div>
       <div id="alert-failure" style="display: none; color: red;">
         <i class="fas fa-times-circle"></i> Account creation failed. Please try again.
+      </div>
+      <div id="alert-weak-password" style="display: none; color: red;">
+        <i class="fas fa-exclamation-circle"></i> Password is too weak. Please use at least 8 characters, including uppercase, lowercase, number, and special character.
       </div>
 
       <div class="form-container">
@@ -39,7 +42,8 @@
           </div>
           <div class="data">
             <label>Password</label>
-            <input type="password" name="password" required />
+            <input type="password" name="password" id="password" class="pr-10 w-full" required />
+            <i class="fas fa-eye absolute text-gray-500 cursor-pointer" id="togglePassword" style="top: 107%; right: 1rem; transform: translateY(-50%); display: none;"></i>
           </div>
           <div class="btn">
             <div class="inner"></div>
@@ -47,39 +51,65 @@
           </div>
         </form>
       </div>
-    </div>
-  </div>
 
-  <script>
-    document.getElementById("signupForm").addEventListener("submit", async function(event) {
-      event.preventDefault(); // Prevent default form submission
-      
-      // Collect form data and convert to JSON format
-      const formData = new FormData(this);
-      const jsonData = Object.fromEntries(formData.entries());
+      <script>
+        document.getElementById("signupForm").addEventListener("submit", async function(event) {
+          event.preventDefault(); // Prevent default form submission
+          
+          const passwordInput = document.getElementById('password');
+          if (!isStrongPassword(passwordInput.value)) {
+            document.getElementById("alert-weak-password").style.display = "block";
+            return;
+          }
 
-      try {
-        // Send POST request with JSON data
-        const response = await fetch("/signup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(jsonData)
+          // Collect form data and convert to JSON format
+          const formData = new FormData(this);
+          const jsonData = Object.fromEntries(formData.entries());
+
+          try {
+            // Send POST request with JSON data
+            const response = await fetch("/signup", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(jsonData)
+            });
+            
+            // Show success or failure alert based on response
+            if (response.ok) {
+              document.getElementById("alert-success").style.display = "block";
+              setTimeout(() => { window.location.href = 'applicant.html'; }, 2000); // Redirect after success
+            } else {
+              document.getElementById("alert-failure").style.display = "block";
+            }
+          } catch (error) {
+            // Show failure alert on error
+            document.getElementById("alert-failure").style.display = "block";
+          }
         });
-        
-        // Show success or failure alert based on response
-        if (response.ok) {
-          document.getElementById("alert-success").style.display = "block";
-          setTimeout(() => { window.location.href = 'applicant.html'; }, 2000); // Redirect after success
-        } else {
-          document.getElementById("alert-failure").style.display = "block";
+
+        function isStrongPassword(password) {
+          // Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character
+          const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+          return strongPasswordPattern.test(password);
         }
-      } catch (error) {
-        // Show failure alert on error
-        document.getElementById("alert-failure").style.display = "block";
-      }
-    });
-  </script>
+
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+
+        // Show the togglePassword icon only when the user types in the password field
+        passwordInput.addEventListener('input', function () {
+          togglePassword.style.display = this.value.length > 0 ? 'block' : 'none';
+          document.getElementById("alert-weak-password").style.display = "none"; // Hide weak password alert while typing
+        });
+
+        // Toggle password visibility when the icon is clicked
+        togglePassword.addEventListener('click', function () {
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          this.classList.toggle('fa-eye-slash'); // Toggle the eye / eye-slash icon
+        });
+      </script>
 </body>
 </html>

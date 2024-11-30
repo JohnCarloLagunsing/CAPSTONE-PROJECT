@@ -81,14 +81,28 @@
       }
     }
 
+    function isStrongPassword(password) {
+      // Regex to validate strong passwords:
+      // Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number, and one special character
+      const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+      return strongPasswordPattern.test(password);
+    }
+
     document.getElementById('newPasswordForm').addEventListener('submit', async function (event) {
       event.preventDefault();
-      const newPassword = event.target.newPassword.value;
-      const confirmPassword = event.target.confirmPassword.value;
+      const newPassword = event.target.newPassword.value.trim();
+      const confirmPassword = event.target.confirmPassword.value.trim();
       const email = new URLSearchParams(window.location.search).get('email');
 
+      // Passwords must match
       if (newPassword !== confirmPassword) {
         document.getElementById('alert-container').innerHTML = '<div class="alert error">Passwords do not match.</div>';
+        return;
+      }
+
+      // Password must be strong
+      if (!isStrongPassword(newPassword)) {
+        document.getElementById('alert-container').innerHTML = '<div class="alert error">Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character.</div>';
         return;
       }
 
