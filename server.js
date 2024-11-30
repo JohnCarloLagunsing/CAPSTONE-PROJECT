@@ -14,13 +14,18 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Middleware configuration
-app.use(
-    cors({
-      origin: ['https://ecentersanluis.com', 'https://www.ecentersanluis.com'], // Allow both without and with www
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // List allowed methods explicitly
-      credentials: true,
-    })
-  );
+app.use(cors({
+    origin: ['https://ecentersanluis.com', 'https://www.ecentersanluis.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  }));
+  
+  // Handle preflight requests explicitly (optional, for improved preflight handling)
+  app.options('*', cors({
+    origin: ['https://ecentersanluis.com', 'https://www.ecentersanluis.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  }));
   
   
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,7 +43,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: false, // Set to true in production with HTTPS
+        secure: process.env.NODE_ENV === 'production', // Set to true in production with HTTPS
         httpOnly: true,
     },
 }));
