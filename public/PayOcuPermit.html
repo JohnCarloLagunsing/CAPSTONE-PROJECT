@@ -11,6 +11,17 @@
     <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
     <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
   <style>
+#receiptModal {
+    max-height: 100%; /* Restrict modal height to the viewport */
+}
+
+#receiptContent {
+    overflow-y: auto; /* Allow scrolling within the content */
+    max-height: 80vh; /* Restrict content height to 80% of the viewport */
+    padding-right: 1rem; /* Add padding for better appearance */
+}
+
+    
   @media print {
     @page {
         size: A4 portrait;
@@ -144,18 +155,44 @@
                 <label for="date-issued" class="block text-lg font-bold">Date Issued:</label>
                 <input type="date" id="date-issued" required class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none" readonly>
 
-                <label for="police-medical-clearance-fee" class="block text-lg font-bold">Medical Fee:</label>
-                <input type="number" id="police-medical-clearance-fee" value="0" oninput="calculateTotal()" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-
-                <label for="calling-fee" class="block text-lg font-bold">Calling Fee:</label>
-                <input type="number" id="calling-fee" value="0" oninput="calculateTotal()" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-
-                <label for="id-card-fee" class="block text-lg font-bold">ID Card Fee:</label>
-                <input type="number" id="id-card-fee" value="0" oninput="calculateTotal()" class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
-
-               
-                <label for="fee" class="block text-lg font-bold">Occupational Fee:</label>
-                <input type="number" id="fee" value="170" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md focus:outline-none">
+                <div class="space-y-6">
+                    <!-- Medical Fee -->
+                    <div class="relative">
+                        <label for="police-medical-clearance-fee" class="block text-lg font-bold">Medical Fee:</label>
+                        <button onclick="openEditModal('medical', )" class="mt-1 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+                            Edit
+                        </button>
+                        <input type="number" id="police-medical-clearance-fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed" onchange="calculateTotal()">
+                    </div>
+                
+                    <!-- Calling Fee -->
+                    <div class="relative">
+                        <label for="calling-fee" class="block text-lg font-bold">Calling Fee:</label>
+                        <button onclick="openEditModal('calling',)" class="mt-1 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+                            Edit
+                        </button>
+                        <input type="number" id="calling-fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed" onchange="calculateTotal()">
+                    </div>
+                
+                    <!-- ID Card Fee -->
+                    <div class="relative">
+                        <label for="id-card-fee" class="block text-lg font-bold">ID Card Fee:</label>
+                        <button onclick="openEditModal('idCard',)" class="mt-1 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+                            Edit
+                        </button>
+                        <input type="number" id="id-card-fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed" onchange="calculateTotal()">
+                    </div>
+                
+                    <!-- Occupational Fee -->
+                    <div class="relative">
+                        <label for="fee" class="block text-lg font-bold">Occupational Fee:</label>
+                        <button onclick="openEditModal('occupational',)" class="mt-1 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+                            Edit
+                        </button>
+                        <input type="number" id="fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed" onchange="calculateTotal()">
+                    </div>
+                </div>
+                
             </div>
         
             <!-- Payment Container with OR Information -->
@@ -180,7 +217,132 @@
         </div>
     </div>
     <!-- JavaScript for Sidebar Toggle -->
+
+    <!-- Modal for Editing Fees -->
+<div id="editModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden z-50">
+    <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg">
+        <h2 class="text-xl font-bold text-center mb-4">Edit Fee</h2>
+        <div>
+            <label for="editFeeInput" class="block text-lg font-bold">New Price:</label>
+            <input type="number" id="editFeeInput" class="w-full p-3 text-lg border border-gray-300 rounded-md focus:outline-none">
+        </div>
+        <div class="flex justify-end mt-4 space-x-4">
+            <button onclick="saveChanges()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                Save Changes
+            </button>
+            <button onclick="closeEditModal()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
     <script>
+        
+
+let currentFeeType = '';
+    let currentFeeInputId = '';
+
+    function openEditModal(feeType, currentPrice) {
+        currentFeeType = feeType;
+        currentFeeInputId = {
+            medical: 'police-medical-clearance-fee',
+            calling: 'calling-fee',
+            idCard: 'id-card-fee',
+            occupational: 'fee'
+        }[feeType];
+
+        document.getElementById('editFeeInput').value = currentPrice;
+        document.getElementById('editModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+        currentFeeType = '';
+        currentFeeInputId = '';
+        document.getElementById('editModal').classList.add('hidden');
+    }
+
+    async function saveChanges() {
+    const newPrice = parseFloat(document.getElementById('editFeeInput').value) || 0;
+    if (newPrice <= 0) {
+        alert('Price must be a positive value.');
+        return;
+    }
+
+    // Update the relevant fee input field
+    document.getElementById(currentFeeInputId).value = newPrice.toFixed(2);
+    calculateTotal();
+
+    // Prepare the data for backend update
+    const updatedData = {
+        policeMedicalClearance: parseFloat(document.getElementById('police-medical-clearance-fee').value),
+        callingFee: parseFloat(document.getElementById('calling-fee').value),
+        idCardFee: parseFloat(document.getElementById('id-card-fee').value),
+        occupationalFee: parseFloat(document.getElementById('fee').value),
+    };
+
+    try {
+        const response = await fetch('https://www.ecentersanluis.com/payment/update-fees', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Fees updated successfully.');
+            await loadDefaultFees(); // Refresh the form with updated values
+        } else {
+            alert('Failed to update fees: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error updating fees:', error);
+        alert('An error occurred while updating fees.');
+    }
+
+    closeEditModal();
+}
+
+
+async function loadDefaultFees() {
+    try {
+        const response = await fetch('https://www.ecentersanluis.com/payment/fees-config');
+        const fees = await response.json();
+
+        if (fees.success) {
+            document.getElementById('police-medical-clearance-fee').value = fees.data.medical;
+            document.getElementById('calling-fee').value = fees.data.calling;
+            document.getElementById('id-card-fee').value = fees.data.idCard;
+            document.getElementById('fee').value = fees.data.occupational;
+            calculateTotal();
+        } else {
+            console.error('Failed to load fees:', fees.message);
+        }
+    } catch (error) {
+        console.error('Error loading fees:', error);
+    }
+}
+
+
+
+
+function calculateTotal() {
+    // Fetch values from the input fields
+    const medicalFee = parseFloat(document.getElementById('police-medical-clearance-fee').value) || 0;
+    const callingFee = parseFloat(document.getElementById('calling-fee').value) || 0;
+    const idCardFee = parseFloat(document.getElementById('id-card-fee').value) || 0;
+    const occupationalFee = parseFloat(document.getElementById('fee').value) || 0;
+
+    // Calculate the total
+    const total = medicalFee + callingFee + idCardFee + occupationalFee;
+
+    // Update the total field
+    document.getElementById('total').value = total.toFixed(2);
+
+    // Debugging log
+    console.log(`Updated Total: ${total}`);
+}
+
 
         async function searchRecord() {
             const searchValue = document.getElementById('search-id').value;
@@ -213,16 +375,6 @@
                 console.error('Error fetching record:', error);
                 alert('An error occurred while fetching the record.');
             }
-        }
-
-        function calculateTotal() {
-            const fee = parseFloat(document.getElementById('fee').value) || 0;
-            const policeMedicalFee = parseFloat(document.getElementById('police-medical-clearance-fee').value) || 0;
-            const callingFee = parseFloat(document.getElementById('calling-fee').value) || 0;
-            const idCardFee = parseFloat(document.getElementById('id-card-fee').value) || 0;
-            const total = fee + policeMedicalFee + callingFee + idCardFee;
-            document.getElementById('total').value = total.toFixed(2);
-            checkInputs();
         }
 
         function calculateChange() {
@@ -264,6 +416,7 @@
         if (result.success) {
             showReceiptModal(result.receipt); // Pass the receipt data
             clearInputs();
+            await loadDefaultFees();
         } else if (result.message === 'The applicant has already paid.') {
     alert(result.message); // Show an alert for already paid applicants
 }
@@ -369,12 +522,7 @@ function closeReceiptModal() {
     document.getElementById('receiptModal').classList.add('hidden');
 }
 
-
-function closeReceiptModal() {
-    document.getElementById('receiptModal').classList.add('hidden');
-}
-
-    
+  
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
 
@@ -417,6 +565,13 @@ function closeReceiptModal() {
     document.body.innerHTML = originalContent; // Restore the original content
     location.reload(); // Reload the page to reinitialize JavaScript
 }
+
+// Recalculate the total on page load
+window.onload = function () {
+    calculateTotal();
+    loadDefaultFees();
+};
+
     </script>
 </body>
 </html>

@@ -183,4 +183,64 @@ router.get('/get-paid-receipts', async (req, res) => {
     }
 });
 
+// Update Fees Endpoint
+router.post('/update-fees', async (req, res) => {
+    const { policeMedicalClearance, callingFee, idCardFee, occupationalFee } = req.body;
+
+    try {
+        // Explicitly cast the input values to numbers
+        const fees = [
+            parseFloat(policeMedicalClearance),
+            parseFloat(callingFee),
+            parseFloat(idCardFee),
+            parseFloat(occupationalFee)
+        ];
+        
+        const updateFeesQuery = `
+            UPDATE fees_config
+            SET amount = 
+                CASE fee_type
+                    WHEN 'medical' THEN $1::numeric
+                    WHEN 'calling' THEN $2::numeric
+                    WHEN 'idCard' THEN $3::numeric
+                    WHEN 'occupational' THEN $4::numeric
+                    ELSE amount
+                END
+            WHERE fee_type IN ('medical', 'calling', 'idCard', 'occupational');
+        `;
+        
+        await pool.query(updateFeesQuery, fees);
+        res.status(200).json({ success: true, message: 'Fees updated successfully.' });
+    } catch (error) {
+        console.error('Error updating fees:', error);
+        res.status(500).json({ success: false, message: 'Failed to update fees.' });
+    }
+});
+
+
+
+// Get Default Fees Endpoint
+router.get('/fees-config', async (req, res) => {
+    try {
+        // Query the global fees configuration table
+        const result = await pool.query(`SELECT fee_type, amount FROM fees_config`);
+
+        if (result.rows.length > 0) {
+            // Map the fees into a structured response
+            const fees = result.rows.reduce((acc, row) => {
+                acc[row.fee_type] = parseFloat(row.amount).toFixed(2);
+                return acc;
+            }, {});
+
+            res.status(200).json({ success: true, data: fees });
+        } else {
+            res.status(404).json({ success: false, message: 'No fees configured.' });
+        }
+    } catch (error) {
+        console.error('Error fetching fees configuration:', error);
+        res.status(500).json({ success: false, message: 'Database error.' });
+    }
+});
+
+
 module.exports = router;
