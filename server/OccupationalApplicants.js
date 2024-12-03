@@ -75,16 +75,6 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password." });
     }
 
-    // Clean user fields to remove trailing spaces
-    user.firstname = user.firstname?.trim();
-    user.lastname = user.lastname?.trim();
-    user.email = user.email?.trim();
-    user.password = user.password?.trim();
-    user.role = user.role?.trim();
-
-    // Debug fetched user data
-    console.log("Fetched user data:", user);
-
     // Compare passwords
     const isPasswordValid = await bcrypt.compare(password, user.password);
     console.log("Password comparison result:", isPasswordValid);
@@ -93,60 +83,67 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid password. Please try again." });
     }
 
-    // Handle session and redirection for each role
+    // Set session and save it
     setSession(req, user, role);
 
-    if (role === "headadmin") {
-      console.log("Headadmin login successful:", user.email);
-      return res.status(200).json({
-        message: "Login successful",
-        redirectUrl: "/HeadDashboard.html",
-      });
-    }
+    req.session.save(async (err) => {
+      if (err) {
+        console.error("Error saving session:", err);
+        return res.status(500).json({ message: "Error saving session. Please try again." });
+      }
 
-    if (role === "admin") {
-      console.log("Admin login successful:", user.email);
-      return res.status(200).json({
-        message: "Login successful",
-        redirectUrl: "/Dashboard.html",
-      });
-    }
-
-    if (role === "applicant") {
-      req.session.occuid = null; // Clear any stale occuid
-
-      console.log(`Checking permit_session for user ID: ${user.id}`);
-      const sessionResult = await pool.query(
-        "SELECT * FROM permit_session WHERE sid = $1",
-        [user.id]
-      );
-
-      if (sessionResult.rows.length === 0) {
-        // Create a new session in permit_session
-        const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + 1); // Session expires in 1 hour
-
-        console.log("Creating new permit_session for applicant...");
-        await pool.query(
-          "INSERT INTO permit_session (sid, sess, expire, has_submitted) VALUES ($1, $2, $3, FALSE)",
-          [user.id, JSON.stringify({}), expiresAt]
-        );
-
-        console.log("Applicant login successful (first-time):", user.email);
+      if (role === "headadmin") {
+        console.log("Headadmin login successful:", user.email);
         return res.status(200).json({
           message: "Login successful",
-          redirectUrl: "/applicantdashboard.html",
-          isFirstTime: true,
-        });
-      } else {
-        console.log("Applicant login successful (existing session):", user.email);
-        return res.status(200).json({
-          message: "Login successful",
-          redirectUrl: "/occustatus.html",
-          isFirstTime: false,
+          redirectUrl: "/HeadDashboard.html",
         });
       }
-    }
+
+      if (role === "admin") {
+        console.log("Admin login successful:", user.email);
+        return res.status(200).json({
+          message: "Login successful",
+          redirectUrl: "/Dashboard.html",
+        });
+      }
+
+      if (role === "applicant") {
+        req.session.occuid = null; // Clear any stale occuid
+
+        console.log(`Checking permit_session for user ID: ${user.id}`);
+        const sessionResult = await pool.query(
+          "SELECT * FROM permit_session WHERE sid = $1",
+          [user.id]
+        );
+
+        if (sessionResult.rows.length === 0) {
+          // Create a new session in permit_session
+          const expiresAt = new Date();
+          expiresAt.setHours(expiresAt.getHours() + 1); // Session expires in 1 hour
+
+          console.log("Creating new permit_session for applicant...");
+          await pool.query(
+            "INSERT INTO permit_session (sid, sess, expire, has_submitted) VALUES ($1, $2, $3, FALSE)",
+            [user.id, JSON.stringify({}), expiresAt]
+          );
+
+          console.log("Applicant login successful (first-time):", user.email);
+          return res.status(200).json({
+            message: "Login successful",
+            redirectUrl: "/applicantdashboard.html",
+            isFirstTime: true,
+          });
+        } else {
+          console.log("Applicant login successful (existing session):", user.email);
+          return res.status(200).json({
+            message: "Login successful",
+            redirectUrl: "/occustatus.html",
+            isFirstTime: false,
+          });
+        }
+      }
+    });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({
