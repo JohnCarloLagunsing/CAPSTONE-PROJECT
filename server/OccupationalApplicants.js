@@ -136,22 +136,40 @@ router.post("/login", async (req, res) => {
         }
       }
 
-      // If no valid session or no submission, create a new session
-      const expiresAt = new Date();
-      expiresAt.setHours(expiresAt.getHours() + 1);
-
-      console.log("Creating new permit_session for applicant...");
-      await pool.query(
-        "INSERT INTO permit_session (sid, sess, expire, has_submitted) VALUES ($1, $2, $3, FALSE)",
-        [user.id, JSON.stringify({}), expiresAt]
+      // Check if a session already exists for this user
+      console.log("Checking permit_session for existing session...");
+      const existingSession = await pool.query(
+        "SELECT * FROM permit_session WHERE sid = $1",
+        [user.id]
       );
 
-      console.log("Applicant login successful (first-time):", user.email);
-      return res.status(200).json({
-        message: "Login successful",
-        redirectUrl: "/applicantdashboard.html",
-        isFirstTime: true,
-      });
+      if (existingSession.rows.length > 0) {
+        // Session exists, so we don't create a new one
+        console.log("Session already exists for this applicant.");
+        req.session.occuid = existingSession.rows[0].occuid; // Set the occuid if available
+        return res.status(200).json({
+          message: "Login successful",
+          redirectUrl: "/occustatus.html", // Redirect to status page
+          isFirstTime: false,
+        });
+      } else {
+        // If no valid session or no submission, create a new session
+        const expiresAt = new Date();
+        expiresAt.setHours(expiresAt.getHours() + 1);
+
+        console.log("Creating new permit_session for applicant...");
+        await pool.query(
+          "INSERT INTO permit_session (sid, sess, expire, has_submitted) VALUES ($1, $2, $3, FALSE)",
+          [user.id, JSON.stringify({}), expiresAt]
+        );
+
+        console.log("Applicant login successful (first-time):", user.email);
+        return res.status(200).json({
+          message: "Login successful",
+          redirectUrl: "/applicantdashboard.html",
+          isFirstTime: true,
+        });
+      }
     }
   } catch (error) {
     console.error("Error during login:", error);
