@@ -113,7 +113,7 @@ router.post("/login", async (req, res) => {
     }
 
     if (role === "applicant") {
-      req.session.occuid = null; // Reset occuid initially
+      req.session.occuid = null; // Clear any stale occuid
 
       console.log(`Checking permit_session for user ID: ${user.id}`);
       const sessionResult = await pool.query(
@@ -121,41 +121,10 @@ router.post("/login", async (req, res) => {
         [user.id]
       );
 
-      if (sessionResult.rows.length > 0) {
-        const session = sessionResult.rows[0];
-        if (session.has_submitted) {
-          req.session.occuid = session.occuid; // Restore occuid if exists
-          console.log("Applicant has submitted documents. Redirecting to occustatus...");
-          return res.status(200).json({
-            message: "Login successful",
-            redirectUrl: "/occustatus.html",
-            isFirstTime: false,
-          });
-        } else {
-          console.log("Applicant session exists but no submission found.");
-        }
-      }
-
-      // Check if a session already exists for this user
-      console.log("Checking permit_session for existing session...");
-      const existingSession = await pool.query(
-        "SELECT * FROM permit_session WHERE sid = $1",
-        [user.id]
-      );
-
-      if (existingSession.rows.length > 0) {
-        // Session exists, so we don't create a new one
-        console.log("Session already exists for this applicant.");
-        req.session.occuid = existingSession.rows[0].occuid; // Set the occuid if available
-        return res.status(200).json({
-          message: "Login successful",
-          redirectUrl: "/occustatus.html", // Redirect to status page
-          isFirstTime: false,
-        });
-      } else {
-        // If no valid session or no submission, create a new session
+      if (sessionResult.rows.length === 0) {
+        // Create a new session in permit_session
         const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + 1);
+        expiresAt.setHours(expiresAt.getHours() + 1); // Session expires in 1 hour
 
         console.log("Creating new permit_session for applicant...");
         await pool.query(
@@ -168,6 +137,13 @@ router.post("/login", async (req, res) => {
           message: "Login successful",
           redirectUrl: "/applicantdashboard.html",
           isFirstTime: true,
+        });
+      } else {
+        console.log("Applicant login successful (existing session):", user.email);
+        return res.status(200).json({
+          message: "Login successful",
+          redirectUrl: "/occustatus.html",
+          isFirstTime: false,
         });
       }
     }
