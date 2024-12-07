@@ -73,17 +73,17 @@ router.get('/getOccupationalDetails/:id', async (req, res) => {
     }
 });
 
-
-
-
 // Update status and approvedBy
 router.post('/updateStatus', async (req, res) => {
     try {
-        const { occuid, status, approvedBy } = req.body;
-
+        const { occuid, status } = req.body;
+        
+        // Get the admin info from session
+        const adminName = req.session.first_name + ' ' + req.session.last_name;
+        
         // Validate required parameters
-        if (!occuid || !status || !approvedBy) {
-            return res.status(400).json({ error: 'Missing required parameters: occuid, status, or approvedBy' });
+        if (!occuid || !status || !adminName) {
+            return res.status(400).json({ error: 'Missing required parameters: occuid, status, or admin info' });
         }
 
         // Update the database
@@ -92,7 +92,7 @@ router.post('/updateStatus', async (req, res) => {
             SET status = $1, process_by = $2
             WHERE occuid = $3
         `;
-        const values = [status, approvedBy, occuid];
+        const values = [status, adminName, occuid];
         await pool.query(query, values);
 
         res.json({ message: 'Status updated successfully' });
@@ -101,8 +101,5 @@ router.post('/updateStatus', async (req, res) => {
         res.status(500).json({ error: 'Failed to update status' });
     }
 });
-
-
-
 
 module.exports=router;

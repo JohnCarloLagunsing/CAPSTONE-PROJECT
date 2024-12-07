@@ -7,7 +7,7 @@ const pool = require("../public/scripts/db"); // Assuming db.js exports a proper
 const setSession = (req, user, role) => {
   req.session.user_id = user.id || user.headadminid; // Use appropriate ID column
   req.session.first_name = user.firstname || user.first_name;
-  req.session.last_name = user.lastname || user.last_name;
+  req.session.last_name = user.Lastname || user.last_name; // Correct field name
   req.session.role = role;
   req.session.is_logged_in = true;
 
@@ -18,6 +18,7 @@ const setSession = (req, user, role) => {
     last_name: req.session.last_name,
   });
 };
+
 
 // Login route
 router.post("/login", async (req, res) => {
