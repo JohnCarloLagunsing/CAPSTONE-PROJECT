@@ -9,6 +9,7 @@
     <link rel="icon" href="assets/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
     <link rel="stylesheet" href="https://unpkg.com/boxicons/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
   <style>
 #receiptModal {
@@ -159,39 +160,49 @@
                     <!-- Medical Fee -->
                     <div class="relative">
                         <label for="police-medical-clearance-fee" class="block text-lg font-bold">Medical Fee:</label>
-                        <button onclick="openEditModal('medical', )" class="mt-1 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
-                            Edit
-                        </button>
-                        <input type="number" id="police-medical-clearance-fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed" onchange="calculateTotal()">
+                        <div class="relative">
+                            <input type="number" id="police-medical-clearance-fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed pr-12" onchange="calculateTotal()">
+                            <button onclick="openEditModal('medical')" class="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-600">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </div>
                 
                     <!-- Calling Fee -->
                     <div class="relative">
                         <label for="calling-fee" class="block text-lg font-bold">Calling Fee:</label>
-                        <button onclick="openEditModal('calling',)" class="mt-1 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
-                            Edit
-                        </button>
-                        <input type="number" id="calling-fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed" onchange="calculateTotal()">
+                        <div class="relative">
+                            <input type="number" id="calling-fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed pr-12" onchange="calculateTotal()">
+                            <button onclick="openEditModal('calling')" class="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-600">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </div>
                 
                     <!-- ID Card Fee -->
                     <div class="relative">
                         <label for="id-card-fee" class="block text-lg font-bold">ID Card Fee:</label>
-                        <button onclick="openEditModal('idCard',)" class="mt-1 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
-                            Edit
-                        </button>
-                        <input type="number" id="id-card-fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed" onchange="calculateTotal()">
+                        <div class="relative">
+                            <input type="number" id="id-card-fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed pr-12" onchange="calculateTotal()">
+                            <button onclick="openEditModal('idCard')" class="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-600">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </div>
                 
                     <!-- Occupational Fee -->
                     <div class="relative">
                         <label for="fee" class="block text-lg font-bold">Occupational Fee:</label>
-                        <button onclick="openEditModal('occupational',)" class="mt-1 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
-                            Edit
-                        </button>
-                        <input type="number" id="fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed" onchange="calculateTotal()">
+                        <div class="relative">
+                            <input type="number" id="fee" readonly class="w-full p-4 text-lg border border-gray-300 rounded-md bg-gray-200 focus:outline-none cursor-not-allowed pr-12" onchange="calculateTotal()">
+                            <button onclick="openEditModal('occupational')" class="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-600">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
+                
+                
                 
             </div>
         
