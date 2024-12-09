@@ -47,7 +47,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: process.env.NODE_ENV === 'production', // Secure cookies in production
+        secure: false, // Secure cookies in production
         httpOnly: true,
         sameSite: 'none', // Allow cross-origin requests
     }    
