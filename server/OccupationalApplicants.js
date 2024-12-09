@@ -123,14 +123,11 @@ router.post("/login", async (req, res) => {
       );
 
       if (sessionResult.rows.length === 0) {
-        // Create a new session in permit_session
-        const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + 1); // Session expires in 1 hour
-
+        // Create a new session in permit_session without expiration
         console.log("Creating new permit_session for applicant...");
         await pool.query(
-          "INSERT INTO permit_session (sid, sess, expire, has_submitted) VALUES ($1, $2, $3, FALSE)",
-          [user.id, JSON.stringify({}), expiresAt]
+          "INSERT INTO permit_session (sid, sess, has_submitted) VALUES ($1, $2, FALSE)",
+          [user.id, JSON.stringify({})]
         );
 
         console.log("Applicant login successful (first-time):", user.email);
