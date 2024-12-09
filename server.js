@@ -42,7 +42,7 @@ app.use(session({
         maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie valid for 30 days
         secure: process.env.NODE_ENV === 'production', // Only secure in production
         httpOnly: true, // Cookie inaccessible from JavaScript
-        sameSite: 'None', // Cross-origin cookies allowed
+        sameSite: 'Lax', // Cross-origin cookies allowed
         domain: '.ecentersanluis.com', // Cookies work across subdomains
     }    
 }));
