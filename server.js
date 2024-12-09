@@ -16,20 +16,21 @@ const PORT = process.env.PORT || 8000;
 // Middleware configuration
 app.use(
     cors({
-        origin: ['https://www.ecentersanluis.com', 'https://www.ecentersanluis.com'], // Replace with your actual domain
+        origin: 'https://www.ecentersanluis.com', // Use your actual domain here
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Allow specific methods
         allowedHeaders: ['Content-Type', 'Authorization'], // Allow required headers
         credentials: true, // Include credentials (cookies, authorization headers, etc.)
     })
 );
 
-// Enable CORS preflight handling
+// Enable CORS preflight handling for all routes
 app.options('*', cors({
-    origin: 'https://www.ecentersanluis.com',
+    origin: 'https://www.ecentersanluis.com', // Same domain as above
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -51,6 +52,8 @@ app.use(session({
         sameSite: 'Lax', // Or 'Strict' based on your use case
     },
 }));
+
+
 
 
 // Debugging middleware for session logging

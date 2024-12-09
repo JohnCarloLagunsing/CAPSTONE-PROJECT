@@ -8,7 +8,8 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     const response = await fetch("/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(jsonData)
+      body: JSON.stringify(jsonData),
+      credentials: 'include',
     });
 
     loadingOverlay.style.display = 'none';
