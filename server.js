@@ -47,9 +47,10 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: false, // Secure cookies in production
+        secure: true, // Secure cookies in production
         httpOnly: true,
-        sameSite: 'none', // Allow cross-origin requests
+        sameSite: 'none',
+        domain: '.ecentersanluis.com', // Allow cross-origin requests
     }    
 }));
 
