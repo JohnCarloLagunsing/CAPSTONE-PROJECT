@@ -14,43 +14,36 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Middleware configuration
+// CORS configuration
 app.use(
     cors({
-        origin: 'https://www.ecentersanluis.com', // Use your actual domain here
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Allow specific methods
-        allowedHeaders: ['Content-Type', 'Authorization'], // Allow required headers
-        credentials: true, // Include credentials (cookies, authorization headers, etc.)
+        origin: 'https://www.ecentersanluis.com', // Your frontend domain
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Allowed HTTP methods
+        allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+        credentials: true, // Include credentials (cookies, headers, etc.)
     })
 );
 
-// Enable CORS preflight handling for all routes
-app.options('*', cors({
-    origin: 'https://www.ecentersanluis.com', // Same domain as above
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-}));
-
-
+// Body parsers
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// Unified session configuration
+// Session configuration
 app.use(session({
     store: new pgSession({
         pool: pool,
-        tableName: 'permit_session', // Use this table for all session data
+        tableName: 'permit_session', // Session data in this table
     }),
     secret: process.env.SESSION_SECRET || 'aV3ryC0mpl3xP@ssphr@se1234!',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        secure: true, // Secure cookies in production
-        httpOnly: true,
-        sameSite: 'none',
-        domain: '.ecentersanluis.com', // Allow cross-origin requests
+        maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie valid for 30 days
+        secure: process.env.NODE_ENV === 'production', // Only secure in production
+        httpOnly: true, // Cookie inaccessible from JavaScript
+        sameSite: 'None', // Cross-origin cookies allowed
+        domain: '.ecentersanluis.com', // Cookies work across subdomains
     }    
 }));
 
