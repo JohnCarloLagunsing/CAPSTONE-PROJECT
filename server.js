@@ -53,6 +53,7 @@ app.use(session({
 // Debugging middleware for session logging
 app.use((req, res, next) => {
     console.log("Session data on request:", req.session);
+    console.log('User ID in session:', req.session.userId);
     next();
 });
 
