@@ -121,6 +121,7 @@
                         <th class="px-4 py-2">Fullname</th>
                         <th class="px-4 py-2">Document</th>
                         <th class="px-4 py-2">Status</th>
+                        <th class="px-4 py-2">Approved by</th>
                     </tr>
                 </thead>
                 <tbody id="occupationalTableBody" class="text-center">
@@ -178,14 +179,8 @@
                                 <i class="fas fa-file-alt"></i>
                             </button>
                         </td>
-                        <td class="px-4 py-2">
-                    <select class="status-dropdown border rounded px-2 py-1" data-id="${record.id}">
-                        <option value="On Process" ${record.status === "On Process" ? "selected" : ""}>On Process</option>
-                        <option value="Approved" ${record.status === "Approved" ? "selected" : ""}>Approved</option>
-                        <option value="Declined" ${record.status === "Declined" ? "selected" : ""}>Declined</option>
-                    </select>
-                </td>
-
+                        <td class="px-4 py-2"> ${record.status}</td>
+                         <td class="px-4 py-2">${record.process_by || 'Not Assigned'}</td>
                     `;
                     tableBody.appendChild(row);
                 });

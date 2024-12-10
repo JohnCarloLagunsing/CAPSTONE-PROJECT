@@ -10,7 +10,8 @@ router.get('/getOccupationalRecords', async (req, res) => {
             SELECT 
                 "OccuPermit"."Occuid" AS id, 
                 CONCAT("OccuPermit"."Firstname", ' ', LEFT("OccuPermit"."Middlename", 1), '.', ' ', "OccuPermit"."Lastname") AS fullname,
-                occustatus.status
+                occustatus.status,
+               COALESCE(occustatus.process_by, 'Not Assigned') AS process_by
             FROM "OccuPermit"
             LEFT JOIN occustatus ON "OccuPermit"."Occuid" = occustatus.occuid
             ORDER BY "OccuPermit"."Occuid" ASC
