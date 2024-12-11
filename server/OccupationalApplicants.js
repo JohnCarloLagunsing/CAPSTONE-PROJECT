@@ -11,6 +11,16 @@ const setSession = (req, user, role) => {
   req.session.role = role;
   req.session.is_logged_in = true;
 
+    // Save the session and handle errors
+    req.session.save((err) => {
+      if (err) {
+        console.error("Error saving session:", err);
+      } else {
+        console.log("Session successfully saved for", role);
+      }
+    });
+  
+
   console.log(`Session set for ${role}:`, {
     user_id: req.session.user_id,
     role: req.session.role,
@@ -115,21 +125,30 @@ router.post("/login", async (req, res) => {
 
     if (role === "applicant") {
       req.session.occuid = null; // Clear any stale occuid
-
+    
       console.log(`Checking permit_session for user ID: ${user.id}`);
       const sessionResult = await pool.query(
         "SELECT * FROM permit_session WHERE sid = $1",
         [user.id]
       );
-
+    
       if (sessionResult.rows.length === 0) {
-        // Create a new session in permit_session without expiration
+        // Create a new session in permit_session
         console.log("Creating new permit_session for applicant...");
         await pool.query(
           "INSERT INTO permit_session (sid, sess, has_submitted) VALUES ($1, $2, FALSE)",
           [user.id, JSON.stringify({})]
         );
-
+    
+        // Save the session to ensure persistence
+        req.session.save((err) => {
+          if (err) {
+            console.error("Error saving applicant session:", err);
+          } else {
+            console.log("Session saved for first-time applicant login");
+          }
+        });
+    
         console.log("Applicant login successful (first-time):", user.email);
         return res.status(200).json({
           message: "Login successful",
@@ -137,6 +156,15 @@ router.post("/login", async (req, res) => {
           isFirstTime: true,
         });
       } else {
+        // Save the session to ensure persistence
+        req.session.save((err) => {
+          if (err) {
+            console.error("Error saving applicant session:", err);
+          } else {
+            console.log("Session saved for existing applicant session");
+          }
+        });
+    
         console.log("Applicant login successful (existing session):", user.email);
         return res.status(200).json({
           message: "Login successful",
@@ -145,6 +173,7 @@ router.post("/login", async (req, res) => {
         });
       }
     }
+    
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({

@@ -39,7 +39,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        domain: process.env.COOKIE_DOMAIN || '.ecentersanluis.com', // Use environment variable for flexibility
+        domain: process.env.NODE_ENV === "production" ? ".ecentersanluis.com" : undefined, // Use environment variable for flexibility
         secure: true,
         httpOnly: true,
         sameSite: 'Lax',
