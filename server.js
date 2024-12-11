@@ -39,12 +39,12 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        domain: '.ecentersanluis.com', // Ensure this matches your server domain
-        secure: true, // HTTPS only
-        httpOnly: true, // Prevent client-side access
-        sameSite: 'Lax', // Prevent CSRF attacks
+        domain: process.env.COOKIE_DOMAIN || '.ecentersanluis.com', // Use environment variable for flexibility
+        secure: true,
+        httpOnly: true,
+        sameSite: 'Lax',
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    }    
+    }      
 }));
 
 
