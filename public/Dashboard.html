@@ -490,15 +490,21 @@ async function renderForecastChart() {
     const nextMonthOccuPermitCount = Math.round(occuPermitForecast[occuPermitCounts.length]); // first forecasted value
     const nextMonthMTOPCount = Math.round(mtopApplicationForecast[MTOPCounts.length]); // first forecasted value
 
-    document.getElementById('forecastMessage').innerText = `
-      Based on the current trend, we estimate that there will be approximately ${nextMonthOccuPermitCount} new occupational permit applicants 
-    and ${nextMonthMTOPCount} new MTOP applications in the next month. Additionally, we forecast:
-    - ${nextThreeMonths[0]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 1])} new occupational permit applicants
-    - ${nextThreeMonths[1]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 2])} new occupational permit applicants
-    
-      Based on staffing needs, it is suggested that the number of AdminStaff should be at least 10 to meet the growing demand effectively.
+    document.getElementById('forecastMessage').innerHTML = `
+  Based on the current trend, we estimate that there will be approximately ${nextMonthOccuPermitCount} new occupational permit applicants 
+  and ${nextMonthMTOPCount} new MTOP applications in the next month. Additionally, we forecast:<br>
+
+  <span class="text-green-500 font-bold">
+    - ${nextThreeMonths[0]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 1])} new occupational permit applicants and ${Math.round(mtopApplicationForecast[MTOPCounts.length + 1])} new MTOP applications<br>
+    - ${nextThreeMonths[1]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 2])} new occupational permit applicants and ${Math.round(mtopApplicationForecast[MTOPCounts.length + 2])} new MTOP applications<br>
+  </span><br><br>
+
+  <span class="text-red-500 font-bold">
+    Based on staffing needs, it is suggested that the number of AdminStaff should be at least 10 to meet the growing demand effectively.
+  </span>
 `;
 }
+
 
 renderForecastChart();
 
