@@ -39,11 +39,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie valid for 30 days
-        secure: process.env.NODE_ENV === 'production', // Only secure in production
-        httpOnly: true, // Cookie inaccessible from JavaScript
-        sameSite: 'Lax', // Cross-origin cookies allowed
-        domain: '.ecentersanluis.com', // Cookies work across subdomains
+        domain: '.ecentersanluis.com', // Ensure this matches your server domain
+        secure: true, // HTTPS only
+        httpOnly: true, // Prevent client-side access
+        sameSite: 'Lax', // Prevent CSRF attacks
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     }    
 }));
 
