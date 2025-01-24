@@ -83,7 +83,7 @@
                 <!-- Data Comparison Chart -->
                 <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
                     <canvas id="comparisonChart" class="w-11/12 h-5/6"></canvas>
-                    <div id="comparisonMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
+                    <div id="comparisonMessage" class="text-black-700 bold p-2 leading-tight text-base md:text-lg">
                         Comparison Data Message
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                 <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
                     <canvas id="notApprovedChart" class="w-11/12 h-5/6"></canvas>
                     <div id="notApprovedMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
-                        <strong>Total Not Approved Inspections:</strong> 8.<br>
+                        <strong>Total of Not Approved Inspections:</strong> <br>
                         <strong>Common rejection reasons:</strong> Not Open Pipe, Light in Sidecar (8 each).
                     </div>
                 </div>
@@ -100,11 +100,17 @@
                 <!-- Forecast Section (Line Graph) -->
                 <div class="bg-white shadow-md rounded-lg p-4 h-[22rem] flex flex-col items-center justify-between">
                     <canvas id="forecastChart" class="w-11/12 h-5/6"></canvas>
-                    <div id="forecastMessage" class="text-gray-700 text-center p-2 leading-tight text-base md:text-lg">
-                        Based on the trend, expect 65 new permits and 123 mtop next month.<br>
-                        Forecast:<br>
-                        - Dec 2024: 655 permits<br>
-                        - Jan 2025: 6555 permits
+                    <div id="forecastMessage" class="text-gray-700 p-4 leading-tight text-base md:text-lg w-[40%]">
+                        <p class="font-semibold">Next Month Estimated Applicants:</p>
+                        <ul class="list-none mt-2">
+                            <li>● 503 New Occupational Permit Applicants</li>
+                            <li>● 418 New MTOP Applicants</li>
+                        </ul>
+                        <p class="mt-4 font-semibold">Forecast:</p>
+                        <ul class="list-none mt-2 text-black-600">
+                            <li>Feb 2025: 1,177 New Occupational Permit Applicants and 1,431 New MTOP applicants</li>
+                            <li>Mar 2025: 1,597 New Occupational Permit Applicants and 1,872 New MTOP applicants</li>
+                        </ul>
                     </div>
                 </div>
         
@@ -232,7 +238,8 @@ async function renderChart() {
     const highestLabel = labels[maxCountIndex];
     const highestCount = counts[maxCountIndex];
 
-    document.getElementById('comparisonMessage').innerText = `The most numerous record is ${highestLabel} with ${highestCount} records.`;
+    document.getElementById('comparisonMessage').innerHTML = `<span class="font-bold">Most Transaction:</span> ${highestLabel} with ${highestCount} records.`;
+
 
     const ctx = document.getElementById('comparisonChart').getContext('2d');
     new Chart(ctx, {
@@ -365,7 +372,7 @@ async function fetchInspectionStatusAndRenderChart() {
 
         document.getElementById('notApprovedMessage').innerHTML = `
             <strong>Total Not Approved Inspections:</strong> ${notApprovedCount}.<br>
-            <strong>The most common reasons for rejection are:</strong> ${reasonsText} with ${maxCount} occurrences each.
+            <strong>Most common reasons for rejection:</strong> ${reasonsText} 
         `;
     } catch (error) {
         console.error('Error fetching inspection status:', error);
@@ -491,17 +498,19 @@ async function renderForecastChart() {
     const nextMonthMTOPCount = Math.round(mtopApplicationForecast[MTOPCounts.length]); // first forecasted value
 
     document.getElementById('forecastMessage').innerHTML = `
-  Based on the current trend, we estimate that there will be approximately ${nextMonthOccuPermitCount} new occupational permit applicants 
-  and ${nextMonthMTOPCount} new MTOP applications in the next month. Additionally, we forecast:<br>
+  <b>Next Month Estimated Applicants:</b>
+  
+  <br><span class="text-blue-500">● <b>${nextMonthOccuPermitCount} New Occupational Permit Applicants </span></b>
+  <br><span class="text-green-500">● <b> ${nextMonthMTOPCount} New MTOP Applicants </span></b>
+   <br>
+  <br><b>Forecasted Applicants:</b>
+  <br>
 
-  <span class="text-green-500 font-bold">
-    - ${nextThreeMonths[0]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 1])} new occupational permit applicants and ${Math.round(mtopApplicationForecast[MTOPCounts.length + 1])} new MTOP applications<br>
-    - ${nextThreeMonths[1]}: ${Math.round(occuPermitForecast[occuPermitCounts.length + 2])} new occupational permit applicants and ${Math.round(mtopApplicationForecast[MTOPCounts.length + 2])} new MTOP applications<br>
+  <span class="text-black-500 ">
+    <ul>● <b>${nextThreeMonths[0]}: </b>${Math.round(occuPermitForecast[occuPermitCounts.length + 1])} New Occupational Permit Applicants | ${Math.round(mtopApplicationForecast[MTOPCounts.length + 1])} New MTOP Applicants<br>
+    <ul>● <b>${nextThreeMonths[1]}: </b>${Math.round(occuPermitForecast[occuPermitCounts.length + 2])} New Occupational Permit Applicants | ${Math.round(mtopApplicationForecast[MTOPCounts.length + 2])} New MTOP Applicants<br>
   </span><br><br>
 
-  <span class="text-red-500 font-bold">
-    Based on staffing needs, it is suggested that the number of AdminStaff should be at least 10 to meet the growing demand effectively.
-  </span>
 `;
 }
 
@@ -562,10 +571,10 @@ async function fetchInspectionDataAndRenderChart() {
 
         // Display message about the most numerous town
     // Display message showing inspection counts for both San Luis and Other Towns
-document.getElementById('townMessage').innerText = `
-    Inspection Counts:
-    - San Luis: ${sanLuisCount} inspections
-    - Other Towns: ${otherTownsCount} inspections
+    document.getElementById('townMessage').innerHTML = `
+    Inspection Counts:<br>
+    <span class="font-bold">- San Luis:</span> ${sanLuisCount} inspections<br>
+    <span class="font-bold">- Other Town:</span> ${otherTownsCount} inspections
 `;
 
         
