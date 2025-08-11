@@ -85,6 +85,7 @@ const VerifyingMTOP = require('./server/VerifyingMTOP.js');
 const Occuverify = require('./server/Occuverify.js');
 const verifymtop = require('./server/MTopapplication.js');
 const applicantchangepass = require('./server/applicantchangepass.js');
+const tr = require('./public/scripts/try.js');
 
 // Define routes
 app.use('/', loginProcessRouter);
@@ -111,6 +112,7 @@ app.use('/api', VerifyingMTOP);
 app.use('/', Occuverify);
 app.use('/', verifymtop);
 app.use('/', applicantchangepass);
+app.use('/', tr);
 
 // Authentication middleware
 const isAuthenticated = (req, res, next) => {
@@ -143,7 +145,8 @@ const protectedRoutes = [
     '/signup',
     '/SignupforInspector',
     '/VerifyingDocuments',
-    '/applicant'
+    '/applicant',
+    '/try'
 ];
 
 protectedRoutes.forEach((route) => {
