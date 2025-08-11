@@ -2,16 +2,17 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const pool = require('../public/scripts/db'); // Your PostgreSQL pool setup
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
 // Serve static files from the project's root directory
-router.use(express.static(path.join(__dirname, '../'))); // Adjust as necessary
+router.use(express.static(path.join(__dirname, '../')));
 router.use(express.json()); // Middleware for JSON body parsing
 
 // GET request handler for the head admin login page
 router.get('/headadmin', (req, res) => {
-    res.sendFile(path.join(__dirname, '../HeadAdmin.html')); // Replace with actual HTML render or file path
+    res.sendFile(path.join(__dirname, '../HeadAdmin.html'));
 });
 
 // POST request handler for login
@@ -25,7 +26,7 @@ router.post('/headadmin', [
     }
 
     const { email, password } = req.body;
-    const trimmedPassword = password.trim(); // Trim whitespace
+    const trimmedPassword = password.trim();
 
     try {
         // Query to find admin by email
@@ -37,10 +38,20 @@ router.post('/headadmin', [
         }
 
         const admin = result.rows[0];
-        console.log('Admin fetched from DB:', admin); // Debugging line
+        console.log('Admin fetched from DB:', admin);
 
-        // Direct comparison of passwords (temporarily without encryption)
-        if (trimmedPassword !== admin.password) {
+        let isMatch = false;
+
+        // Check if stored password looks like a bcrypt hash
+        if (admin.password.startsWith('$2b$') || admin.password.startsWith('$2a$')) {
+            // Compare using bcrypt
+            isMatch = await bcrypt.compare(trimmedPassword, admin.password);
+        } else {
+            // Fallback for plain text passwords (for transition period)
+            isMatch = trimmedPassword === admin.password;
+        }
+
+        if (!isMatch) {
             console.log('Password mismatch:', {
                 input: trimmedPassword,
                 stored: admin.password
@@ -48,13 +59,13 @@ router.post('/headadmin', [
             return res.status(400).json({ message: 'Invalid password' });
         }
 
-        // Successful login, redirect to HeadDashboard.html
+        // Successful login
         return res.status(200).json({ redirect: '/HeadDashboard.html' });
+
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: 'Server error' });
     }
 });
 
-// Start the server
 module.exports = router;
